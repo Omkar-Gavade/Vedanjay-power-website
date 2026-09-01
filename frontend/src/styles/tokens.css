@@ -1,0 +1,174 @@
+/* ============================================================================
+   VEDANJAY POWER — DESIGN TOKENS
+   Palette derived by sampling the company's actual logo (img/logo.png):
+     #40A040  brand green   (dominant mark colour)
+     #004048  deep petrol   (the "blue" in the identity)
+     #F87820  energy amber  (accent in the sun motif)
+   Contrast for every shipped pairing is computed, not estimated.
+   ========================================================================== */
+:root {
+  /* ---- Green (base #40A040) ---- */
+  --vp-green-50:#EEF7EE;  --vp-green-100:#D6EDD6; --vp-green-200:#ADDBAD;
+  --vp-green-300:#7FC67F; --vp-green-400:#58B058; --vp-green-500:#40A040;
+  --vp-green-600:#35853A; --vp-green-700:#2A6B2F; --vp-green-800:#205323;
+  --vp-green-900:#163A19;
+
+  /* ---- Petrol blue (base #004048) ---- */
+  --vp-blue-50:#ECF4F5;  --vp-blue-100:#CFE4E7; --vp-blue-200:#9DC8CE;
+  --vp-blue-300:#6BA9B2; --vp-blue-400:#3D8894; --vp-blue-500:#146A78;
+  --vp-blue-600:#0A5561; --vp-blue-700:#004048; --vp-blue-800:#003038;
+  --vp-blue-900:#04222A; --vp-blue-950:#071518;
+
+  /* ---- Energy amber (base #F87820) ---- */
+  --vp-amber-300:#FBB37A; --vp-amber-400:#FA9648; --vp-amber-500:#F87820;
+  --vp-amber-600:#D95F12; --vp-amber-700:#B04A0C;
+
+  /* ---- Cool neutrals (blue-tinted to sit with the petrol) ---- */
+  --vp-n-0:#FFFFFF;   --vp-n-25:#FAFCFC;  --vp-n-50:#F4F7F7;  --vp-n-100:#E8EEEE;
+  --vp-n-200:#D3DCDD; --vp-n-300:#B3C0C2; --vp-n-400:#8A999C; --vp-n-500:#667679;
+  --vp-n-600:#4A5A5D; --vp-n-700:#334245; --vp-n-800:#1F2E31; --vp-n-900:#101E21;
+  --vp-n-950:#0A1517;
+
+  /* ---- Type ---- */
+  --vp-font-sans:'Archivo Variable',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --vp-font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --vp-fs-display:clamp(1.9375rem,1.35rem + 2.3vw,3.125rem);
+  --vp-fs-h1:clamp(2rem,1.4rem + 2.6vw,3.4rem);
+  --vp-fs-h2:clamp(1.625rem,1.25rem + 1.6vw,2.5rem);
+  --vp-fs-h3:clamp(1.25rem,1.1rem + 0.7vw,1.625rem);
+  --vp-fs-h4:clamp(1.0625rem,1.02rem + 0.22vw,1.1875rem);
+  --vp-fs-lead:clamp(1.0625rem,1rem + 0.34vw,1.25rem);
+  --vp-fs-body:clamp(0.9688rem,0.95rem + 0.1vw,1.0313rem);
+  --vp-fs-sm:0.9063rem;
+  --vp-fs-label:clamp(0.75rem,0.73rem + 0.09vw,0.8125rem);
+  --vp-fs-stat:clamp(2.25rem,1.5rem + 3vw,3.75rem);
+
+  /* ---- Spacing (8px rhythm) ---- */
+  --vp-s-1:0.25rem; --vp-s-2:0.5rem;  --vp-s-3:0.75rem; --vp-s-4:1rem;
+  --vp-s-5:1.5rem;  --vp-s-6:2rem;    --vp-s-7:2.5rem;  --vp-s-8:3rem;
+  --vp-s-9:4rem;    --vp-s-10:5rem;   --vp-s-11:6rem;   --vp-s-12:8rem;
+
+  --vp-section-y:clamp(3.5rem,2rem + 6vw,7rem);
+  --vp-section-y-lg:clamp(4.5rem,2.5rem + 8vw,9rem);
+
+  /* ---- Radius: restrained. Engineered, not friendly. ---- */
+  --vp-radius-sm:3px; --vp-radius:6px; --vp-radius-lg:10px; --vp-radius-pill:999px;
+
+  /* ---- Motion ---- */
+  --vp-dur-fast:160ms; --vp-dur:280ms; --vp-dur-slow:520ms; --vp-dur-hero:900ms;
+  --vp-ease:cubic-bezier(.22,1,.36,1);
+  --vp-ease-inout:cubic-bezier(.65,0,.35,1);
+  --vp-ease-emph:cubic-bezier(.16,1,.3,1);
+
+  /* ---- Layers ---- */
+  --vp-z-header:1030; --vp-z-dropdown:1040; --vp-z-drawer:1050; --vp-z-skip:1100;
+
+  --vp-header-h:76px;
+  --vp-header-h-sm:64px;
+  --vp-container-max:1360px;
+}
+
+/* ==========================================================================
+   LIGHT THEME (default)
+   ========================================================================== */
+:root,
+[data-bs-theme="light"] {
+  color-scheme: light;
+
+  --vp-bg:var(--vp-n-0);
+  --vp-bg-alt:var(--vp-n-50);
+  --vp-bg-sunken:var(--vp-n-100);
+  --vp-bg-inverse:var(--vp-blue-950);
+  --vp-surface:var(--vp-n-0);
+  --vp-surface-raised:var(--vp-n-0);
+
+  --vp-text:var(--vp-n-900);
+  --vp-text-soft:var(--vp-n-600);
+  --vp-text-muted:var(--vp-n-500);
+  --vp-text-inverse:var(--vp-n-0);
+  --vp-text-inverse-soft:#B9C9CA;
+
+  --vp-border:var(--vp-n-200);
+  --vp-border-soft:var(--vp-n-100);
+  --vp-border-strong:var(--vp-n-300);
+
+  /* Interactive greens are the AA-safe steps, not the raw brand green */
+  --vp-primary:var(--vp-green-600);
+  --vp-primary-hover:var(--vp-green-700);
+  --vp-primary-contrast:var(--vp-n-0);
+  --vp-brand-green:var(--vp-green-500);
+
+  --vp-secondary:var(--vp-blue-700);
+  --vp-secondary-hover:var(--vp-blue-800);
+
+  --vp-accent:var(--vp-amber-500);
+  --vp-accent-text:var(--vp-amber-700);   /* amber-500 fails as text on white */
+  --vp-accent-contrast:var(--vp-n-900);   /* dark on amber = 6.26:1 */
+
+  --vp-focus:var(--vp-blue-500);
+  --vp-shadow-sm:0 1px 2px rgb(7 21 24 / .06);
+  --vp-shadow:0 6px 24px -8px rgb(7 21 24 / .14);
+  --vp-shadow-lg:0 24px 60px -20px rgb(7 21 24 / .26);
+
+  --vp-header-bg:rgb(255 255 255 / .72);
+  --vp-header-border:rgb(16 30 33 / .09);
+}
+
+/* ==========================================================================
+   DARK THEME — deep petrol, never flat black
+   ========================================================================== */
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+
+  --vp-bg:var(--vp-blue-950);
+  --vp-bg-alt:#09191D;
+  --vp-bg-sunken:#0C1E22;
+  --vp-bg-inverse:var(--vp-n-0);
+  --vp-surface:#0C1E22;
+  --vp-surface-raised:#102A2F;
+
+  --vp-text:#EAF2F0;
+  --vp-text-soft:#9AAFB0;
+  --vp-text-muted:#7D9294;
+  --vp-text-inverse:var(--vp-n-900);
+  --vp-text-inverse-soft:var(--vp-n-600);
+
+  --vp-border:rgb(234 242 240 / .12);
+  --vp-border-soft:rgb(234 242 240 / .07);
+  --vp-border-strong:rgb(234 242 240 / .22);
+
+  --vp-primary:var(--vp-green-400);
+  --vp-primary-hover:var(--vp-green-300);
+  --vp-primary-contrast:var(--vp-blue-950);
+  --vp-brand-green:var(--vp-green-400);
+
+  --vp-secondary:var(--vp-blue-200);
+  --vp-secondary-hover:var(--vp-blue-100);
+
+  --vp-accent:var(--vp-amber-400);
+  --vp-accent-text:var(--vp-amber-400);
+  --vp-accent-contrast:var(--vp-blue-950);
+
+  --vp-focus:var(--vp-green-300);
+  --vp-shadow-sm:0 1px 2px rgb(0 0 0 / .4);
+  --vp-shadow:0 8px 30px -10px rgb(0 0 0 / .6);
+  --vp-shadow-lg:0 30px 70px -24px rgb(0 0 0 / .75);
+
+  --vp-header-bg:rgb(7 21 24 / .72);
+  --vp-header-border:rgb(234 242 240 / .1);
+}
+
+/* Bootstrap variable bridge — keeps BS components on-brand without overrides */
+:root, [data-bs-theme="light"], [data-bs-theme="dark"] {
+  --bs-body-bg:var(--vp-bg);
+  --bs-body-color:var(--vp-text);
+  --bs-border-color:var(--vp-border);
+  --bs-primary:var(--vp-primary);
+  --bs-link-color:var(--vp-primary);
+  --bs-link-hover-color:var(--vp-primary-hover);
+  --bs-font-sans-serif:var(--vp-font-sans);
+  --bs-body-font-size:var(--vp-fs-body);
+  --bs-body-font-family:var(--vp-font-sans);
+  --bs-emphasis-color:var(--vp-text);
+}

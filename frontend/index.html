@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-IN" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#071518" media="(prefers-color-scheme: dark)" />
+    <title>Vedanjay Power — Renewable Power Consultancy</title>
+
+    <!-- Theme is resolved and applied BEFORE first paint, so the page never
+         flashes the wrong theme. Stored choice wins; otherwise follow the OS. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('vp-theme');
+          var theme = stored ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var root = document.documentElement;
+          root.setAttribute('data-bs-theme', theme);
+          root.style.colorScheme = theme;
+          // Suppress transitions for the first frames so boot is instant, not a fade.
+          root.classList.add('vp-theme-booting');
+          window.addEventListener('DOMContentLoaded', function () {
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                root.classList.remove('vp-theme-booting');
+              });
+            });
+          });
+        } catch (e) { /* private mode / storage disabled — light is the default */ }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

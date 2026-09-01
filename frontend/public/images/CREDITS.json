@@ -1,0 +1,8 @@
+{
+  "_note": "TEMPORARY development placeholders. Not Vedanjay brand assets. Replace via frontend/src/data/media.js — see the header comment in that file.",
+  "source": "Unsplash (https://unsplash.com)",
+  "license": "Unsplash License — free for commercial and non-commercial use, no permission or attribution required. https://unsplash.com/license",
+  "retrieved": "2026-08-31",
+  "delivery": "images.unsplash.com CDN, downloaded at w=1800 q=72, then re-encoded locally to <=1800px (full) and <=1000px (sm/) for the srcset.",
+  "variants": { "full": "images/<slug>.jpg (max 1800px)", "small": "images/sm/<slug>.jpg (max 1000px)" }
+}

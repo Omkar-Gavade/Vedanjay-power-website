@@ -1,0 +1,113 @@
+/* ============================================================================
+   HERO — a rotating full-bleed photographic stage.
+   Decision (docs/05-decisions D-034): photography, not video. Vedanjay's work is
+   static infrastructure — substations, bays, metering — which photographs far
+   better than it films, and a 4-frame still rotation costs ~260KB against
+   several MB for video, with no autoplay, battery or data penalty.
+   ========================================================================== */
+
+.vp-hero{
+  position:relative;
+  min-height:min(88svh,800px);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  overflow:hidden;
+  background:var(--vp-blue-950);
+  isolation:isolate;
+}
+@media (max-width:767.98px){
+  .vp-hero{min-height:min(86svh,680px);}
+}
+/* On large displays the 800px cap leaves the hero looking short against the
+   viewport; raise it so the photograph keeps its presence. */
+@media (min-width:1400px){
+  .vp-hero{min-height:min(90svh,920px);}
+}
+
+.vp-hero__stage{position:absolute;inset:0;z-index:0;}
+
+/* Directional scrim: heavy at the text side, light over the image so the
+   photograph still reads. Owned by the hero, never by the photograph. */
+.vp-hero__scrim{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg, rgb(4 22 27 / .55) 0%, rgb(4 22 27 / .18) 30%, rgb(4 22 27 / .70) 78%, rgb(4 22 27 / .94) 100%),
+    linear-gradient(92deg, rgb(4 22 27 / .82) 0%, rgb(4 22 27 / .55) 42%, rgb(4 22 27 / .18) 78%, transparent 100%);
+}
+@media (max-width:991.98px){
+  .vp-hero__scrim{
+    background:linear-gradient(180deg, rgb(4 22 27 / .62) 0%, rgb(4 22 27 / .48) 34%, rgb(4 22 27 / .82) 74%, rgb(4 22 27 / .96) 100%);
+  }
+}
+
+.vp-hero__body{
+  position:relative;z-index:2;width:100%;
+  padding-top:calc(var(--vp-header-h) + 2rem);
+  padding-bottom:1.5rem;
+}
+@media (min-width:992px){.vp-hero__body{padding-bottom:2rem;}}
+
+.vp-hero__eyebrow{color:var(--vp-green-300);}
+.vp-hero__title{color:#fff;max-width:17ch;}
+.vp-hero__lead{color:rgb(234 242 240 / .82);max-width:46ch;}
+
+/* ---- Proof strip: sits on the hero's lower edge ---- */
+.vp-hero__proof{
+  position:relative;z-index:2;
+  border-top:1px solid rgb(255 255 255 / .16);
+  background:rgb(4 22 27 / .30);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.vp-hero__proof-item{padding-block:1rem;}
+@media (min-width:768px){.vp-hero__proof-item{padding-block:1.25rem;}}
+.vp-hero__proof-value{color:#fff;font-weight:600;}
+.vp-hero__proof-label{color:rgb(234 242 240 / .62);}
+
+/* ---- Frame indicator: numbered, with a progress bar. Reads as an instrument,
+        not a carousel dot. ---- */
+.vp-hero__nav{display:flex;align-items:center;gap:1.25rem;}
+.vp-hero__dot{
+  position:relative;display:flex;align-items:center;gap:.55rem;
+  padding-block:.6rem;min-height:44px;color:rgb(234 242 240 / .55);
+  transition:color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-hero__dot:hover{color:#fff;}
+.vp-hero__dot[aria-current="true"]{color:#fff;}
+.vp-hero__dot-track{
+  display:block;width:34px;height:2px;background:rgb(255 255 255 / .25);overflow:hidden;
+}
+@media (min-width:768px){.vp-hero__dot-track{width:52px;}}
+.vp-hero__dot-fill{
+  display:block;width:100%;height:100%;background:var(--vp-amber-500);
+  transform:scaleX(0);transform-origin:left center;
+}
+.vp-hero__dot[aria-current="true"] .vp-hero__dot-fill{
+  animation:vp-progress var(--hero-dwell,6500ms) linear forwards;
+}
+.vp-hero__dot[data-seen="true"] .vp-hero__dot-fill{transform:scaleX(1);}
+
+/* Paused / reduced motion: no timer bar, full marker on the active frame */
+.vp-hero[data-paused="true"] .vp-hero__dot-fill{animation-play-state:paused;}
+@media (prefers-reduced-motion:reduce){
+  .vp-hero__dot[aria-current="true"] .vp-hero__dot-fill{animation:none;transform:scaleX(1);}
+}
+
+/* Scroll cue */
+.vp-hero__cue{
+  display:none;align-items:center;gap:.6rem;color:rgb(234 242 240 / .55);
+}
+@media (min-width:992px){.vp-hero__cue{display:inline-flex;}}
+.vp-hero__cue-line{
+  display:block;width:1px;height:34px;background:rgb(255 255 255 / .3);position:relative;overflow:hidden;
+}
+.vp-hero__cue-line::after{
+  content:"";position:absolute;inset-inline:0;top:0;height:40%;background:var(--vp-green-400);
+  animation:vp-cue 2.4s var(--vp-ease-inout) infinite;
+}
+@keyframes vp-cue{
+  0%{transform:translateY(-100%);}
+  60%,100%{transform:translateY(250%);}
+}
+@media (prefers-reduced-motion:reduce){
+  .vp-hero__cue-line::after{animation:none;}
+}

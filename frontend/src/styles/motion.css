@@ -1,0 +1,120 @@
+/* ============================================================================
+   MOTION LANGUAGE
+   One vocabulary used everywhere. Each pattern exists to serve hierarchy,
+   storytelling, feedback or orientation — nothing is decorative-only.
+
+   Elements are VISIBLE by default and only armed (hidden) once JS confirms
+   motion is allowed. That ordering makes stranded-invisible content impossible.
+   ========================================================================== */
+
+/* ---- 1. Reveal: fade + rise. The workhorse. ---- */
+[data-anim]{--d:0ms;}
+[data-anim="armed"]{opacity:0;}
+[data-anim="in"]{opacity:1;}
+
+[data-anim][data-anim-type="rise"][data-anim="armed"]{transform:translateY(22px);}
+[data-anim][data-anim-type="rise"][data-anim="in"]{
+  transform:none;
+  transition:opacity var(--vp-dur-slow) var(--vp-ease) var(--d),
+             transform var(--vp-dur-slow) var(--vp-ease) var(--d);
+}
+
+/* ---- 2. Line reveal: text rises out of its own mask. Editorial, cinematic. ---- */
+.vp-lines{display:block;}
+.vp-line-mask{display:block;overflow:hidden;padding-block:.06em;margin-block:-.06em;}
+.vp-line-inner{display:block;will-change:transform;}
+[data-anim="armed"] .vp-line-inner{transform:translateY(105%);}
+[data-anim="in"] .vp-line-inner{
+  transform:none;
+  transition:transform var(--vp-dur-hero) var(--vp-ease-emph);
+  transition-delay:calc(var(--d) + var(--line-d, 0ms));
+}
+
+/* ---- 3. Image reveal: a wipe plus a slow settle out of over-scale.
+        Reads as a camera coming to rest rather than a element popping in. ---- */
+.vp-img-reveal{position:relative;overflow:hidden;}
+.vp-img-reveal > img,
+.vp-img-reveal > picture > img{
+  width:100%;height:100%;object-fit:cover;
+  transform-origin:center;
+}
+[data-anim="armed"].vp-img-reveal{clip-path:inset(0 0 100% 0);}
+[data-anim="armed"].vp-img-reveal > img,
+[data-anim="armed"].vp-img-reveal > picture > img{transform:scale(1.16);}
+[data-anim="in"].vp-img-reveal{
+  clip-path:inset(0 0 0 0);
+  transition:clip-path 1s var(--vp-ease-emph) var(--d);
+}
+[data-anim="in"].vp-img-reveal > img,
+[data-anim="in"].vp-img-reveal > picture > img{
+  transform:none;
+  transition:transform 1.5s var(--vp-ease-emph) var(--d);
+}
+
+/* ---- 4. Rule draw: hairlines scale in from the left. ---- */
+.vp-rule{height:1px;background:var(--vp-border);transform-origin:left center;}
+[data-anim="armed"] .vp-rule,
+[data-anim="armed"].vp-rule{transform:scaleX(0);}
+[data-anim="in"] .vp-rule,
+[data-anim="in"].vp-rule{
+  transform:none;transition:transform var(--vp-dur-hero) var(--vp-ease) var(--d);
+}
+
+/* ---- 5. Hero: cross-dissolve with a very slow drift. ---- */
+.vp-hero-slide{
+  position:absolute;inset:0;opacity:0;
+  transition:opacity 1400ms var(--vp-ease-inout);
+  will-change:opacity;
+}
+.vp-hero-slide[data-active="true"]{opacity:1;}
+.vp-hero-slide img{width:100%;height:100%;object-fit:cover;}
+.vp-hero-slide[data-active="true"] img{
+  animation:vp-drift 9s linear forwards;
+}
+@keyframes vp-drift{
+  from{transform:scale(1.02);}
+  to{transform:scale(1.11);}
+}
+
+/* ---- 6. Progress bar on the hero indicator ---- */
+@keyframes vp-progress{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+/* ---- 7. Menu / drawer ---- */
+@keyframes vp-menu-in{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:none;}}
+@keyframes vp-drawer-in{from{transform:translateX(100%);}to{transform:none;}}
+@keyframes vp-fade-in{from{opacity:0;}to{opacity:1;}}
+
+/* Drawer rows cascade in behind the panel */
+.vp-drawer-item{opacity:0;animation:vp-row-in 500ms var(--vp-ease) forwards;}
+@keyframes vp-row-in{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:none;}}
+
+/* ---- 8. Hover: media zoom, used on every clickable image ---- */
+.vp-zoom{overflow:hidden;}
+.vp-zoom img{transition:transform 900ms var(--vp-ease);}
+.vp-zoom:hover img,.vp-zoom:focus-within img{transform:scale(1.055);}
+
+/* ---- 9. Arrow nudge on links/buttons ---- */
+.vp-arrow{display:inline-block;transition:transform var(--vp-dur-fast) var(--vp-ease);}
+.vp-arrow-parent:hover .vp-arrow,
+.vp-arrow-parent:focus-visible .vp-arrow{transform:translateX(5px);}
+
+/* ============================================================================
+   REDUCED MOTION — global and per-pattern.
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  [data-anim],[data-anim="armed"],[data-anim="in"]{opacity:1 !important;transform:none !important;}
+  [data-anim="armed"] .vp-line-inner,[data-anim="in"] .vp-line-inner{transform:none !important;}
+  [data-anim="armed"].vp-img-reveal,[data-anim="in"].vp-img-reveal{clip-path:none !important;}
+  [data-anim="armed"].vp-img-reveal > img,
+  [data-anim="armed"].vp-img-reveal > picture > img{transform:none !important;}
+  [data-anim="armed"] .vp-rule,[data-anim="in"] .vp-rule{transform:none !important;}
+  .vp-hero-slide[data-active="true"] img{animation:none !important;transform:none !important;}
+  .vp-drawer-item{opacity:1 !important;animation:none !important;}
+  .vp-zoom:hover img{transform:none !important;}
+}
