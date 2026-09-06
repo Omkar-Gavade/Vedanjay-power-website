@@ -23,6 +23,20 @@ export const company = {
       city: 'Indore',
       lines: ['4/F/S3, Nai Sadak, Scheme No. 78', 'Indore – 452010', 'Madhya Pradesh, India'],
       /**
+       * The SAME address, split into the fields schema.org's PostalAddress
+       * expects. Not a new fact and not a second source of truth — every token
+       * below appears verbatim in `lines` above, which stays the thing the page
+       * renders. Structured data built by string-slicing `lines` was getting
+       * the postcode and the state wrong in two different ways on two pages.
+       */
+      postal: {
+        street: '4/F/S3, Nai Sadak, Scheme No. 78',
+        locality: 'Indore',
+        region: 'Madhya Pradesh',
+        postalCode: '452010',
+        country: 'IN',
+      },
+      /**
        * Geocodable subset of the address above, for the contact-page map.
        *
        * NOT a new fact — every token appears in `lines`. The unit designator
@@ -44,6 +58,14 @@ export const company = {
         'Pune City, Pune – 411041',
         'Maharashtra, India',
       ],
+      /** As above — the same address in PostalAddress fields. */
+      postal: {
+        street: 'Flat No. 210, Grand Horizon, Behind Brahma Hotel, Sinhagad Road',
+        locality: 'Pune',
+        region: 'Maharashtra',
+        postalCode: '411041',
+        country: 'IN',
+      },
       /**
        * As above. Verified 4 Sep 2026: returns a marker labelled "Grand
        * Horizon" whose info card reads "Sinhgad Rd … behind Bramha Hotel",

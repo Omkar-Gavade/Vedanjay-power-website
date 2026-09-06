@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Careers.
@@ -71,12 +72,7 @@ export default function Careers() {
 
   return (
     <>
-      <title>Careers — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content={`Working at Vedanjay Power Pvt. Ltd. — ${PROJECT_TOTAL} executed engagements across forecasting and scheduling, EHV infrastructure, metering, telemetry and grid consultancy. Applications are read as they arrive.`}
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/careers/`} />
+      <Seo route={ROUTES.careers} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="cr-h">
         <div className="vp-phero__media" aria-hidden="true">

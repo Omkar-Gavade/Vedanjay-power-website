@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { company } from '../data/company.js';
 import { capabilities, coreExpertise } from '../data/capabilities.js';
@@ -8,6 +9,7 @@ import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Services.
@@ -82,12 +84,7 @@ export default function Services() {
 
   return (
     <>
-      <title>Services — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content="QCA and forecasting, open-access power, ABT metering and telemetry, electrical infrastructure, grid studies and renewable project support from Vedanjay Power Pvt. Ltd."
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/services/`} />
+      <Seo route={ROUTES.services} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="sv-h">
         <div className="vp-phero__media" aria-hidden="true">
@@ -105,7 +102,8 @@ export default function Services() {
           <Reveal delay={140}>
             <p className="vp-lead vp-phero__lead mb-0">
               Delivered individually or combined into a single engagement across the
-              power value chain.
+              power value chain, under the{' '}
+              <Link className="vp-link" to={ROUTES.downloads}>regulations we publish</Link>.
             </p>
           </Reveal>
         </div>
@@ -208,6 +206,11 @@ export default function Services() {
                 <h3 className="vp-band__title">Need one of these on a live project?</h3>
                 <p className="vp-band__body">
                   Tell us the scope and the state, and we will confirm what we can take on.
+                  You can also see{' '}
+                  <Link className="vp-link" to={ROUTES.industries}>the kinds of organisation
+                  we work with</Link> and{' '}
+                  <Link className="vp-link" to={ROUTES.projects}>the register of work
+                  executed</Link>.
                 </p>
               </div>
               <Button to={ROUTES.contact} variant="primary" size="sm" arrow>Contact us</Button>

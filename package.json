@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npm --prefix frontend run build",
+    "build": "npm --prefix frontend run build && node scripts/prerender.mjs",
     "dev": "wrangler dev --remote",
     "deploy": "npm run build && wrangler deploy",
     "test": "vitest run",
@@ -12,7 +12,10 @@
     "projects:check": "node scripts/build-projects.mjs --check",
     "notify:test": "node scripts/notify-test.mjs",
     "map": "node scripts/build-india-map.mjs",
-    "map:check": "node scripts/build-india-map.mjs --check"
+    "map:check": "node scripts/build-india-map.mjs --check",
+    "seo": "node scripts/build-seo.mjs",
+    "seo:check": "node scripts/build-seo.mjs --check",
+    "prerender": "node scripts/prerender.mjs"
   },
   "devDependencies": {
     "vitest": "^3.2.0",

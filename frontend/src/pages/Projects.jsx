@@ -1,5 +1,4 @@
 import { useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { company } from '../data/company.js';
 import {
   projects, PROJECT_TOTAL, projectCategories, countFor, filterProjects,
   voltageClasses, repeatClients,
@@ -11,6 +10,7 @@ import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { RegisterMix } from '../components/projects/RegisterMix.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Projects — the full 52-entry register, filterable and searchable.
@@ -89,12 +89,7 @@ export default function Projects() {
 
   return (
     <>
-      <title>Projects — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content={`A register of ${PROJECT_TOTAL} works executed by Vedanjay Power Pvt. Ltd. across electrical infrastructure, liaisoning, operation and maintenance and civil works.`}
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/projects/`} />
+      <Seo route={ROUTES.projects} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="pj-h">
         <div className="vp-phero__media" aria-hidden="true">

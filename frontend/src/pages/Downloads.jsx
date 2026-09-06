@@ -1,5 +1,5 @@
+import { Link } from 'react-router-dom';
 import { useCallback, useRef, useState } from 'react';
-import { company } from '../data/company.js';
 import { resourceGroups, allResources, formatBytes } from '../data/downloads.js';
 import { Button } from '../components/ui/Button.jsx';
 import { PdfViewer } from '../components/ui/PdfViewer.jsx';
@@ -7,6 +7,7 @@ import { getMedia, smallSrc } from '../data/media.js';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Downloads — a document archive.
@@ -55,12 +56,7 @@ export default function Downloads() {
 
   return (
     <>
-      <title>Downloads — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content={`${allResources.length} regulatory reference documents — forecasting and scheduling, open access, and rooftop solar and net metering — published by Vedanjay Power Pvt. Ltd.`}
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/about/downloads/`} />
+      <Seo route={ROUTES.downloads} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="dl-h">
         <div className="vp-phero__media" aria-hidden="true">
@@ -157,7 +153,10 @@ export default function Downloads() {
               <div>
                 <h2 id="dc-h" className="vp-band__title">Looking for something else?</h2>
                 <p className="vp-band__body">
-                  Tell us what you need and we will send the relevant documentation.
+                  Tell us what you need and we will send the relevant documentation. These are
+                  the regulations behind our{' '}
+                  <Link className="vp-link" to={ROUTES.services}>forecasting, scheduling and
+                  open-access work</Link>.
                 </p>
               </div>
               <Button to={ROUTES.contact} variant="primary" size="sm" arrow>Contact us</Button>

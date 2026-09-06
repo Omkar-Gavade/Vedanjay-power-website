@@ -108,10 +108,18 @@ export function Footer() {
           <p className="vp-sm mb-0">
             &copy; {currentYear()} {company.legalName}. All rights reserved.
           </p>
-          <div className="vp-footer__legal">
-            <Link to={ROUTES.privacy} className="vp-footer__link">Privacy Policy</Link>
-            <Link to={ROUTES.terms} className="vp-footer__link">Terms of Use</Link>
-          </div>
+          {/*
+            The Privacy Policy and Terms of Use links were here, pointing at
+            /privacy/ and /terms/ — two routes declared in ROUTES that have no
+            page behind them, so both resolved to the 404. Every page on the
+            site therefore linked twice into a noindex dead end, which wastes
+            crawl budget and is a broken internal link on all twelve pages.
+
+            They are removed rather than pointed somewhere else, because the
+            only honest fix is real legal copy, and that has to come from the
+            company. Restoring them is: write the pages, add the routes to
+            BUILT_ROUTES and to data/seo.js, and put these two links back.
+          */}
         </div>
       </div>
     </footer>

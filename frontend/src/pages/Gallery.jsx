@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Image gallery — Vedanjay Power's own site photography.
@@ -54,12 +55,7 @@ export default function Gallery() {
 
   return (
     <>
-      <title>Image Gallery — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content={`${shots.length} photographs from Vedanjay Power's own sites — switchyard structures, metering and telemetry work, foundations, and solar and wind installations.`}
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/projects/gallery/`} />
+      <Seo route={ROUTES.gallery} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="gl-h">
         <div className="vp-phero__media" aria-hidden="true">

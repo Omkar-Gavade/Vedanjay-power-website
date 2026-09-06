@@ -1,9 +1,12 @@
+import { Link } from 'react-router-dom';
 import { getMedia, smallSrc } from '../data/media.js';
 import { company } from '../data/company.js';
 import { leadership, leadershipRoles } from '../data/team.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
+import { ROUTES } from '../constants/routes.js';
 
 /**
  * Meet Our Team.
@@ -36,12 +39,7 @@ export default function Team() {
 
   return (
     <>
-      <title>Meet Our Team — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content="The leadership of Vedanjay Power Pvt. Ltd., a power-sector solutions company working across QCA, forecasting and scheduling, open access, metering and grid consultancy."
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/about/team/`} />
+      <Seo route={ROUTES.team} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="tm-h">
         <div className="vp-phero__media" aria-hidden="true">
@@ -122,10 +120,12 @@ export default function Team() {
                 <h2 id="tc-h" className="vp-band__title">Speak to the team</h2>
                 <p className="vp-band__body">
                   Enquiries reach the right desk through our published company channels
-                  rather than individual contact details.
+                  rather than individual contact details. If you are looking to join the
+                  team, see{' '}
+                  <Link className="vp-link" to={ROUTES.careers}>careers</Link>.
                 </p>
               </div>
-              <Button to="/contact/" variant="primary" size="sm" arrow>Contact us</Button>
+              <Button to={ROUTES.contact} variant="primary" size="sm" arrow>Contact us</Button>
             </div>
           </Reveal>
         </div>

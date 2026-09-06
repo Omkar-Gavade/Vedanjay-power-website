@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { company } from '../data/company.js';
 import { industries } from '../data/industries.js';
 import { getMedia, smallSrc } from '../data/media.js';
@@ -5,6 +6,7 @@ import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Industries — derived entirely from the project register.
@@ -20,12 +22,7 @@ export default function Industries() {
 
   return (
     <>
-      <title>Industries — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content="Vedanjay Power works with transmission utilities and DISCOMs, wind and solar developers, independent power producers, industrial consumers and infrastructure projects across India."
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/industries/`} />
+      <Seo route={ROUTES.industries} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="in-h">
         <div className="vp-phero__media" aria-hidden="true">
@@ -87,7 +84,10 @@ export default function Industries() {
               <div>
                 <h3 className="vp-band__title">Not sure which applies to you?</h3>
                 <p className="vp-band__body">
-                  Describe the asset and the connection point, and we will tell you what is involved.
+                  Describe the asset and the connection point, and we will tell you what is
+                  involved. Our{' '}
+                  <Link className="vp-link" to={ROUTES.partners}>published partner listing</Link>
+                  {' '}names the organisations we work alongside.
                 </p>
               </div>
               <Button to={ROUTES.projects} variant="outline" size="sm" arrow>See the work</Button>

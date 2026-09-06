@@ -1,3 +1,5 @@
+import { ROUTES } from '../../constants/routes.js';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { company } from '../../data/company.js';
 import {
@@ -105,7 +107,9 @@ export default function PortfolioBody() {
 
           <p className="vp-mapnote">
             QCA operations are registered with the state load despatch centres of{' '}
-            {sldc.join(', ')}, and with WRLDC for the Western Region.
+            {sldc.join(', ')}, and with WRLDC for the Western Region. The{' '}
+            <Link className="vp-link" to={ROUTES.projects}>full project register</Link>{' '}
+            lists every engagement with its scope.
           </p>
         </Reveal>
       </div>

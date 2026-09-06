@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { company } from '../data/company.js';
 import { journey, strengths, technologies, capabilities } from '../data/capabilities.js';
 import { proofPoints } from '../data/stats.js';
@@ -13,6 +14,7 @@ import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { MilestoneStrip } from '../components/about/MilestoneStrip.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Company Overview.
@@ -38,12 +40,7 @@ export default function About() {
 
   return (
     <>
-      <title>Company Overview — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content={`${company.legalName}, established ${company.established}: a power-sector solutions company working across renewable energy, open access, forecasting and scheduling, electrical infrastructure and grid consultancy.`}
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/about/`} />
+      <Seo route={ROUTES.about} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="ab-h">
         <div className="vp-phero__media" aria-hidden="true">
@@ -341,7 +338,9 @@ export default function About() {
               <div>
                 <h3 className="vp-band__title">Work with us</h3>
                 <p className="vp-band__body">
-                  Tell us about your project and the right team will respond.
+                  Tell us about your project and the right team will respond. If you are
+                  looking to join us instead, we publish what the work involves in{' '}
+                  <Link className="vp-link" to={ROUTES.careers}>careers</Link>.
                 </p>
               </div>
               <Button to={ROUTES.contact} variant="primary" size="sm" arrow>Contact us</Button>

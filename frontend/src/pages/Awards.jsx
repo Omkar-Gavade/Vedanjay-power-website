@@ -1,10 +1,12 @@
+import { Button } from '../components/ui/Button.jsx';
 import { useCallback, useRef, useState } from 'react';
-import { company } from '../data/company.js';
 import { awards } from '../data/awards.js';
 import { getMedia, smallSrc } from '../data/media.js';
 import { Lightbox } from '../components/ui/Lightbox.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
+import { ROUTES } from '../constants/routes.js';
 
 /**
  * Awards & Recognition — a dated archive, not a live claim.
@@ -34,12 +36,7 @@ export default function Awards() {
 
   return (
     <>
-      <title>Awards &amp; Recognition — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content="Industry recognition received by Vedanjay Power Pvt. Ltd. between 2016 and 2019, including RE Assets Excellence Awards, SolarRoofs Series Excellence Awards and listings by The CEO Magazine and Consultants Review."
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/about/awards/`} />
+      <Seo route={ROUTES.awards} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="aw-h">
         {/* Was a flat colour plate. The awards are for rooftop and O&M work, so
@@ -101,6 +98,18 @@ export default function Awards() {
             ))}
           </div>
 
+          <Reveal delay={90}>
+            <div className="vp-band mt-5">
+              <div>
+                <h3 className="vp-band__title">The people behind them</h3>
+                <p className="vp-band__body">
+                  Two of these recognitions name individuals. The rest of the leadership
+                  is on the team page.
+                </p>
+              </div>
+              <Button to={ROUTES.team} variant="outline" size="sm" arrow>Meet the team</Button>
+            </div>
+          </Reveal>
         </div>
       </section>
 

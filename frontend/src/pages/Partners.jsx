@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { company } from '../data/company.js';
 import { partners, partnerGroups } from '../data/partners.js';
 import { achievements } from '../data/about.js';
@@ -7,6 +8,7 @@ import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
+import { Seo } from '../components/seo/Seo.jsx';
 
 /**
  * Partners.
@@ -50,12 +52,7 @@ export default function Partners() {
 
   return (
     <>
-      <title>Partners — Vedanjay Power Pvt. Ltd.</title>
-      <meta
-        name="description"
-        content={`${partners.length} organisations named on Vedanjay Power's published partner listing — renewable developers, utilities and energy majors, and engineering institutions.`}
-      />
-      <link rel="canonical" href={`${company.website.replace(/\/$/, '')}/about/partners/`} />
+      <Seo route={ROUTES.partners} />
 
       <section className="vp-phero vp-phero--photo" aria-labelledby="pt-h">
         <div className="vp-phero__media" aria-hidden="true">
@@ -158,7 +155,9 @@ export default function Partners() {
               <div>
                 <h3 className="vp-band__title">Work with us</h3>
                 <p className="vp-band__body">
-                  Tell us about your portfolio and the right team will respond.
+                  Tell us about your portfolio and the right team will respond. You can also
+                  see{' '}
+                  <Link className="vp-link" to={ROUTES.industries}>the industries we serve</Link>.
                 </p>
               </div>
               <Button to={ROUTES.contact} variant="primary" size="sm" arrow>Contact us</Button>
