@@ -8,3 +8,12 @@ build/
 .vite/
 coverage/
 playwright-report/
+
+# Local Worker secrets — never committed
+.dev.vars
+
+.cache/
+
+# Local Miniflare/Wrangler runtime state — caches, rate-limit counters and
+# observability traces from `wrangler dev`. Machine-local, regenerated on demand.
+.wrangler/

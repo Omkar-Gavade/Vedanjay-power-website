@@ -30,19 +30,23 @@
   --vp-n-950:#0A1517;
 
   /* ---- Type ---- */
-  --vp-font-sans:'Archivo Variable',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --vp-font-sans:'Source Sans 3',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --vp-font-serif:'Source Serif 4',Georgia,'Times New Roman',serif;
   --vp-font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
 
-  --vp-fs-display:clamp(1.9375rem,1.35rem + 2.3vw,3.125rem);
-  --vp-fs-h1:clamp(2rem,1.4rem + 2.6vw,3.4rem);
-  --vp-fs-h2:clamp(1.625rem,1.25rem + 1.6vw,2.5rem);
-  --vp-fs-h3:clamp(1.25rem,1.1rem + 0.7vw,1.625rem);
-  --vp-fs-h4:clamp(1.0625rem,1.02rem + 0.22vw,1.1875rem);
-  --vp-fs-lead:clamp(1.0625rem,1rem + 0.34vw,1.25rem);
-  --vp-fs-body:clamp(0.9688rem,0.95rem + 0.1vw,1.0313rem);
-  --vp-fs-sm:0.9063rem;
-  --vp-fs-label:clamp(0.75rem,0.73rem + 0.09vw,0.8125rem);
-  --vp-fs-stat:clamp(2.25rem,1.5rem + 3vw,3.75rem);
+  --vp-fs-display:clamp(2rem,1.5rem + 2.1vw,2.875rem);
+  --vp-fs-h1:clamp(1.875rem,1.45rem + 1.8vw,2.6875rem);
+  --vp-fs-h2:clamp(1.5rem,1.25rem + 1.05vw,2.125rem);
+  --vp-fs-h3:clamp(1.1875rem,1.09rem + 0.42vw,1.4375rem);
+  --vp-fs-h4:clamp(1.0313rem,1rem + 0.16vw,1.125rem);
+  --vp-fs-lead:clamp(1.0625rem,1.01rem + 0.28vw,1.25rem);
+  --vp-fs-body:clamp(1rem,0.98rem + 0.1vw,1.0625rem);
+  --vp-fs-sm:0.9375rem;
+  /* Raised from 13-14px on 5 Sep 2026. This drives every section eyebrow
+     ("Who we are", "Core expertise", "The listing"), and at the old size they
+     read as captions rather than as the section labels they are. */
+  --vp-fs-label:clamp(0.875rem,0.83rem + 0.18vw,1rem);
+  --vp-fs-stat:clamp(1.875rem,1.45rem + 1.7vw,2.625rem);
 
   /* ---- Spacing (8px rhythm) ---- */
   --vp-s-1:0.25rem; --vp-s-2:0.5rem;  --vp-s-3:0.75rem; --vp-s-4:1rem;
@@ -62,10 +66,13 @@
   --vp-ease-emph:cubic-bezier(.16,1,.3,1);
 
   /* ---- Layers ---- */
-  --vp-z-header:1030; --vp-z-dropdown:1040; --vp-z-drawer:1050; --vp-z-skip:1100;
+  --vp-z-header:1030; --vp-z-dropdown:1040; --vp-z-chat:1045;
+  --vp-z-drawer:1050; --vp-z-skip:1100;
+  /* Chat sits BELOW the drawer on purpose: if the mobile nav opens it must
+     cover the chat panel, not fight it — and never above the skip link. */
 
-  --vp-header-h:76px;
-  --vp-header-h-sm:64px;
+  --vp-header-h:84px;
+  --vp-header-h-sm:68px;
   --vp-container-max:1360px;
 }
 
@@ -112,7 +119,9 @@
   --vp-shadow-lg:0 24px 60px -20px rgb(7 21 24 / .26);
 
   --vp-header-bg:rgb(255 255 255 / .72);
-  --vp-header-border:rgb(16 30 33 / .09);
+  --vp-header-bg-scrolled:rgb(255 255 255 / .88);
+  --vp-header-line:rgb(16 30 33 / .07);
+  --vp-header-line-scrolled:rgb(16 30 33 / .12);
 }
 
 /* ==========================================================================
@@ -155,8 +164,10 @@
   --vp-shadow:0 8px 30px -10px rgb(0 0 0 / .6);
   --vp-shadow-lg:0 30px 70px -24px rgb(0 0 0 / .75);
 
-  --vp-header-bg:rgb(7 21 24 / .72);
-  --vp-header-border:rgb(234 242 240 / .1);
+  --vp-header-bg:rgb(7 21 24 / .74);
+  --vp-header-bg-scrolled:rgb(7 21 24 / .90);
+  --vp-header-line:rgb(234 242 240 / .09);
+  --vp-header-line-scrolled:rgb(234 242 240 / .15);
 }
 
 /* Bootstrap variable bridge — keeps BS components on-brand without overrides */

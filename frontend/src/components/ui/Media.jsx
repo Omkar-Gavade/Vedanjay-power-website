@@ -1,5 +1,12 @@
-import { getMedia } from '../../data/media.js';
+import { getMedia, smallSrc } from '../../data/media.js';
 import { cn } from '../../utils/cn.js';
+
+/** Intrinsic dimensions per ratio, so the browser reserves space before CSS. */
+const DIMS = {
+  square: [1400, 1400], '4x3': [1600, 1200], '3x2': [1680, 1120],
+  '16x9': [1760, 990], '21x9': [1800, 771],
+  portrait: [1200, 1500], tall: [1200, 1600], fill: [1800, 1200],
+};
 
 const RATIOS = {
   square: 'vp-media--square', '4x3': 'vp-media--4x3', '3x2': 'vp-media--3x2',
@@ -8,20 +15,16 @@ const RATIOS = {
 };
 
 /**
- * Every photograph on the site renders through here.
- *
- * - Resolves a SLUG from the media registry, so swapping in real Vedanjay
- *   photography is a one-file change (see src/data/media.js).
- * - Missing assets degrade to a branded gradient panel rather than a broken
- *   image icon — the legacy site renders broken-image placeholders in its hero.
- * - `alt` comes from the registry; decorative usages pass alt="".
+ * Every photograph renders through here: registry lookup, responsive srcset,
+ * focal-point cropping, lazy-loading below the fold, and a branded fallback
+ * panel instead of a broken-image icon when an asset is missing.
  */
 export function Media({
-  slug, ratio = '3x2', scrim, className, imgClassName,
-  priority = false, sizes = '100vw', children, ...rest
+  slug, ratio = '3x2', scrim, className, priority = false,
+  sizes = '100vw', children, ...rest
 }) {
   const item = getMedia(slug);
-
+  const [w, h] = DIMS[ratio] || DIMS['3x2'];
   const scrimClass =
     scrim === true ? 'vp-scrim' :
     scrim === 'side' ? 'vp-scrim vp-scrim--side' :
@@ -32,14 +35,15 @@ export function Media({
       {item ? (
         <img
           src={item.src}
-          srcSet={`${item.src.replace('/images/', '/images/sm/')} 1000w, ${item.src} 1800w`}
+          srcSet={`${smallSrc(item.src)} 1000w, ${item.src} 1800w`}
+          sizes={sizes}
           alt={item.alt}
+          width={w}
+          height={h}
           style={{ '--focal': item.focal || '50% 50%' }}
-          className={imgClassName}
           loading={priority ? 'eager' : 'lazy'}
           decoding={priority ? 'sync' : 'async'}
           fetchPriority={priority ? 'high' : 'auto'}
-          sizes={sizes}
           draggable="false"
         />
       ) : (

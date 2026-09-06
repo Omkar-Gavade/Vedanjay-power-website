@@ -1,0 +1,293 @@
+/* ============================================================================
+   VEDANJAY ASSISTANT
+
+   Imported by the LAZY panel chunk, never by index.css — that is what keeps the
+   initial CSS delta at zero for the visitors who never open the assistant.
+
+   Every colour is a semantic token already defined per theme in tokens.css, so
+   there is no [data-bs-theme] block here. Needing one would mean the wrong
+   token was chosen.
+
+   Global reduced-motion rules in motion.css already neutralise animation and
+   transition duration, so nothing here needs to repeat that.
+   ========================================================================== */
+
+/* ------------------------------------------------------------- launcher --- */
+.vp-chat-launcher{
+  position:fixed;right:clamp(1rem,3vw,1.5rem);
+  bottom:calc(clamp(1rem,3vw,1.5rem) + env(safe-area-inset-bottom));
+  z-index:var(--vp-z-chat);
+  display:inline-flex;align-items:center;gap:.625rem;
+  min-height:56px;padding:0 1.375rem;
+  border:1px solid transparent;border-radius:var(--vp-radius-pill);
+  background:var(--vp-primary);color:var(--vp-primary-contrast);
+  font-family:var(--vp-font-sans);font-size:.9688rem;font-weight:600;
+  line-height:1;letter-spacing:.005em;cursor:pointer;
+  box-shadow:var(--vp-shadow-lg);
+  transition:transform var(--vp-dur-fast) var(--vp-ease),
+             background var(--vp-dur-fast) var(--vp-ease),
+             opacity var(--vp-dur) var(--vp-ease);
+}
+.vp-chat-launcher:hover{background:var(--vp-primary-hover);transform:translateY(-2px);}
+.vp-chat-launcher:active{transform:translateY(0);}
+.vp-chat-launcher svg{flex:none;}
+
+/* Recede while the visitor is actively scrolling — present, not insistent. */
+.vp-chat-launcher[data-scrolling="true"]{opacity:.55;}
+
+/* Entry is a fade+rise, so it never reads as a pop-up demanding attention. */
+.vp-chat-launcher[data-enter="true"]{animation:vp-chat-launch-in var(--vp-dur-slow) var(--vp-ease) both;}
+@keyframes vp-chat-launch-in{from{opacity:0;transform:translateY(14px) scale(.96);}to{opacity:1;transform:none;}}
+
+/* Below 576px the label is dropped and the control becomes a circle. */
+@media (max-width:575.98px){
+  .vp-chat-launcher{min-height:56px;width:56px;padding:0;justify-content:center;}
+  .vp-chat-launcher__label{display:none;}
+}
+
+/* -------------------------------------------------------------- backdrop --- */
+.vp-chat-backdrop{
+  position:fixed;inset:0;z-index:var(--vp-z-chat);
+  background:rgb(4 22 27 / .42);
+  animation:vp-fade-in var(--vp-dur-fast) var(--vp-ease) both;
+}
+/* On desktop the page stays visible and usable-looking behind the card. */
+@media (min-width:576px){ .vp-chat-backdrop{background:rgb(4 22 27 / .28);} }
+
+/* ----------------------------------------------------------------- panel --- */
+.vp-chat-panel{
+  position:fixed;z-index:calc(var(--vp-z-chat) + 1);
+  display:flex;flex-direction:column;
+  background:var(--vp-bg);color:var(--vp-text);
+  font-family:var(--vp-font-sans);
+  box-shadow:var(--vp-shadow-lg);
+  overscroll-behavior:contain;
+}
+
+/* Mobile: a full-screen sheet. A 360px floating card is unusable for reading
+   technical answers, and `dvh` keeps the composer visible when the on-screen
+   keyboard opens. */
+@media (max-width:575.98px){
+  .vp-chat-panel{
+    inset:0;width:100%;height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom);
+    animation:vp-chat-sheet-in 320ms var(--vp-ease) both;
+  }
+}
+@keyframes vp-chat-sheet-in{from{transform:translateY(100%);}to{transform:none;}}
+
+/* Desktop: an anchored card that leaves the page visible. */
+@media (min-width:576px){
+  .vp-chat-panel{
+    right:clamp(1rem,3vw,1.5rem);bottom:clamp(1rem,3vw,1.5rem);
+    width:min(400px,calc(100vw - 2rem));
+    height:min(620px,calc(100dvh - 3rem));
+    border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+    animation:vp-chat-card-in var(--vp-dur) var(--vp-ease) both;
+  }
+}
+@media (min-width:1400px){
+  .vp-chat-panel{width:420px;height:min(680px,calc(100dvh - 3rem));}
+}
+@keyframes vp-chat-card-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+
+/* ------------------------------------------------------------------ head --- */
+.vp-chat-head{
+  flex:none;display:flex;align-items:center;gap:.75rem;
+  padding:.875rem .75rem .875rem 1.25rem;
+  border-bottom:1px solid var(--vp-border);
+  background:var(--vp-surface);
+  /* A one-sided brand wash so the header reads as the assistant's own chrome
+     rather than another card. Kept under 6% so it never fights the text. */
+  background-image:linear-gradient(115deg,
+    color-mix(in srgb, var(--vp-primary) 9%, transparent),
+    transparent 62%);
+}
+@media (min-width:576px){ .vp-chat-head{border-radius:var(--vp-radius-lg) var(--vp-radius-lg) 0 0;} }
+
+.vp-chat-head__mark{
+  flex:none;display:grid;place-items:center;width:34px;height:34px;
+  border-radius:var(--vp-radius-pill);
+  background:var(--vp-primary);color:var(--vp-primary-contrast);
+}
+.vp-chat-head__text{flex:1;min-width:0;}
+.vp-chat-head__title{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;
+  line-height:1.25;margin:0;color:var(--vp-text);
+}
+.vp-chat-head__status{
+  display:flex;align-items:center;gap:.375rem;
+  font-size:.8125rem;color:var(--vp-text-muted);margin:.125rem 0 0;
+}
+.vp-chat-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--vp-primary);flex:none;
+}
+
+/* 44px: the pointer target stays full size even though the glyph is 16px. */
+.vp-chat-icon-btn{
+  flex:none;display:grid;place-items:center;width:40px;height:40px;
+  border:0;border-radius:var(--vp-radius);background:transparent;
+  color:var(--vp-text-soft);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-chat-icon-btn:hover{background:var(--vp-bg-sunken);color:var(--vp-text);}
+
+/* ------------------------------------------------------------------ body --- */
+.vp-chat-body{
+  flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  padding:1.25rem;scroll-behavior:smooth;
+  scrollbar-width:thin;scrollbar-color:var(--vp-border-strong) transparent;
+}
+.vp-chat-body::-webkit-scrollbar{width:8px;}
+.vp-chat-body::-webkit-scrollbar-thumb{
+  background:var(--vp-border-strong);border-radius:999px;
+  border:2px solid transparent;background-clip:content-box;
+}
+
+/* ----------------------------------------------------------- welcome --- */
+.vp-chat-intro__eyebrow{
+  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--vp-primary);margin:0 0 .5rem;
+}
+.vp-chat-intro__title{
+  font-family:var(--vp-font-serif);font-size:1.3125rem;font-weight:600;
+  line-height:1.3;margin:0 0 .5rem;color:var(--vp-text);
+}
+.vp-chat-intro__body{
+  font-size:.9063rem;line-height:1.6;color:var(--vp-text-muted);margin:0 0 1.25rem;
+}
+
+/* Quick actions. A column, not a chip cloud: seven labels of uneven length wrap
+   into a ragged block, and each one is a destination rather than a tag. */
+.vp-chat-actions{display:flex;flex-direction:column;gap:.375rem;}
+.vp-chat-action{
+  display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+  width:100%;padding:.7rem .9rem;text-align:left;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  background:var(--vp-surface);color:var(--vp-text);
+  font-family:inherit;font-size:.9063rem;font-weight:500;cursor:pointer;
+  animation:vp-chat-rise 380ms var(--vp-ease) backwards;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),
+             background var(--vp-dur-fast) var(--vp-ease),
+             transform var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-chat-action:nth-child(1){animation-delay:40ms;}
+.vp-chat-action:nth-child(2){animation-delay:80ms;}
+.vp-chat-action:nth-child(3){animation-delay:120ms;}
+.vp-chat-action:nth-child(4){animation-delay:160ms;}
+.vp-chat-action:nth-child(5){animation-delay:200ms;}
+.vp-chat-action:nth-child(6){animation-delay:240ms;}
+.vp-chat-action:nth-child(7){animation-delay:280ms;}
+.vp-chat-action svg{flex:none;color:var(--vp-text-muted);transition:transform var(--vp-dur-fast) var(--vp-ease);}
+.vp-chat-action:hover{
+  border-color:var(--vp-primary);background:var(--vp-bg-alt);transform:translateX(2px);
+}
+.vp-chat-action:hover svg{color:var(--vp-primary);transform:translateX(2px);}
+@keyframes vp-chat-rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* ----------------------------------------------------------- messages --- */
+.vp-chat-thread{display:flex;flex-direction:column;gap:1rem;}
+
+.vp-cm{display:flex;gap:.625rem;animation:vp-chat-rise 320ms var(--vp-ease) backwards;}
+.vp-cm[data-role="user"]{justify-content:flex-end;}
+.vp-cm__mark{
+  flex:none;display:grid;place-items:center;width:28px;height:28px;margin-top:2px;
+  border-radius:var(--vp-radius-pill);
+  background:var(--vp-green-50);color:var(--vp-primary);
+}
+.vp-cm__col{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;min-width:0;max-width:88%;}
+
+.vp-cm__bubble{
+  padding:.7rem .9rem;border-radius:var(--vp-radius);
+  font-size:.9063rem;line-height:1.62;
+}
+/* The two voices are distinguished by ground AND alignment, not colour alone. */
+.vp-cm[data-role="bot"] .vp-cm__bubble{
+  background:var(--vp-bg-alt);color:var(--vp-text);
+  border:1px solid var(--vp-border-soft);
+  border-top-left-radius:4px;
+}
+.vp-cm[data-role="user"] .vp-cm__bubble{
+  max-width:88%;
+  background:var(--vp-primary);color:var(--vp-primary-contrast);
+  border-top-right-radius:4px;
+}
+.vp-cm__bubble p{margin:0;}
+.vp-cm__bubble p + p{margin-top:.5rem;}
+.vp-cm__bubble p:empty{display:none;}
+/* Bulleted lines come through as "• …" from the topic; the marker is drawn
+   here so the text itself stays plain. */
+.vp-cm__li{position:relative;padding-left:.9rem;}
+.vp-cm__li::before{
+  content:"";position:absolute;left:.15rem;top:.62em;
+  width:4px;height:4px;border-radius:50%;background:var(--vp-primary);
+}
+.vp-cm__bubble p + .vp-cm__li{margin-top:.3rem;}
+
+/* Typing indicator. Three dots on the same bubble the answer will occupy, so
+   the reply does not jump to a different place when it arrives. */
+.vp-cm__bubble--typing{display:flex;align-items:center;gap:.3rem;padding:.85rem .9rem;}
+.vp-cm__bubble--typing span{
+  width:6px;height:6px;border-radius:50%;background:var(--vp-text-muted);
+  animation:vp-chat-blink 1.1s infinite ease-in-out both;
+}
+.vp-cm__bubble--typing span:nth-child(2){animation-delay:.16s;}
+.vp-cm__bubble--typing span:nth-child(3){animation-delay:.32s;}
+@keyframes vp-chat-blink{0%,80%,100%{opacity:.25;transform:translateY(0);}40%{opacity:1;transform:translateY(-2px);}}
+
+/* The page this answer came from. */
+.vp-cm__go{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem .8rem;border-radius:var(--vp-radius-pill);
+  background:var(--vp-primary);color:var(--vp-primary-contrast);
+  font-size:.8125rem;font-weight:600;text-decoration:none;
+  transition:background var(--vp-dur-fast) var(--vp-ease),transform var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-cm__go:hover{background:var(--vp-primary-hover);color:var(--vp-primary-contrast);transform:translateY(-1px);}
+.vp-cm__go svg{transition:transform var(--vp-dur-fast) var(--vp-ease);}
+.vp-cm__go:hover svg{transform:translateX(2px);}
+
+/* Suggested next questions. */
+.vp-cm__next{display:flex;flex-wrap:wrap;gap:.375rem;}
+.vp-cm__chip{
+  padding:.35rem .7rem;border-radius:var(--vp-radius-pill);
+  border:1px solid var(--vp-border);background:transparent;
+  color:var(--vp-text-soft);font-family:inherit;font-size:.8125rem;cursor:pointer;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease),
+             background var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-cm__chip:hover{border-color:var(--vp-primary);color:var(--vp-primary);background:var(--vp-bg-alt);}
+
+/* ------------------------------------------------------------------ foot --- */
+.vp-chat-foot{
+  flex:none;padding:.75rem 1rem 1rem;
+  border-top:1px solid var(--vp-border);background:var(--vp-surface);
+}
+@media (min-width:576px){ .vp-chat-foot{border-radius:0 0 var(--vp-radius-lg) var(--vp-radius-lg);} }
+.vp-chat-form{display:flex;align-items:center;gap:.5rem;}
+.vp-chat-input{
+  flex:1;min-width:0;min-height:44px;padding:.6rem .9rem;
+  border:1px solid var(--vp-border-strong);border-radius:var(--vp-radius-pill);
+  background:var(--vp-bg);color:var(--vp-text);
+  font-family:inherit;font-size:.9063rem;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),
+             box-shadow var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-chat-input::placeholder{color:var(--vp-text-muted);}
+.vp-chat-input:focus{
+  outline:none;border-color:var(--vp-primary);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--vp-primary) 18%, transparent);
+}
+.vp-chat-send{
+  flex:none;display:grid;place-items:center;width:44px;height:44px;
+  border:0;border-radius:var(--vp-radius-pill);
+  background:var(--vp-primary);color:var(--vp-primary-contrast);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),opacity var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-chat-send:hover:not(:disabled){background:var(--vp-primary-hover);}
+.vp-chat-send:disabled{opacity:.4;cursor:default;}
+.vp-chat-note{
+  font-size:.75rem;line-height:1.5;color:var(--vp-text-muted);margin:.6rem 0 0;text-align:center;
+}
+.vp-chat-note a{color:var(--vp-primary);text-decoration:underline;text-underline-offset:2px;}

@@ -1,170 +1,274 @@
+/* ------------------------------------------------------- section head ----- */
+.vp-shead{display:flex;flex-direction:column;}
+@media (min-width:992px){
+  /* Heading left, lead right, baselines aligned at the bottom so the two read
+     as one band rather than as two stacked blocks. */
+  .vp-shead--split{
+    display:grid;
+    grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);
+    column-gap:clamp(2rem,5vw,5rem);
+    align-items:end;
+  }
+  .vp-shead--split .vp-shead__eyebrow{grid-column:1 / -1;}
+  .vp-shead--split .vp-shead__lead{margin-top:0;}
+  .vp-shead--split .vp-shead__more{grid-column:1 / -1;}
+}
+
 /* ============================================================================
    HOMEPAGE SECTIONS
    ========================================================================== */
 
-/* ------------------------------------------------ 1. Intro / what we do --- */
-.vp-intro__figure{position:relative;}
-.vp-intro__badge{
-  position:absolute;left:0;bottom:0;transform:translate(-8%,28%);
-  background:var(--vp-blue-950);color:#EAF2F0;
-  border:1px solid rgb(234 242 240 / .16);
-  border-radius:var(--vp-radius);
-  padding:1.1rem 1.4rem;max-width:15rem;
-  box-shadow:var(--vp-shadow-lg);
+/* Sections that paint their own dark ground must re-point the text tokens, or
+   they inherit near-black type from the light theme. */
+.vp-on-dark{
+  --vp-text:#EDF3F2;
+  --vp-text-soft:#A7BABB;
+  --vp-text-muted:#8AA0A2;
+  --vp-border:rgb(237 243 242 / .16);
+  --vp-border-soft:rgb(237 243 242 / .09);
+  --vp-primary:var(--vp-green-400);
+  --vp-primary-hover:var(--vp-green-300);
+  --vp-primary-contrast:var(--vp-blue-950);
+  color:var(--vp-text);
 }
-/* The badge only overhangs the image while the section is two-column. Once the
-   layout stacks (<992px) an absolutely-positioned badge overlaps the heading
-   that follows, so it returns to normal flow. */
-@media (max-width:991.98px){
-  .vp-intro__badge{
-    position:static;transform:none;margin-top:1rem;max-width:none;
-    box-shadow:none;
-    /* In dark mode the panel matches the page ground, so it needs its own edge
-       once it is no longer overhanging the photograph. */
-    border-color:rgb(234 242 240 / .14);
-  }
-}
-.vp-pillar{border-top:1px solid var(--vp-border);padding-top:1.1rem;}
-.vp-pillar__idx{
-  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.14em;
-  color:var(--vp-accent-text);
-}
+.vp-bg-deep{background:var(--vp-blue-900);}
 
-/* ---------------------------------------------- 2. Capabilities switcher -- */
-.vp-cap{position:relative;}
-.vp-cap__list{border-top:1px solid var(--vp-border);}
-.vp-cap__row{
-  position:relative;width:100%;text-align:left;
-  display:flex;align-items:flex-start;gap:1rem;
-  padding:1.15rem 0;border-bottom:1px solid var(--vp-border);
+/* --------------------------------------------------- who we are: fact line - */
+.vp-prose p{margin-bottom:1em;}
+.vp-prose p:last-child{margin-bottom:0;}
+.vp-factline{
+  display:grid;gap:0;border-top:1px solid var(--vp-border);margin:0;
+}
+.vp-factline > div{
+  display:grid;grid-template-columns:minmax(7.5rem,auto) 1fr;gap:1rem;
+  padding:.85rem 0;border-bottom:1px solid var(--vp-border);
+}
+.vp-factline dt{font-size:.9375rem;color:var(--vp-text-muted);}
+.vp-factline dd{margin:0;font-size:.9375rem;font-weight:600;color:var(--vp-text);}
+
+/* ------------------------------------------------- capabilities: index ----- */
+.vp-index{border-top:1px solid var(--vp-border);}
+.vp-index__row{
+  position:relative;width:100%;text-align:left;display:flex;gap:1.15rem;
+  padding:1.35rem 0;border-bottom:1px solid var(--vp-border);
   color:var(--vp-text-soft);
   transition:color var(--vp-dur) var(--vp-ease),padding-inline-start var(--vp-dur) var(--vp-ease);
 }
-.vp-cap__row::before{
+.vp-index__row::before{
   content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:var(--vp-accent);transform:scaleY(0);transform-origin:top center;
-  transition:transform var(--vp-dur) var(--vp-ease);
+  background:var(--vp-primary);transform:scaleY(0);transform-origin:center;
+  transition:transform 480ms cubic-bezier(.22,1,.36,1);
 }
-.vp-cap__row[aria-selected="true"]{color:var(--vp-text);padding-inline-start:1rem;}
-.vp-cap__row[aria-selected="true"]::before{transform:scaleY(1);}
-.vp-cap__row:hover{color:var(--vp-text);}
-.vp-cap__idx{
-  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.12em;
-  color:var(--vp-text-muted);padding-top:.28rem;flex:none;
-  transition:color var(--vp-dur) var(--vp-ease);
+.vp-index__row[aria-selected="true"]{color:var(--vp-text);padding-inline-start:1.1rem;}
+.vp-index__row[aria-selected="true"]::before{transform:scaleY(1);}
+.vp-index__row:hover{color:var(--vp-text);}
+.vp-index__num{
+  font-family:var(--vp-font-mono);font-size:.8125rem;color:var(--vp-text-muted);
+  padding-top:.35rem;flex:none;letter-spacing:.02em;
 }
-.vp-cap__row[aria-selected="true"] .vp-cap__idx{color:var(--vp-accent-text);}
-.vp-cap__name{font-size:var(--vp-fs-h3);font-weight:600;line-height:1.25;letter-spacing:-.012em;}
-.vp-cap__desc{
-  display:block;margin-top:.35rem;font-size:.9375rem;color:var(--vp-text-muted);
-  max-height:0;opacity:0;overflow:hidden;
-  transition:max-height var(--vp-dur-slow) var(--vp-ease),opacity var(--vp-dur) var(--vp-ease),margin-top var(--vp-dur) var(--vp-ease);
+.vp-index__row[aria-selected="true"] .vp-index__num{color:var(--vp-primary);}
+.vp-index__main{flex:1;min-width:0;}
+.vp-index__name{
+  font-family:var(--vp-font-serif);font-size:var(--vp-fs-h3);font-weight:600;
+  line-height:1.32;display:block;
 }
-.vp-cap__row[aria-selected="true"] .vp-cap__desc{max-height:9rem;opacity:1;}
-
-/* Sticky stage keeps the photograph in view while the list is scanned */
-.vp-cap__stage{position:relative;border-radius:var(--vp-radius);overflow:hidden;}
-/* Stacked above the list, a 4:3 stage eats most of the screen. Flatten it until
-   the two columns sit side by side. */
-@media (max-width:991.98px){
-  .vp-cap__stage .vp-media{aspect-ratio:16/9;}
-}
-@media (min-width:992px){
-  .vp-cap__stage{position:sticky;top:calc(var(--vp-header-h) + 2rem);}
-}
-.vp-cap__frame{
-  position:absolute;inset:0;opacity:0;
-  transition:opacity var(--vp-dur-slow) var(--vp-ease);
-}
-.vp-cap__frame[data-active="true"]{opacity:1;}
-.vp-cap__frame img{width:100%;height:100%;object-fit:cover;}
-.vp-cap__caption{
-  position:absolute;left:0;right:0;bottom:0;z-index:2;
-  padding:1.25rem 1.4rem;color:#fff;
-}
-
-/* ------------------------------------------------------- 3. Industries ---- */
-.vp-ind{
-  position:relative;display:block;overflow:hidden;height:100%;
-  border-radius:var(--vp-radius);
-  color:#fff;isolation:isolate;
-}
-.vp-ind__body{
-  position:absolute;inset-inline:0;bottom:0;z-index:2;
-  padding:1.4rem;
-}
-@media (min-width:768px){.vp-ind__body{padding:1.75rem;}}
-.vp-ind__problem{
-  color:rgb(255 255 255 / .78);
-  max-height:0;opacity:0;overflow:hidden;
-  transition:max-height var(--vp-dur-slow) var(--vp-ease),opacity var(--vp-dur) var(--vp-ease),margin-top var(--vp-dur) var(--vp-ease);
+.vp-index__detail{
+  display:block;max-height:0;opacity:0;overflow:hidden;
+  transition:max-height 420ms var(--vp-ease),opacity var(--vp-dur) var(--vp-ease),margin-top var(--vp-dur) var(--vp-ease);
   margin-top:0;
 }
-.vp-ind:hover .vp-ind__problem,
-.vp-ind:focus-visible .vp-ind__problem,
-.vp-ind:focus-within .vp-ind__problem{max-height:7rem;opacity:1;margin-top:.6rem;}
-/* Touch devices cannot hover — always show the problem line there. */
-@media (hover:none){
-  .vp-ind__problem{max-height:7rem;opacity:1;margin-top:.6rem;}
+.vp-index__row[aria-selected="true"] .vp-index__detail{max-height:20rem;opacity:1;margin-top:.6rem;}
+.vp-index__points{
+  display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin-top:.7rem;
+  font-size:.875rem;color:var(--vp-text-muted);
+}
+.vp-index__points li{position:relative;padding-left:.85rem;}
+.vp-index__points li::before{
+  content:"";position:absolute;left:0;top:.6em;width:4px;height:4px;
+  background:var(--vp-primary);
 }
 
-/* ---------------------------------------------------------- 4. Projects -- */
-.vp-proj__meta{border-top:1px solid var(--vp-border);}
-.vp-bg-deep .vp-proj__meta{border-color:rgb(234 242 240 / .16);}
-.vp-proj__bar{height:3px;background:rgb(234 242 240 / .14);overflow:hidden;}
-.vp-proj__bar span{
-  display:block;height:100%;background:var(--vp-green-400);
-  transform-origin:left center;transform:scaleX(0);
+.vp-index__stage{position:relative;}
+@media (min-width:992px){
+  .vp-index__stage{position:sticky;top:calc(var(--vp-header-h) + 1.75rem);}
 }
-[data-anim="in"] .vp-proj__bar span{
-  transform:scaleX(var(--w,0));
-  transition:transform 1s var(--vp-ease) var(--bd,0ms);
+.vp-index__frame{
+  position:absolute;inset:0;opacity:0;
+  transition:opacity 700ms cubic-bezier(.4,0,.2,1);
+  will-change:opacity;
+}
+.vp-index__frame[data-active="true"]{opacity:1;}
+.vp-index__frame img{
+  width:100%;height:100%;object-fit:cover;
+  transform:scale(1.035);
+  transition:transform 1400ms cubic-bezier(.22,1,.36,1);
+}
+.vp-index__frame[data-active="true"] img{transform:scale(1);}
+.vp-index__caption{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;padding:1.15rem 1.3rem;color:#fff;
+}
+.vp-index__caption .vp-mono{color:var(--vp-green-300);}
+
+/* ---------------------------------------------------------- expertise ------
+   Coverflow: the front card is full size, its two neighbours sit back, to the
+   side and turned away. --p is the signed distance from the front card (-1, 0,
+   1) and --d its magnitude, so one transform drives every position. */
+.vp-flow{--gap:58%;}
+.vp-flow__stage{
+  position:relative;display:grid;place-items:center;
+  perspective:1400px;touch-action:pan-y;
+}
+.vp-flow__card{
+  grid-area:1 / 1;margin:0;width:min(100%,30rem);
+  /* A real card, not a bare photograph. The first version floated the image
+     and its caption on the page ground with nothing holding them together,
+     which read as unfinished — the caption looked like it belonged to the
+     section rather than to the picture. */
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);
+  padding:.75rem .75rem 1.25rem;
+  transform:
+    translateX(calc(var(--p) * var(--gap)))
+    scale(calc(1 - var(--d) * .22))
+    rotateY(calc(var(--p) * -16deg));
+  opacity:calc(1 - var(--d) * .45);
+  z-index:calc(10 - var(--d));
+  will-change:transform;
+}
+/* A back card is a control, not content you can interact through. */
+.vp-flow__card:not([data-active]){cursor:pointer;}
+.vp-flow__card:not([data-active]) .vp-flow__cap{opacity:0;}
+.vp-flow__media{border-radius:var(--vp-radius);overflow:hidden;}
+/* The shadow belongs to the CARD now, and deepens as it comes forward. */
+.vp-flow__card{
+  box-shadow:0 8px 24px -18px rgb(4 34 42 / .45);
+  transition:transform 620ms var(--vp-ease),opacity 620ms var(--vp-ease),
+             box-shadow 620ms var(--vp-ease);
+}
+.vp-flow__card[data-active]{box-shadow:0 30px 64px -30px rgb(4 34 42 / .5);}
+.vp-flow__cap{padding:1rem .5rem 0;transition:opacity 400ms var(--vp-ease);}
+.vp-flow__name{
+  font-family:var(--vp-font-serif);font-size:var(--vp-fs-h4);font-weight:600;
+  margin:0 0 .25rem;color:var(--vp-text);
+}
+.vp-flow__body{font-size:var(--vp-fs-sm);line-height:1.6;color:var(--vp-text-muted);margin:0;}
+
+.vp-flow__controls{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.25rem;}
+.vp-flow__arrow{
+  display:grid;place-items:center;width:40px;height:40px;flex:none;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  background:var(--vp-surface);color:var(--vp-text-soft);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-flow__arrow:hover{
+  background:var(--vp-primary);border-color:var(--vp-primary);color:var(--vp-primary-contrast);
+}
+.vp-flow__dots{display:flex;align-items:center;gap:.4rem;}
+.vp-flow__dot{
+  width:34px;height:4px;padding:0;border:0;border-radius:999px;
+  background:var(--vp-border-strong);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),width var(--vp-dur) var(--vp-ease);
+}
+.vp-flow__dot[aria-pressed="true"]{background:var(--vp-primary);width:52px;}
+
+/* Phones: the neighbours only peek, so the front card keeps its width. */
+@media (max-width:767.98px){
+  .vp-flow{--gap:74%;}
+  .vp-flow__card{width:min(82%,24rem);}
 }
 
-/* ----------------------------------------------------------- 5. Numbers -- */
-.vp-numbers{position:relative;overflow:hidden;}
-.vp-numbers__bg{position:absolute;inset:0;z-index:0;}
-.vp-numbers__bg img{width:100%;height:100%;object-fit:cover;}
-.vp-numbers__bg::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgb(4 22 27 / .92) 0%,rgb(4 22 27 / .96) 100%);
+@media (prefers-reduced-motion:reduce){
+  .vp-flow__card{transition:none !important;}
 }
-.vp-numbers__inner{position:relative;z-index:1;}
-.vp-stat-block{border-top:1px solid rgb(234 242 240 / .18);padding-top:1.25rem;}
-
-/* ------------------------------------------------------------ 6. Clients -- */
-.vp-client-col{border-top:1px solid var(--vp-border);padding-top:1.1rem;}
-.vp-repeat{
-  border:1px solid var(--vp-border);border-top:2px solid var(--vp-accent);
-  border-radius:var(--vp-radius);background:var(--vp-bg-alt);
+.vp-expertise-strip{
+  border-top:1px solid var(--vp-border);padding-top:1.5rem;
 }
-.vp-repeat__n{
-  font-family:var(--vp-font-mono);font-weight:500;line-height:1;
-  font-size:clamp(1.75rem,1.2rem + 1.6vw,2.5rem);
-  color:var(--vp-primary);font-variant-numeric:tabular-nums;
+.vp-taglist{display:flex;flex-wrap:wrap;gap:.5rem;}
+.vp-taglist li{
+  padding:.4rem .85rem;border:1px solid var(--vp-border);
+  font-size:.875rem;color:var(--vp-text-soft);background:var(--vp-surface);
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             color var(--vp-dur) var(--vp-ease),
+             background var(--vp-dur) var(--vp-ease);
 }
-
-/* ------------------------------------------------------- 7. Credentials --- */
-.vp-cred{border-left:2px solid var(--vp-accent);padding-left:1.15rem;}
-.vp-coverage{
-  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
-  background:var(--vp-bg-alt);
+/* Hover fills with the brand green rather than only tinting the border. This
+   is the same move the document archive's Save control already makes, and it
+   is now the shared language for every static chip on the site — see
+   .vp-expertise and .vp-pending__list. Stateful chips (.vp-filter) are
+   deliberately excluded: green already means "selected" there, so filling on
+   hover would make a hovered filter look chosen. */
+@media (hover:hover) and (pointer:fine){
+  .vp-taglist li:hover{
+    background:var(--vp-primary);border-color:var(--vp-primary);
+    color:var(--vp-primary-contrast);
+  }
 }
 
-/* -------------------------------------------------------------- 8. CTA ---- */
-.vp-cta{position:relative;overflow:hidden;isolation:isolate;}
+/* --------------------------------------------------------------- CTA ------- */
+.vp-cta{
+  position:relative;overflow:hidden;isolation:isolate;
+  padding-block:clamp(3.5rem,2.5rem + 5vw,6rem);
+  background:var(--vp-blue-950);
+}
 .vp-cta__bg{position:absolute;inset:0;z-index:0;}
 .vp-cta__bg img{width:100%;height:100%;object-fit:cover;}
 .vp-cta__bg::after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(96deg,rgb(4 22 27 / .95) 0%,rgb(4 22 27 / .86) 45%,rgb(4 22 27 / .62) 100%);
+  background:linear-gradient(96deg,rgb(4 22 27 / .95) 0%,rgb(4 22 27 / .86) 48%,rgb(4 22 27 / .60) 100%);
 }
 .vp-cta__inner{position:relative;z-index:1;}
+.vp-cta__mail a{
+  color:var(--vp-green-300);text-decoration:underline;text-underline-offset:4px;
+}
+.vp-cta__mail a:hover{color:#fff;}
 
-/* ------------------------------------------------------------- 9. Footer -- */
-.vp-footer{background:var(--vp-blue-950);color:#B9C9CA;}
-.vp-footer a{transition:color var(--vp-dur-fast) var(--vp-ease);}
-.vp-footer a:hover{color:var(--vp-green-300);}
-.vp-footer__col-title{color:rgb(234 242 240 / .55);}
-.vp-footer__link{display:inline-flex;align-items:center;min-height:44px;}
-.vp-footer__rule{height:1px;background:rgb(234 242 240 / .12);}
+/* -------------------------------------------------------------- footer ----- */
+.vp-footer{background:var(--vp-blue-950);color:#A7BABB;}
+.vp-footer__top{padding-block:clamp(2.75rem,2rem + 3vw,4.5rem);}
+.vp-footer__tagline{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;color:#EDF3F2;
+}
+.vp-footer__desc{color:#8FA5A7;max-width:44ch;}
+.vp-footer__title{
+  font-size:.875rem;font-weight:600;color:#EDF3F2;
+  margin-bottom:1rem;letter-spacing:.01em;
+}
+.vp-footer__link{
+  display:inline-flex;align-items:center;min-height:44px;
+  font-size:.9375rem;color:#A7BABB;
+  transition:color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-footer__link:hover{color:var(--vp-green-300);}
+.vp-footer__office{
+  font-style:normal;font-size:.9375rem;line-height:1.6;margin-bottom:1.1rem;color:#8FA5A7;
+}
+.vp-footer__office-role{display:block;color:#EDF3F2;font-weight:600;margin-bottom:.25rem;}
+.vp-footer__contacts{margin-top:.25rem;}
+.vp-footer__hint{font-size:.8125rem;color:#7C9294;margin-top:-.35rem;}
+.vp-footer__social{display:flex;gap:.5rem;margin-top:1.25rem;}
+.vp-footer__social-link{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;flex:none;
+  border:1px solid rgb(237 243 242 / .2);color:#A7BABB;
+  transition:color 320ms var(--vp-ease),border-color 320ms var(--vp-ease),
+             background-color 320ms var(--vp-ease),transform 320ms var(--vp-ease);
+}
+a.vp-footer__social-link:hover,
+a.vp-footer__social-link:focus-visible{
+  color:#fff;border-color:var(--vp-green-400);
+  background:rgb(64 160 64 / .16);transform:translateY(-2px);
+}
+/* Account not yet published: present in the set, visibly inactive, not a link. */
+.vp-footer__social-link.is-pending{
+  opacity:.42;cursor:default;
+  border-style:dashed;
+}
+.vp-footer__bar{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;
+  padding-block:1.5rem;border-top:1px solid rgb(237 243 242 / .12);
+  color:#8FA5A7;
+}
+.vp-footer__legal{display:flex;flex-wrap:wrap;gap:1.5rem;}

@@ -1,8 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { devApi } from './dev-api.js';
 
 export default defineConfig({
-  plugins: [react()],
+  // devApi is `apply: 'serve'` — it runs the real Worker in dev and is
+  // never part of a production build.
+  plugins: [react(), devApi()],
   build: {
     target: 'es2020',
     cssCodeSplit: true,

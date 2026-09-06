@@ -1,138 +1,121 @@
 /**
- * MEDIA REGISTRY — the single place temporary imagery is declared.
+ * MEDIA REGISTRY — every photograph on the site is declared here, by slug.
  *
- * Every image on the homepage is referenced by SLUG, never by path. To swap in
- * real Vedanjay photography later:
- *   1. drop the new file into  frontend/public/images/
- *   2. change `src` (and `alt`) on the matching entry below
- * No component, section or stylesheet needs to change.
+ * Components never reference a file path. To swap in real Vedanjay photography:
+ * drop the file into `frontend/public/images/` (plus a ≤1000px copy in `sm/`),
+ * then change `src` and `alt` on the matching entry. Nothing else changes.
  *
- * `focal` maps to CSS object-position and controls cropping at every
- * breakpoint — the mechanism that stops portraits losing their subject on
- * mobile. Set it per image; it is the one thing worth tuning after a swap.
+ * PROVENANCE: current files are TEMPORARY licensed placeholders from Unsplash
+ * (Unsplash License — commercial use permitted, no attribution required).
+ * Full record in `frontend/public/images/CREDITS.json`. Subject matter is
+ * restricted to power, grid and renewable infrastructure; no office/meeting
+ * stock, no coal or smokestack imagery.
  *
- * PROVENANCE: current files are TEMPORARY development placeholders sourced from
- * Wikimedia Commons under CC licences. Machine-readable attribution for each
- * file is in `frontend/public/images/CREDITS.json`. These are stand-ins for
- * Vedanjay's own photographs and are not brand assets. If any placeholder
- * survives to production, its attribution must be honoured on the page or in a
- * credits page — see docs/05-decisions/decision-log.md (D-033).
+ * `focal` maps to object-position and controls cropping at every breakpoint —
+ * the one field worth tuning after a photo swap.
  */
-
 const base = '/images/';
 
-/** @typedef {{src:string, alt:string, focal?:string, temporary?:boolean}} MediaItem */
+/** @typedef {{src:string, alt:string, focal?:string}} MediaItem */
 
 /** @type {Record<string, MediaItem>} */
 export const media = {
-  // ---- Hero rotation -------------------------------------------------------
-  'hero-substation': {
+  'hero-primary': {
     src: `${base}hero-substation.jpg`,
-    alt: 'A high-voltage substation switchyard with steel gantries and transmission towers behind it',
+    alt: 'High-voltage substation switchyard with steel gantries and transmission towers',
     focal: '50% 55%',
   },
-  'hero-transmission': {
-    src: `${base}hero-transmission.jpg`,
-    alt: 'Electricity transmission pylons silhouetted against a sunset sky',
+  'about-operations': {
+    src: `${base}ops-control-desk.jpg`,
+    alt: 'Operator monitoring generation and system data at a control desk',
     focal: '50% 45%',
   },
-  'hero-wind': {
-    src: `${base}hero-wind.jpg`,
-    alt: 'A wind turbine standing against a low sun',
+
+  // ---- Capabilities --------------------------------------------------------
+  'cap-forecasting': {
+    src: `${base}ops-monitoring.jpg`,
+    alt: 'Operators monitoring live generation and scheduling data on control-room displays',
+    focal: '50% 45%',
+  },
+  'cap-openaccess': {
+    src: `${base}svc-open-access.jpg`,
+    alt: 'Overhead transmission lines carried on lattice towers',
     focal: '50% 50%',
   },
-  'hero-solar': {
+  'cap-metering': {
+    src: `${base}svc-electrical.jpg`,
+    alt: 'Power transformer and high-voltage bushings at close range',
+    focal: '50% 50%',
+  },
+  'cap-infrastructure': {
+    src: `${base}svc-liaisoning.jpg`,
+    alt: 'Electrical switchgear and insulator stacks in a substation yard',
+    focal: '50% 50%',
+  },
+  'cap-gridstudies': {
+    src: `${base}proj-grid.jpg`,
+    alt: 'Transmission tower against an open sky',
+    focal: '50% 45%',
+  },
+  'cap-projects': {
     src: `${base}hero-solar.jpg`,
-    alt: 'Long rows of photovoltaic modules across a utility-scale solar plant',
+    alt: 'Rows of photovoltaic modules across a utility-scale solar plant',
     focal: '50% 55%',
   },
 
-  // ---- Services ------------------------------------------------------------
-  'svc-open-access': {
-    src: `${base}svc-open-access.jpg`,
-    alt: 'Overhead transmission lines carried on lattice towers across open country',
+  // ---- Renewable technologies ---------------------------------------------
+  'tech-solar': {
+    src: `${base}proj-solar-field.jpg`,
+    alt: 'Photovoltaic array extending across a solar site',
     focal: '50% 50%',
   },
-  'svc-forecasting': {
+  'tech-wind': {
+    src: `${base}ind-generators.jpg`,
+    alt: 'Wind turbine seen close against the sky',
+    focal: '50% 45%',
+  },
+  'tech-hybrid': {
     src: `${base}svc-forecasting.jpg`,
     alt: 'Wind turbines on open ground beneath a broad sky',
-    focal: '50% 40%',
-  },
-  'svc-liaisoning': {
-    src: `${base}svc-liaisoning.jpg`,
-    alt: 'Electrical switchgear and insulator stacks inside a substation yard',
-    focal: '50% 50%',
-  },
-  'svc-electrical': {
-    src: `${base}svc-electrical.jpg`,
-    alt: 'A power transformer and high-voltage bushings at close range',
-    focal: '50% 50%',
-  },
-  'svc-rooftop': {
-    src: `${base}svc-rooftop.jpg`,
-    alt: 'Photovoltaic modules installed across a building rooftop',
-    focal: '50% 50%',
-  },
-  'svc-om': {
-    src: `${base}svc-om.jpg`,
-    alt: 'Looking up at electrical infrastructure during site work',
-    focal: '50% 50%',
-  },
-
-  // ---- Industries ----------------------------------------------------------
-  'ind-industrial': {
-    src: `${base}ind-industrial.jpg`,
-    alt: 'A modern manufacturing floor with process equipment and electrical services',
-    focal: '50% 50%',
-  },
-  'ind-commercial': {
-    src: `${base}ind-commercial.jpg`,
-    alt: 'A solar array on a building at golden hour',
     focal: '50% 45%',
   },
-  'ind-utilities': {
+
+  // ---- Contact -------------------------------------------------------------
+  'contact-hero': {
+    src: `${base}contact-transmission.jpg`,
+    alt: '',
+    focal: '55% 60%',
+  },
+
+  // ---- Footprint & closing -------------------------------------------------
+  'footprint': {
     src: `${base}ind-utilities.jpg`,
-    alt: 'A substation switchyard lit at dusk',
+    alt: 'Substation switchyard lit at dusk',
     focal: '50% 50%',
   },
-  'ind-generators': {
-    src: `${base}ind-generators.jpg`,
-    alt: 'A wind turbine seen close against the sky',
-    focal: '50% 45%',
-  },
-
-  // ---- Projects & trust ----------------------------------------------------
-  'proj-grid': {
-    src: `${base}proj-grid.jpg`,
-    alt: 'A transmission tower against a dark, dramatic sky',
-    focal: '50% 50%',
-  },
-  'proj-solar-field': {
-    src: `${base}proj-solar-field.jpg`,
-    alt: 'A photovoltaic array extending across a solar site',
-    focal: '50% 55%',
-  },
-  'trust-team': {
-    src: `${base}trust-team.jpg`,
-    alt: 'A site engineer in protective headgear on an industrial site',
-    focal: '50% 45%',
-  },
-  'cta-dusk': {
+  'cta-close': {
     src: `${base}cta-dusk.jpg`,
-    alt: 'A substation switchyard against an open evening sky',
+    alt: 'Substation switchyard against an evening sky',
     focal: '50% 50%',
   },
 };
 
-/** Resolve a slug to a media item; returns null when the asset is absent so
- *  callers can fall back to a graphic treatment rather than a broken image. */
 export const getMedia = (slug) => media[slug] ?? null;
 
-/** Hero rotation order. Sequenced substation → transmission → wind → solar:
- *  grid infrastructure first (what Vedanjay actually does), generation second. */
-export const heroSequence = [
-  'hero-substation',
-  'hero-transmission',
-  'hero-wind',
-  'hero-solar',
+/**
+ * Hero slideshow order. Sequenced so consecutive frames differ in subject and
+ * tone — substation, then solar field, then control room, then wind — rather
+ * than four variations of the same shot.
+ *
+ * Each frame declares its own Ken Burns direction so the movement never repeats
+ * identically between slides.
+ */
+export const heroSlides = [
+  { slug: 'hero-primary',   pan: 'in-left' },
+  { slug: 'cap-projects',   pan: 'in-right' },
+  { slug: 'about-operations', pan: 'in-up' },
+  { slug: 'tech-wind',      pan: 'in-down' },
 ];
+
+/** Small-variant path for the srcset. Files live in /images/sm/. */
+export const smallSrc = (src) => src.replace('/images/', '/images/sm/');

@@ -1,113 +1,262 @@
 /* ============================================================================
-   HERO — a rotating full-bleed photographic stage.
-   Decision (docs/05-decisions D-034): photography, not video. Vedanjay's work is
-   static infrastructure — substations, bays, metering — which photographs far
-   better than it films, and a 4-frame still rotation costs ~260KB against
-   several MB for video, with no autoplay, battery or data penalty.
+   HERO — cross-dissolving stills with slow Ken Burns drift.
+
+   The header is translucent and sits above the hero, so the hero band starts
+   beneath it rather than running under it: the supplied logo carries dark text
+   and must stay readable at all times.
    ========================================================================== */
+:root{ --vp-hero-fade:1600ms; --vp-hero-dwell:6500ms; }
 
 .vp-hero{
-  position:relative;
-  min-height:min(88svh,800px);
-  display:flex;flex-direction:column;justify-content:flex-end;
-  overflow:hidden;
+  position:relative;isolation:isolate;
   background:var(--vp-blue-950);
-  isolation:isolate;
+  min-height:100svh;                 /* svh: excludes mobile browser chrome */
+  display:flex;flex-direction:column;
 }
-@media (max-width:767.98px){
-  .vp-hero{min-height:min(86svh,680px);}
-}
-/* On large displays the 800px cap leaves the hero looking short against the
-   viewport; raise it so the photograph keeps its presence. */
-@media (min-width:1400px){
-  .vp-hero{min-height:min(90svh,920px);}
-}
+/* Fallback for engines without svh. */
+@supports not (height:100svh){ .vp-hero{min-height:100vh;} }
 
-.vp-hero__stage{position:absolute;inset:0;z-index:0;}
+.vp-hero__media{position:absolute;inset:0;z-index:0;overflow:hidden;}
+/* A tint over a photograph flattens it: it pulls every colour toward the same
+   dark blue-green, and the result reads as dull even when the exposure is
+   fine. Saturation is what is actually lost, so it is what is given back.
+   Saturation is close to luminance-neutral, so it costs the type nothing —
+   a contrast() boost was tried alongside it and removed, because it lifts the
+   highlights, which is exactly where the text was already tightest. */
+.vp-hero__media img{filter:saturate(1.32);}
 
-/* Directional scrim: heavy at the text side, light over the image so the
-   photograph still reads. Owned by the hero, never by the photograph. */
+/* Each frame owns its own opacity and its own drift, so no two consecutive
+   slides move the same way. Only opacity/transform animate. */
+.vp-hero__slide{
+  position:absolute;inset:0;opacity:0;
+  transition:opacity var(--vp-hero-fade) cubic-bezier(.4,0,.2,1);
+  will-change:opacity;
+}
+.vp-hero__slide[data-active="true"]{opacity:1;}
+.vp-hero__slide img{
+  width:100%;height:100%;object-fit:cover;
+  object-position:var(--focal,50% 50%);
+  transform:scale(1.005);
+  will-change:transform;
+}
+/* Drift runs slightly longer than dwell + fade so it never visibly stops. */
+.vp-hero__slide[data-active="true"] img{
+  animation:var(--pan,vp-pan-in-left) 9500ms linear forwards;
+}
+.vp-hero__slide[data-pan="in-left"]  img{--pan:vp-pan-in-left;}
+.vp-hero__slide[data-pan="in-right"] img{--pan:vp-pan-in-right;}
+.vp-hero__slide[data-pan="in-up"]    img{--pan:vp-pan-in-up;}
+.vp-hero__slide[data-pan="in-down"]  img{--pan:vp-pan-in-down;}
+
+@keyframes vp-pan-in-left {from{transform:scale(1.005) translate3d(0,0,0);}      to{transform:scale(1.045) translate3d(-1.1%,0,0);}}
+@keyframes vp-pan-in-right{from{transform:scale(1.045) translate3d(-1%,0,0);}    to{transform:scale(1.005) translate3d(0.6%,0,0);}}
+@keyframes vp-pan-in-up   {from{transform:scale(1.01) translate3d(0,0.8%,0);}    to{transform:scale(1.05) translate3d(0,-0.9%,0);}}
+@keyframes vp-pan-in-down {from{transform:scale(1.05) translate3d(0,-0.8%,0);}   to{transform:scale(1.01) translate3d(0,0.7%,0);}}
+
+/* Scrim strength is set from measured contrast, not by eye.
+   Over a pure-white image pixel (the worst case a photograph can present),
+   a composited alpha of .72 gives 7.46:1 for white headings and 4.97:1 for the
+   softer lead — both clear of AA. The previous stack composited to ~.93 at the
+   text column, which met contrast twice over and crushed the photograph.
+   REVISED TWICE on 5 Sep 2026, the second time by solving rather than eyeing:
+   for every glyph pixel on every slide, the minimum scrim alpha that reaches
+   5:1 was computed by bisection. The answer was .65 at worst — against a pool
+   that was delivering .86 and a full-frame wash on top of it. The third pass
+   below spends only what the type needs.
+
+   SECOND PASS (superseded). Deepening the horizontal wash to .86/.66
+   fixed the type but buried the photograph — the whole left half of every
+   slide went to mud. Shade is now POOLED under the copy instead: an ellipse
+   centred on the measured text box, falling to nothing before the right-hand
+   edge, plus a band along the bottom for the statistics strip. Same AA result,
+   far more picture.
+
+   MEASURED, 5 Sep 2026, and the ORIGINAL values did not hold either.
+   Sampling all four slides through the old scrim at 1280px put the LEAD below
+   AA on every one of them (worst 2.85-3.09 against a 4.5 requirement, with up
+   to 33% of its pixels failing) and the kicker as low as 1.5. Only the heading
+   passed, and only because large text needs 3. The horizontal layer has been
+   deepened from .58/.36 to .86/.66 across the copy column while still falling
+   away to .10 on the open right, so the photograph still reads. */
 .vp-hero__scrim{
   position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(180deg, rgb(4 22 27 / .55) 0%, rgb(4 22 27 / .18) 30%, rgb(4 22 27 / .70) 78%, rgb(4 22 27 / .94) 100%),
-    linear-gradient(92deg, rgb(4 22 27 / .82) 0%, rgb(4 22 27 / .55) 42%, rgb(4 22 27 / .18) 78%, transparent 100%);
+  /* ONE flat tint. No gradient, no pool, no vignette.
+     Every shaped scrim tried here — a horizontal wash, then an ellipse pooled
+     under the copy — announced itself: the ellipse in particular showed as a
+     soft dark blob across the middle of the photograph, which reads as a
+     smudge rather than as design.
+     .40 — set on the owner's instruction after four passes, and BELOW the
+     solved floor. See the note on .vp-hero__body: the legibility that the tint
+     used to buy is now bought by a shadow on the letters instead, which costs
+     the photograph nothing.
+
+     The solved floor for the tint ALONE was .585. Every run of text that
+     sits over the photograph is bisected for the least uniform alpha that
+     reaches its contrast target, on all four slides. It started at .65; three
+     rounds of moving the cost off the photograph and onto the type brought it
+     down:
+       - nav links .9 white → #fff            (.612 → .575)
+       - lead .96 white → #fff, kicker → green-50
+       - slide numbers .82 → #fff, the active one marked by its track
+       - statistics panel .42 → .60           (.604 → .426)
+     What remains: kicker .585 · nav .575 · lead .574 · dots .564 · scroll
+     .509 · title .444. The binding item is now the kicker.
+
+     BELOW THIS, the copy needs a panel of its own — there is no more ink to
+     spend. That is a visible design element, so it is not something to slip in
+     unasked. */
+  background:rgb(4 22 27 / .40);
 }
-@media (max-width:991.98px){
-  .vp-hero__scrim{
-    background:linear-gradient(180deg, rgb(4 22 27 / .62) 0%, rgb(4 22 27 / .48) 34%, rgb(4 22 27 / .82) 74%, rgb(4 22 27 / .96) 100%);
-  }
+
+
+/* The tint is deliberately below what the type needs on its own, so the type
+   carries its own contrast — a shadow on the GLYPHS, not a shape over the
+   picture. It is invisible as an object and costs the photograph nothing,
+   which a panel or a gradient pool would not.
+   Formally this earns nothing under WCAG, which measures glyph against
+   background and ignores shadows. In practice it is what keeps white text
+   readable against a bright sky, and it is the standard answer for type over
+   photography. */
+.vp-hero__body,
+.vp-header[data-overlay="true"] .vp-nav__link,
+.vp-header[data-overlay="true"] .vp-burger{
+  text-shadow:0 1px 2px rgb(4 22 27 / .55), 0 2px 12px rgb(4 22 27 / .45);
 }
 
 .vp-hero__body{
-  position:relative;z-index:2;width:100%;
-  padding-top:calc(var(--vp-header-h) + 2rem);
-  padding-bottom:1.5rem;
-}
-@media (min-width:992px){.vp-hero__body{padding-bottom:2rem;}}
-
-.vp-hero__eyebrow{color:var(--vp-green-300);}
-.vp-hero__title{color:#fff;max-width:17ch;}
-.vp-hero__lead{color:rgb(234 242 240 / .82);max-width:46ch;}
-
-/* ---- Proof strip: sits on the hero's lower edge ---- */
-.vp-hero__proof{
   position:relative;z-index:2;
-  border-top:1px solid rgb(255 255 255 / .16);
-  background:rgb(4 22 27 / .30);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  /* Clear the overlaying header, then breathe. */
+  padding-top:calc(var(--vp-header-h-sm) + clamp(2rem,1rem + 5vw,4.5rem));
+  padding-bottom:clamp(1.5rem,1rem + 2vw,2.5rem);
 }
-.vp-hero__proof-item{padding-block:1rem;}
-@media (min-width:768px){.vp-hero__proof-item{padding-block:1.25rem;}}
-.vp-hero__proof-value{color:#fff;font-weight:600;}
-.vp-hero__proof-label{color:rgb(234 242 240 / .62);}
+@media (min-width:1200px){
+  .vp-hero__body{padding-top:calc(var(--vp-header-h) + clamp(2rem,1rem + 5vw,4.5rem));}
+}
+/* green-300 measured at 1.5-2.3 against the old scrim and still only 3.53 on
+   ind-generators after it was deepened — a mid green simply has too little
+   luminance to clear 4.5 over a photograph. green-100 measures 5.2 on the same
+   pixel and still reads as the brand green rather than as white. */
+.vp-hero__kicker{color:var(--vp-green-50);}
+.vp-hero__title{color:#fff;max-width:20ch;}
+/* Was .84, which measured 2.75:1 against the brightest pixels of the solar
+   slide — a real AA failure that predates the scrim work. Brightening the type
+   fixes it without darkening the photograph any further. */
+.vp-hero__lead{color:#fff;max-width:60ch;}
 
-/* ---- Frame indicator: numbered, with a progress bar. Reads as an instrument,
-        not a carousel dot. ---- */
-.vp-hero__nav{display:flex;align-items:center;gap:1.25rem;}
+/* ---- Slide indicators: hairlines that fill over the dwell ---- */
+.vp-hero__foot{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;
+  margin-top:auto;padding-top:clamp(2rem,1rem + 4vw,3.5rem);
+}
+.vp-hero__dots{display:flex;align-items:center;gap:.35rem;}
 .vp-hero__dot{
-  position:relative;display:flex;align-items:center;gap:.55rem;
-  padding-block:.6rem;min-height:44px;color:rgb(234 242 240 / .55);
-  transition:color var(--vp-dur-fast) var(--vp-ease);
+  display:flex;align-items:center;gap:.5rem;
+  min-height:44px;padding:0 .35rem;flex:none;
+  /* Full white, and the current slide is marked by its TRACK — a wider rule
+     with the green fill running through it — rather than by the number being
+     brighter than its neighbours. Dimming the inactive numbers to carry that
+     distinction was costing 13px type its contrast: at .5 they needed .87 of
+     scrim, at .82 they were the last thing failing at .62. The track already
+     says which slide is showing, so the colour does not have to. */
+  color:#fff;
+  transition:color var(--vp-dur) var(--vp-ease);
 }
 .vp-hero__dot:hover{color:#fff;}
 .vp-hero__dot[aria-current="true"]{color:#fff;}
-.vp-hero__dot-track{
-  display:block;width:34px;height:2px;background:rgb(255 255 255 / .25);overflow:hidden;
+.vp-hero__dot-num{
+  font-size:.8125rem;font-weight:600;font-variant-numeric:tabular-nums;
+  line-height:1;
 }
-@media (min-width:768px){.vp-hero__dot-track{width:52px;}}
+.vp-hero__dot-track{
+  display:block;width:22px;height:2px;
+  background:rgb(255 255 255 / .26);overflow:hidden;
+  transition:width var(--vp-dur) var(--vp-ease),background-color var(--vp-dur) var(--vp-ease);
+}
+.vp-hero__dot[aria-current="true"] .vp-hero__dot-track{width:44px;}
+@media (min-width:768px){
+  .vp-hero__dot-track{width:28px;}
+  .vp-hero__dot[aria-current="true"] .vp-hero__dot-track{width:56px;}
+}
 .vp-hero__dot-fill{
-  display:block;width:100%;height:100%;background:var(--vp-amber-500);
+  display:block;width:100%;height:100%;
+  background:var(--vp-green-400);
   transform:scaleX(0);transform-origin:left center;
 }
 .vp-hero__dot[aria-current="true"] .vp-hero__dot-fill{
-  animation:vp-progress var(--hero-dwell,6500ms) linear forwards;
+  animation:vp-dot-fill var(--vp-hero-dwell) linear forwards;
 }
-.vp-hero__dot[data-seen="true"] .vp-hero__dot-fill{transform:scaleX(1);}
+@keyframes vp-dot-fill{from{transform:scaleX(0);}to{transform:scaleX(1);}}
 
-/* Paused / reduced motion: no timer bar, full marker on the active frame */
-.vp-hero[data-paused="true"] .vp-hero__dot-fill{animation-play-state:paused;}
-@media (prefers-reduced-motion:reduce){
-  .vp-hero__dot[aria-current="true"] .vp-hero__dot-fill{animation:none;transform:scaleX(1);}
+/* ---- Scroll cue: a hairline with a travelling highlight ---- */
+.vp-hero__scroll{
+  display:none;flex-direction:column;align-items:center;gap:.75rem;
+  min-height:44px;padding:.25rem .5rem;flex:none;
+  /* Same reasoning as the slide numbers, and more so: it sits at the far right
+     where the scrim is deliberately zero, so it carries its own. */
+  color:rgb(255 255 255 / .88);
+  transition:color var(--vp-dur) var(--vp-ease);
 }
-
-/* Scroll cue */
-.vp-hero__cue{
-  display:none;align-items:center;gap:.6rem;color:rgb(234 242 240 / .55);
+@media (min-width:768px){.vp-hero__scroll{display:inline-flex;}}
+.vp-hero__scroll:hover{color:#fff;}
+.vp-hero__scroll-label{
+  font-size:.6875rem;font-weight:600;letter-spacing:.16em;
+  writing-mode:vertical-rl;text-transform:uppercase;
 }
-@media (min-width:992px){.vp-hero__cue{display:inline-flex;}}
-.vp-hero__cue-line{
-  display:block;width:1px;height:34px;background:rgb(255 255 255 / .3);position:relative;overflow:hidden;
+.vp-hero__scroll-line{
+  display:block;width:1px;height:56px;
+  background:rgb(255 255 255 / .26);position:relative;overflow:hidden;
 }
-.vp-hero__cue-line::after{
-  content:"";position:absolute;inset-inline:0;top:0;height:40%;background:var(--vp-green-400);
-  animation:vp-cue 2.4s var(--vp-ease-inout) infinite;
+.vp-hero__scroll-line::after{
+  content:"";position:absolute;inset-inline:0;top:0;height:42%;
+  background:var(--vp-green-400);
+  animation:vp-scroll-cue 2600ms cubic-bezier(.65,0,.35,1) infinite;
 }
-@keyframes vp-cue{
+@keyframes vp-scroll-cue{
   0%{transform:translateY(-100%);}
-  60%,100%{transform:translateY(250%);}
+  55%,100%{transform:translateY(240%);}
 }
+
+/* ---- Proof strip ---- */
+.vp-proof{
+  position:relative;z-index:2;
+  border-top:1px solid rgb(255 255 255 / .16);
+  /* The strip carries the smallest, most fragile type on the hero — green-300
+     units, and "years"/"MW" at 68% opacity, which composite over the very
+     ground they are read against.
+     Raised from .42 to .60 so the strip stops setting the tint for the whole
+     hero: at .42 it needed .604 of scrim behind it, which the entire
+     photograph was then paying for. This panel is 13% of the hero and already
+     existed; the other 87% gets to be brighter because of it. */
+  background:rgb(4 22 27 / .60);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.vp-proof__list{display:grid;grid-template-columns:repeat(2,1fr);}
+@media (min-width:768px){.vp-proof__list{grid-template-columns:repeat(3,1fr);}}
+@media (min-width:1200px){.vp-proof__list{grid-template-columns:repeat(6,1fr);}}
+.vp-proof__item{
+  display:flex;flex-direction:column;gap:.25rem;
+  padding:1.1rem 1rem 1.1rem 0;
+  border-top:1px solid rgb(255 255 255 / .1);
+}
+@media (min-width:1200px){
+  .vp-proof__item{border-top:0;border-left:1px solid rgb(255 255 255 / .12);padding-left:1.25rem;}
+  .vp-proof__item:first-child{border-left:0;padding-left:0;}
+}
+.vp-proof__value{
+  font-family:var(--vp-font-serif);font-weight:600;color:#fff;
+  font-size:clamp(1.125rem,1rem + .5vw,1.375rem);line-height:1.2;
+}
+.vp-proof__unit{font-size:.75em;font-weight:500;color:var(--vp-green-300);}
+.vp-proof__label{font-size:.875rem;color:rgb(234 242 240 / .68);line-height:1.35;}
+
+/* ============================================================================
+   REDUCED MOTION — a single static frame, no drift, no timer, no indicators.
+   ========================================================================== */
 @media (prefers-reduced-motion:reduce){
-  .vp-hero__cue-line::after{animation:none;}
+  .vp-hero__slide{transition:none;}
+  .vp-hero__slide[data-active="true"] img,
+  .vp-hero__slide img{animation:none !important;transform:none !important;}
+  .vp-hero__dot-fill{animation:none !important;transform:scaleX(1);}
+  .vp-hero__scroll-line::after{animation:none !important;transform:none;height:100%;opacity:.5;}
 }

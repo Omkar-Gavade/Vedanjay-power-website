@@ -1,69 +1,43 @@
 import { ROUTES } from '../constants/routes.js';
-import { services } from './services.js';
-import { industries } from './industries.js';
 
 /**
- * Primary navigation: five items plus one distinct action.
- * Below the ~7-item scanning threshold, with deliberate room for Insights and
- * Careers in phase 2 without restructuring. See docs/03-design/navigation.md.
+ * Primary navigation.
+ *
+ * About Us carries a dropdown. Meet Our Team, Awards and Downloads are built
+ * and navigate normally. A child that is not yet built carries `pending: true`
+ * and renders as a non-navigating note rather than a dead link.
  */
 export const primaryNav = [
+  { id: 'home', label: 'Home', href: ROUTES.home },
   {
-    id: 'services',
-    label: 'Services',
-    href: ROUTES.services,
-    menu: 'mega',
-    children: services.map((s) => ({
-      label: s.name,
-      descriptor: s.descriptor,
-      index: s.index,
-      href: `${ROUTES.services}${s.slug}/`,
-    })),
-  },
-  {
-    id: 'industries',
-    label: 'Industries',
-    href: ROUTES.industries,
-    menu: 'dropdown',
-    children: industries.map((i) => ({
-      label: i.name,
-      descriptor: i.problem,
-      href: `${ROUTES.industries}${i.slug}/`,
-    })),
-  },
-  { id: 'projects', label: 'Projects', href: ROUTES.projects },
-  {
-    id: 'about',
-    label: 'About',
-    href: ROUTES.about,
-    menu: 'dropdown',
+    id: 'about', label: 'About Us', href: ROUTES.about, menu: 'dropdown',
     children: [
-      { label: 'Company', descriptor: 'Who we are and how we work', href: ROUTES.about },
-      { label: 'Leadership', descriptor: 'The people behind the firm', href: ROUTES.leadership },
-      { label: 'Credentials', descriptor: 'Licences, registrations and recognition', href: ROUTES.credentials },
-      { label: 'Partners', descriptor: 'Technology cooperation', href: ROUTES.partners },
+      { label: 'Company Overview', href: ROUTES.about },
+      { label: 'Meet Our Team', href: ROUTES.team },
+      { label: 'Awards', href: ROUTES.awards },
+      { label: 'Partners', href: ROUTES.partners },
+      { label: 'Downloads', href: ROUTES.downloads },
     ],
   },
+  { id: 'services', label: 'Services', href: ROUTES.services },
+  { id: 'industries', label: 'Industries', href: ROUTES.industries },
+  {
+    id: 'projects', label: 'Projects', href: ROUTES.projects, menu: 'dropdown',
+    children: [
+      { label: 'Project Register', href: ROUTES.projects },
+      { label: 'Image Gallery', href: ROUTES.gallery },
+    ],
+  },
+  { id: 'careers', label: 'Careers', href: ROUTES.careers },
   { id: 'contact', label: 'Contact', href: ROUTES.contact },
 ];
 
-export const footerNav = [
-  {
-    title: 'Services',
-    links: services.map((s) => ({ label: s.name, href: `${ROUTES.services}${s.slug}/` })),
-  },
-  {
-    title: 'Industries',
-    links: industries.map((i) => ({ label: i.name, href: `${ROUTES.industries}${i.slug}/` })),
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: ROUTES.about },
-      { label: 'Leadership', href: ROUTES.leadership },
-      { label: 'Credentials', href: ROUTES.credentials },
-      { label: 'Partners', href: ROUTES.partners },
-      { label: 'Projects', href: ROUTES.projects },
-    ],
-  },
+/** Footer capability links point at the Services route until service pages exist. */
+export const footerCapabilities = [
+  'Forecasting & Scheduling / QCA',
+  'Open Access',
+  'ABT Metering & Telemetry',
+  'Electrical Infrastructure',
+  'Transmission & Grid Connectivity',
+  'Grid Studies & Consultancy',
 ];

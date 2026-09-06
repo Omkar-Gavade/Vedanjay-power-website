@@ -19,9 +19,19 @@ function getObserver() {
         observer.unobserve(entry.target); // fires once
       }
     },
-    // Near-zero threshold: a larger one can never fire for elements taller
-    // than the viewport.
-    { threshold: 0.01, rootMargin: '0px 0px -12% 0px' },
+    {
+      // Near-zero threshold: a larger one can never fire for elements taller
+      // than the viewport.
+      threshold: 0.01,
+      /* The root is extended far ABOVE the viewport so anything already
+         scrolled past counts as intersecting and reveals immediately.
+         Without it, an element that goes from below the viewport to above it
+         without ever being on screen — a reload with scroll restoration, a
+         hash deep-link, or any instant jump — crosses no threshold, gets no
+         callback, and stays at opacity 0 for good. The bottom margin is the
+         actual reveal line: 12% into view. */
+      rootMargin: '100000px 0px -12% 0px',
+    },
   );
   return observer;
 }

@@ -1,65 +1,65 @@
 import { Hero } from '../components/home/Hero.jsx';
-import { Intro } from '../components/home/Intro.jsx';
+import { WhoWeAre } from '../components/home/WhoWeAre.jsx';
 import { Capabilities } from '../components/home/Capabilities.jsx';
-import { Industries } from '../components/home/Industries.jsx';
-import { Projects } from '../components/home/Projects.jsx';
-import { Numbers } from '../components/home/Numbers.jsx';
-import { Clients } from '../components/home/Clients.jsx';
-import { WhyUs } from '../components/home/WhyUs.jsx';
+import { Expertise } from '../components/home/Expertise.jsx';
+import { PortfolioMap } from '../components/home/PortfolioMap.jsx';
 import { ClosingCTA } from '../components/home/ClosingCTA.jsx';
 import { company } from '../data/company.js';
 
 const DESCRIPTION =
-  'Vedanjay Power is a renewable power consultancy in Indore, India — open access, forecasting ' +
-  'and scheduling, regulatory liaisoning, electrical infrastructure, rooftop solar and O&M for ' +
-  'renewable generators, utilities and industrial power buyers.';
+  'Vedanjay Power Pvt. Ltd. — power-sector solutions across renewable energy, open-access power, ' +
+  'forecasting and scheduling (QCA), ABT metering and telemetry, electrical infrastructure, ' +
+  'transmission and grid consultancy. Established 2011.';
 
-/* Generated from the same data that renders the page, so structured data
-   cannot drift from the visible content. The legacy site has none. */
+/* Organization schema built from the same data that renders the page, so
+   structured data cannot drift from the visible content. */
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: company.legalName,
   alternateName: company.name,
-  url: 'https://vedanjay-power.com/',
-  description: DESCRIPTION,
-  foundingDate: String(company.incorporated),
-  identifier: { '@type': 'PropertyValue', propertyID: 'CIN', value: company.cin },
-  address: {
+  slogan: company.tagline,
+  url: company.website,
+  description: company.overview,
+  foundingDate: String(company.established),
+  logo: 'https://vedanjay-power.com/brand/vedanjay-power-logo.png',
+  sameAs: company.social.map((s) => s.href),
+  address: company.offices.map((o) => ({
     '@type': 'PostalAddress',
-    streetAddress: company.offices[0].lines.slice(0, 2).join(', '),
-    addressLocality: 'Indore', addressRegion: 'Madhya Pradesh',
-    postalCode: '452008', addressCountry: 'IN',
-  },
+    streetAddress: o.lines.slice(0, -1).join(', '),
+    addressLocality: o.city,
+    addressCountry: 'IN',
+  })),
   contactPoint: {
-    '@type': 'ContactPoint', telephone: '+91-731-4239605',
-    email: company.emails[0].value, contactType: 'sales', areaServed: 'IN',
+    '@type': 'ContactPoint',
+    telephone: '+91-7666901814',
+    email: company.emails.general,
+    contactType: 'sales',
+    areaServed: 'IN',
   },
 };
 
 export default function Home() {
   return (
     <>
-      {/* React 19 hoists these into <head> natively — no helmet dependency */}
-      <title>Vedanjay Power — Renewable Power Consultancy | Open Access, Grid Connection &amp; O&amp;M</title>
+      {/* React 19 hoists these into <head> natively — no helmet dependency. */}
+      <title>Vedanjay Power | Renewable Energy &amp; Power Management</title>
       <meta name="description" content={DESCRIPTION} />
-      <link rel="canonical" href="https://vedanjay-power.com/" />
+      <link rel="canonical" href={company.website} />
       <meta property="og:type" content="website" />
-      <meta property="og:title" content="Vedanjay Power — Renewable Power Consultancy" />
+      <meta property="og:title" content="Vedanjay Power | Renewable Energy &amp; Power Management" />
       <meta property="og:description" content={DESCRIPTION} />
-      <meta property="og:url" content="https://vedanjay-power.com/" />
-      <meta property="og:site_name" content={company.name} />
+      <meta property="og:url" content={company.website} />
+      <meta property="og:site_name" content={company.legalName} />
+      <meta property="og:image" content="https://vedanjay-power.com/images/hero-substation.jpg" />
       <meta name="twitter:card" content="summary_large_image" />
       <script type="application/ld+json">{JSON.stringify(orgSchema)}</script>
 
       <Hero />
-      <Intro />
+      <WhoWeAre />
       <Capabilities />
-      <Industries />
-      <Projects />
-      <Numbers />
-      <Clients />
-      <WhyUs />
+      <Expertise />
+      <PortfolioMap />
       <ClosingCTA />
     </>
   );

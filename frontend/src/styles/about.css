@@ -1,0 +1,1721 @@
+/* ============================================================================
+   ABOUT SUB-PAGES — Team, Awards, Downloads
+
+   One stylesheet, three content treatments. Imported by the lazy route chunks,
+   never by index.css. Every value is an existing token.
+
+   The three heroes are deliberately different: Team is photographic (it is a
+   page about people), Awards is a typographic archive plate (the page below is
+   already dense with certificate imagery, so a photo would compete), and
+   Downloads is a light technical plate. Same system, three intents.
+   ========================================================================== */
+
+/* ================================================== shared page hero ====== */
+.vp-phero{
+  position:relative;isolation:isolate;
+  padding-block:calc(var(--vp-header-h) + clamp(2.25rem,5vw,3.5rem)) clamp(2.25rem,5vw,3.5rem);
+  border-bottom:1px solid var(--vp-border);
+}
+.vp-phero__inner{position:relative;}
+.vp-phero__title{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(2rem,1.5rem + 2.6vw,3.25rem);
+  font-weight:600;line-height:1.12;letter-spacing:-.014em;margin:0;
+}
+.vp-phero__lead{max-width:52ch;margin-top:1rem;}
+
+/* ---- photographic variant (Team) ---- */
+.vp-phero--photo{min-height:clamp(24rem,44vh,30rem);display:flex;align-items:flex-end;}
+.vp-phero--photo .vp-phero__media{position:absolute;inset:0;z-index:-2;background:var(--vp-blue-950);}
+.vp-phero--photo .vp-phero__media img{width:100%;height:100%;object-fit:cover;}
+/* Top-edge layer carries the transparent navbar (the header sits inside this
+   hero), then the horizontal scrim for the type column. */
+.vp-phero--photo::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  /* ONE flat tint, matching the home hero.
+     This used to be three stacked gradients topping out at .86 across the type
+     column, which buried the photograph — the same complaint the home hero got,
+     and the same answer. The contrast the tint used to buy is bought instead by
+     a shadow on the letters below, which costs the image nothing.
+     Formally the shadow earns nothing under WCAG, which measures glyph against
+     ground and ignores it. It is what makes white type hold up over a bright
+     photograph, and it is the standard answer for type over an image. */
+  background:rgb(4 22 27 / .40);
+}
+/* On the glyphs, not over the picture. */
+.vp-phero--photo .vp-phero__inner{
+  text-shadow:0 1px 2px rgb(4 22 27 / .55), 0 2px 12px rgb(4 22 27 / .45);
+}
+.vp-phero--photo,
+.vp-phero--photo .vp-phero__title{color:#fff;}
+/* Brightened alongside the scrim. Carrying the whole fix in the gradient would
+   have meant an alpha near .9 across the type column, which turns the
+   photograph into a dark rectangle. */
+.vp-phero--photo .vp-phero__lead{color:#fff;}
+.vp-phero--photo .vp-eyebrow{color:#D6EDD6;}
+.vp-phero--photo .vp-eyebrow::before{background:var(--vp-green-400);}
+
+/* ---- archive plate (Awards) ---- */
+.vp-phero--plate{background:var(--vp-blue-900);color:#EDF3F2;}
+.vp-phero--plate .vp-phero__title{color:#fff;}
+.vp-phero--plate .vp-phero__lead{color:#A7BABB;}
+.vp-phero--plate .vp-eyebrow{color:#A7BABB;}
+.vp-phero--plate .vp-eyebrow::before{background:var(--vp-green-400);}
+/* ---- technical plate (Downloads) ---- */
+.vp-phero--tech{background:var(--vp-bg-alt);overflow:hidden;}
+.vp-phero--tech::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(var(--vp-border-soft) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--vp-border-soft) 1px,transparent 1px);
+  background-size:clamp(40px,5vw,64px) clamp(40px,5vw,64px);
+  mask-image:radial-gradient(ellipse 70% 80% at 88% 20%,#000,transparent 70%);
+}
+
+/* ======================================================== TEAM =========== */
+/* Three profile cards: photograph, then the person. Tokens throughout, so the
+   card themes itself — the only place a literal colour appears is the scrim
+   over the portrait, which sits on the photograph rather than on the page. */
+.vp-team{
+  display:grid;gap:clamp(1.25rem,2.5vw,1.75rem);
+  grid-template-columns:1fr;
+}
+@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);} }
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);} }
+
+.vp-tcard{
+  position:relative;display:flex;flex-direction:column;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);
+  overflow:hidden;
+  box-shadow:0 1px 2px rgb(7 21 24 / .05);
+  transition:transform var(--vp-dur) var(--vp-ease),
+             border-color var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease);
+  animation:vp-reg-in 560ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 110ms);
+}
+.vp-tcard:hover,.vp-tcard:focus-within{
+  transform:translateY(-4px);
+  border-color:var(--vp-primary);
+  box-shadow:0 26px 54px -28px rgb(7 21 24 / .42);
+}
+[data-bs-theme="dark"] .vp-tcard{box-shadow:none;}
+[data-bs-theme="dark"] .vp-tcard:hover,
+[data-bs-theme="dark"] .vp-tcard:focus-within{
+  box-shadow:0 26px 54px -28px rgb(0 0 0 / .7);
+}
+
+/* 4:3, not the square the portraits are supplied at.
+   A square frame across a 3-up grid made a 397x587 card — two thirds of the
+   viewport for one of three people, which is more room than a name, a title
+   and one line of text can fill. Losing a quarter of the height brings the card
+   back to a normal proportion.
+   The crop is biased UP (28%, not the 50% centre) because these are tight
+   head-and-shoulders shots: centred, 4:3 would take equally from the top of the
+   head and the chest, and the head is the half that matters. */
+.vp-tcard__photo{
+  position:relative;aspect-ratio:4 / 3;overflow:hidden;
+  background:var(--vp-bg-sunken);
+}
+.vp-tcard__photo img{
+  width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block;
+  transition:transform 900ms var(--vp-ease);
+}
+.vp-tcard:hover .vp-tcard__photo img,
+.vp-tcard:focus-within .vp-tcard__photo img{transform:scale(1.05);}
+/* Seats the portrait against the card body so the join is not a hard line. */
+.vp-tcard__photo::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:38%;
+  background:linear-gradient(180deg,rgb(4 22 27 / 0),rgb(4 22 27 / .42));
+  opacity:.85;transition:opacity var(--vp-dur) var(--vp-ease);
+}
+.vp-tcard:hover .vp-tcard__photo::after{opacity:.55;}
+
+/* Role sits ON the photograph, so the body below is name and substance only. */
+.vp-tcard__role{
+  position:absolute;left:1rem;bottom:.9rem;z-index:1;margin:0;
+  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.1em;
+  text-transform:uppercase;color:#fff;
+  text-shadow:0 1px 3px rgb(4 22 27 / .6);
+}
+
+.vp-tcard__body{
+  display:flex;flex-direction:column;flex:1;
+  padding:clamp(1rem,1.8vw,1.25rem);
+}
+.vp-tcard__name{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(1.1875rem,1.1rem + .35vw,1.4375rem);
+  font-weight:600;line-height:1.25;margin:0;color:var(--vp-text);
+}
+/* Draws in under the name on hover — the card's one moving accent. */
+.vp-tcard__rule{
+  display:block;height:2px;width:2.25rem;margin:.7rem 0 .85rem;
+  background:var(--vp-primary);transform-origin:left;
+  transform:scaleX(.45);
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-tcard:hover .vp-tcard__rule,
+.vp-tcard:focus-within .vp-tcard__rule{transform:scaleX(1);}
+.vp-tcard__focus{
+  font-size:.9375rem;line-height:1.65;color:var(--vp-text-muted);margin:0;
+}
+/* Pins the link to the bottom so cards of unequal text still line up. */
+.vp-tcard__link{
+  display:inline-flex;align-items:center;gap:.45rem;margin-top:auto;padding-top:1.1rem;
+  font-size:.875rem;font-weight:600;color:var(--vp-primary);
+  text-decoration:none;align-self:flex-start;
+}
+.vp-tcard__link svg{flex:none;transition:transform var(--vp-dur) var(--vp-ease);}
+.vp-tcard__link:hover{color:var(--vp-primary-hover);text-decoration:underline;}
+.vp-tcard__link:hover svg{transform:translateX(2px);}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-tcard{animation:none !important;transition:none !important;}
+  .vp-tcard__photo img,.vp-tcard__rule{transition:none !important;}
+}
+
+/* ====================================================== AWARDS =========== */
+.vp-awards{
+  display:grid;gap:clamp(.875rem,1.4vw,1.25rem);
+  grid-template-columns:1fr;
+}
+@media (min-width:560px){ .vp-awards{grid-template-columns:repeat(2,1fr);} }
+@media (min-width:1100px){ .vp-awards{grid-template-columns:repeat(4,1fr);} }
+
+.vp-award{
+  display:flex;flex-direction:column;height:100%;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  background:var(--vp-surface);overflow:hidden;
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             transform var(--vp-dur) var(--vp-ease);
+}
+.vp-award:hover,.vp-award:focus-within{
+  border-color:var(--vp-primary);transform:translateY(-2px);
+}
+
+/* The certificates run portrait, landscape and square. A fixed 4:3 window on a
+   recessed ground makes `contain` read as a mount board rather than as an
+   image that failed to fill its box. */
+.vp-award__shot{
+  position:relative;display:block;width:100%;padding:0;border:0;cursor:zoom-in;
+  background:var(--vp-bg-sunken);
+  border-bottom:1px solid var(--vp-border);
+}
+/* The year, revealed on hover. It is always in the DOM — only its visibility is
+   conditional — and on a touch device, where hover never fires, it is shown
+   outright rather than being unreachable. */
+.vp-award__year{
+  position:absolute;top:.55rem;right:.55rem;
+  padding:.2rem .5rem;border-radius:var(--vp-radius-pill);
+  background:var(--vp-blue-950);color:#fff;
+  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.06em;
+  opacity:0;transform:translateY(-4px);
+  transition:opacity var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
+  pointer-events:none;
+}
+.vp-award:hover .vp-award__year,
+.vp-award:focus-within .vp-award__year{opacity:1;transform:none;}
+@media (hover:none){
+  .vp-award__year{opacity:1;transform:none;}
+}
+
+.vp-award__shot img{
+  display:block;width:100%;aspect-ratio:4/3;height:auto;
+  object-fit:contain;object-position:center;
+  padding:.6rem;
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-award__shot:hover img{transform:scale(1.03);}
+
+.vp-award__body{padding:.875rem .9375rem 1rem;display:flex;flex-direction:column;flex:1;}
+
+/* Was a bordered pill; at this size that read as UI chrome. A ruled label sits
+   quieter and lets the award title lead. */
+.vp-award__result{
+  font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+  color:var(--vp-primary);margin-bottom:.4rem;
+}
+.vp-award__title{
+  font-family:var(--vp-font-serif);font-size:.9688rem;font-weight:600;
+  line-height:1.35;margin:0 0 .3rem;color:var(--vp-text);
+}
+.vp-award__cat{
+  font-size:.8125rem;line-height:1.5;color:var(--vp-text-soft);margin:0 0 .55rem;
+}
+.vp-award__meta{
+  margin-top:auto;padding-top:.55rem;border-top:1px solid var(--vp-border-soft);
+  font-size:.75rem;line-height:1.5;color:var(--vp-text-muted);
+}
+.vp-award__who{
+  display:block;margin-top:.2rem;color:var(--vp-text-soft);font-weight:600;
+}
+
+/* ---- lightbox ---- */
+.vp-lightbox{
+  position:fixed;inset:0;z-index:var(--vp-z-drawer);
+  display:grid;place-items:center;padding:clamp(1rem,4vw,3rem);
+  background:rgb(4 22 27 / .88);
+  animation:vp-fade-in var(--vp-dur-fast) var(--vp-ease) both;
+}
+.vp-lightbox__fig{margin:0;max-width:min(60rem,100%);max-height:100%;display:flex;flex-direction:column;gap:.85rem;}
+.vp-lightbox__fig img{
+  max-width:100%;max-height:70vh;object-fit:contain;
+  border-radius:var(--vp-radius);background:#fff;
+}
+.vp-lightbox__cap{color:#C6D6D6;font-size:.875rem;line-height:1.55;text-align:center;margin:0;}
+.vp-lightbox__close{
+  position:absolute;top:clamp(.75rem,2vw,1.25rem);right:clamp(.75rem,2vw,1.25rem);
+  display:grid;place-items:center;width:44px;height:44px;
+  border:1px solid rgb(255 255 255 / .28);border-radius:var(--vp-radius);
+  background:rgb(255 255 255 / .06);color:#fff;cursor:pointer;
+}
+.vp-lightbox__close:hover{background:rgb(255 255 255 / .16);}
+
+/* Stepping controls. Only rendered when the viewer is given onPrev/onNext, so
+   the Awards single-certificate view is untouched. */
+.vp-lightbox__nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  display:grid;place-items:center;width:44px;height:44px;
+  border:1px solid rgb(255 255 255 / .28);border-radius:var(--vp-radius);
+  background:rgb(255 255 255 / .06);color:#fff;cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-lightbox__nav:hover{background:rgb(255 255 255 / .16);}
+.vp-lightbox__nav[data-dir="prev"]{left:clamp(.5rem,2vw,1.25rem);}
+.vp-lightbox__nav[data-dir="next"]{right:clamp(.5rem,2vw,1.25rem);}
+/* Below the image on phones, where 44px buttons over a full-width picture
+   cover the subject and sit under the thumb holding the device. */
+@media (max-width:575.98px){
+  .vp-lightbox{grid-template-rows:1fr auto;}
+  .vp-lightbox__nav{position:static;transform:none;}
+  .vp-lightbox__nav[data-dir="prev"]{justify-self:start;grid-row:2;}
+  .vp-lightbox__nav[data-dir="next"]{justify-self:end;grid-row:2;}
+  .vp-lightbox__fig{grid-row:1;}
+}
+.vp-lightbox__count{
+  display:block;margin-top:.4rem;
+  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.08em;
+  color:rgb(198 214 214 / .7);
+}
+
+/* =================================================== DOWNLOADS =========== */
+
+/* ---- editorial two-column (shared) ---------------------------------------
+   A label column that holds still while its content scrolls past it. Used by
+   the document archive below and by the partner wall, so a reader moving
+   between the two pages meets the same structure twice. */
+.vp-edcol{display:grid;gap:clamp(1.25rem,3vw,2rem);align-items:start;}
+@media (min-width:1000px){
+  .vp-edcol{
+    grid-template-columns:minmax(0,15rem) minmax(0,1fr);
+    gap:clamp(2rem,4vw,4.5rem);
+  }
+}
+.vp-edcol__aside{display:flex;flex-direction:column;gap:.5rem;}
+@media (min-width:1000px){
+  .vp-edcol__aside{position:sticky;top:calc(var(--vp-header-h) + 2.5rem);}
+}
+.vp-edcol__num{
+  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.08em;
+  color:var(--tone,var(--vp-accent-text));
+}
+.vp-edcol__title{
+  font-family:var(--vp-font-serif);
+  font-size:var(--vp-fs-h3);font-weight:600;line-height:1.25;
+  margin:0;color:var(--vp-text);text-wrap:balance;
+  padding-left:.85rem;border-left:3px solid var(--tone,var(--vp-primary));
+}
+.vp-edcol__blurb{
+  font-size:.875rem;line-height:1.6;color:var(--vp-text-soft);margin:.25rem 0 0;
+}
+.vp-edcol__meta{
+  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);margin:0;
+}
+
+/* ---- the archive ---------------------------------------------------------
+   The page used to be white rows on a white page, which read as a wireframe.
+   The archive now sits on a tinted ground with each group carrying its own
+   accent, so a reader can tell which set a row belongs to after the heading has
+   scrolled away. Both grounds are tokens, so the whole thing themes itself. */
+.vp-arch{background:var(--vp-bg-alt);}
+
+.vp-archgroup{
+  padding-block:clamp(2.5rem,5vw,4rem);
+  scroll-margin-top:calc(var(--vp-header-h) + 1.5rem);
+}
+.vp-archgroup + .vp-archgroup{border-top:1px solid var(--vp-border);}
+/* Four groups, four tones. */
+.vp-archgroup[data-tone="0"]{--tone:var(--vp-green-600);--toneSoft:var(--vp-green-50);}
+.vp-archgroup[data-tone="1"]{--tone:var(--vp-blue-600);--toneSoft:var(--vp-blue-50);}
+.vp-archgroup[data-tone="2"]{--tone:var(--vp-amber-700);--toneSoft:#FDF1E7;}
+.vp-archgroup[data-tone="3"]{--tone:var(--vp-blue-800);--toneSoft:#E9F1F2;}
+[data-bs-theme="dark"] .vp-archgroup[data-tone="0"]{--tone:var(--vp-green-300);--toneSoft:rgb(88 176 88 / .14);}
+[data-bs-theme="dark"] .vp-archgroup[data-tone="1"]{--tone:var(--vp-blue-200);--toneSoft:rgb(107 169 178 / .16);}
+[data-bs-theme="dark"] .vp-archgroup[data-tone="2"]{--tone:var(--vp-amber-300);--toneSoft:rgb(250 150 72 / .14);}
+[data-bs-theme="dark"] .vp-archgroup[data-tone="3"]{--tone:var(--vp-blue-300);--toneSoft:rgb(107 169 178 / .12);}
+
+/* Each document is a card on the tinted ground, so the page has figure and
+   ground instead of hairlines on white. */
+.vp-docs{list-style:none;margin:0;padding:0;display:grid;gap:.7rem;}
+.vp-doc{
+  position:relative;display:grid;gap:.15rem 1.1rem;
+  grid-template-columns:auto minmax(0,1fr);
+  padding:clamp(1rem,1.8vw,1.35rem);
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius);
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease),
+             transform var(--vp-dur) var(--vp-ease);
+  animation:vp-reg-in 440ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 45ms);
+}
+@media (min-width:820px){
+  .vp-doc{grid-template-columns:auto minmax(0,1fr) auto;align-items:start;}
+}
+.vp-doc:hover,.vp-doc:focus-within{
+  border-color:var(--tone);
+  box-shadow:0 18px 38px -26px rgb(7 21 24 / .4);
+  transform:translateY(-2px);
+}
+/* The file chip carries the group tone, so a row is identifiable on its own. */
+.vp-doc__chip{
+  grid-row:1 / span 3;align-self:start;
+  display:grid;place-items:center;min-width:2.75rem;padding:.35rem .5rem;
+  border-radius:var(--vp-radius-sm);
+  background:var(--toneSoft);color:var(--tone);
+  font-family:var(--vp-font-mono);font-size:.6875rem;font-weight:600;letter-spacing:.06em;
+}
+.vp-doc__main{min-width:0;}
+.vp-doc__title{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(1.0313rem,1rem + .3vw,1.1875rem);
+  font-weight:600;line-height:1.4;margin:0 0 .3rem;color:var(--vp-text);
+  text-wrap:pretty;
+}
+.vp-doc__desc{
+  font-size:.875rem;line-height:1.6;color:var(--vp-text-muted);
+  margin:0 0 .5rem;max-width:66ch;
+}
+.vp-doc__meta{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .6rem;
+  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);margin:0;
+}
+.vp-doc__meta span[aria-hidden]{opacity:.5;}
+
+.vp-doc__acts{
+  grid-column:2;display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;
+}
+@media (min-width:820px){
+  .vp-doc__acts{grid-column:3;grid-row:1 / span 3;margin-top:0;flex-direction:column;}
+}
+/* View is the primary act on a page of regulations — most people want to check
+   a clause, not collect a file — so it is the filled control. */
+.vp-doc__view,.vp-doc__save{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  padding:.45rem .8rem;border-radius:var(--vp-radius-pill);
+  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.04em;
+  text-transform:uppercase;text-decoration:none;cursor:pointer;white-space:nowrap;
+  transition:background var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-doc__view{
+  background:var(--tone);border:1px solid var(--tone);color:#fff;
+}
+.vp-doc__view:hover{filter:brightness(1.12);}
+[data-bs-theme="dark"] .vp-doc__view{color:var(--vp-blue-950);}
+.vp-doc__save{
+  background:transparent;border:1px solid var(--vp-border);color:var(--vp-text-soft);
+}
+.vp-doc__save:hover{border-color:var(--tone);color:var(--tone);}
+
+/* ---- in-page PDF viewer -------------------------------------------------- */
+.vp-pdf{position:fixed;inset:0;z-index:var(--vp-z-drawer);display:grid;place-items:center;padding:clamp(.5rem,2vw,2rem);}
+.vp-pdf__scrim{position:absolute;inset:0;border:0;padding:0;background:rgb(4 22 27 / .78);cursor:zoom-out;}
+.vp-pdf__panel{
+  position:relative;display:flex;flex-direction:column;
+  width:min(100%,64rem);height:min(92vh,60rem);
+  background:var(--vp-surface);border-radius:var(--vp-radius-lg);overflow:hidden;
+  box-shadow:var(--vp-shadow-lg);
+}
+.vp-pdf__head{
+  display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:.6rem 1rem;
+  padding:.9rem 1rem;border-bottom:1px solid var(--vp-border);background:var(--vp-bg-alt);
+}
+.vp-pdf__id{min-width:0;}
+.vp-pdf__title{
+  font-family:var(--vp-font-serif);font-size:1rem;font-weight:600;line-height:1.3;
+  margin:0 0 .15rem;color:var(--vp-text);
+}
+.vp-pdf__meta{font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);margin:0;}
+.vp-pdf__acts{display:flex;align-items:center;gap:.5rem;flex:none;}
+.vp-pdf__act{
+  /* Shown at every width. These were desktop-only, which meant a phone user —
+     the one most likely to need "save it and read it later" — got a viewer with
+     no way out of it but Close. The header wraps instead. */
+  display:inline-flex;padding:.4rem .7rem;border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-pill);
+  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.04em;
+  text-transform:uppercase;text-decoration:none;color:var(--vp-text-soft);
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-pdf__act:hover{border-color:var(--vp-primary);color:var(--vp-primary);}
+.vp-pdf__close{
+  display:grid;place-items:center;width:36px;height:36px;flex:none;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  background:var(--vp-surface);color:var(--vp-text-soft);cursor:pointer;
+}
+.vp-pdf__close:hover{background:var(--vp-primary);border-color:var(--vp-primary);color:#fff;}
+.vp-pdf__frame{flex:1;width:100%;border:0;background:var(--vp-bg-sunken);}
+.vp-pdf__noembed{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.6rem;padding:2rem;text-align:center;
+}
+.vp-pdf__noembedTitle{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;margin:0;color:var(--vp-text);
+}
+.vp-pdf__noembedBody{font-size:.875rem;line-height:1.6;color:var(--vp-text-muted);margin:0 0 .5rem;max-width:40ch;}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-doc{animation:none !important;}
+  .vp-doc:hover,.vp-doc:focus-within{transform:none !important;}
+}
+
+/* ============================================= PROJECT REGISTER COLOUR ====
+   Five categories, five tones, set once and inherited by everything that needs
+   to identify a category: the mix bar, the filter chips and the register rows.
+   A row therefore stays identifiable after its filter chip has scrolled away,
+   which is the whole reason for colour-coding a 52-row list. */
+[data-cat="electrical"]{--cat:var(--vp-green-600);--catSoft:var(--vp-green-50);}
+[data-cat="regulatory"]{--cat:var(--vp-blue-500);--catSoft:var(--vp-blue-50);}
+[data-cat="electrical-regulatory"]{--cat:var(--vp-blue-300);--catSoft:#EAF3F4;}
+[data-cat="om"]{--cat:var(--vp-amber-600);--catSoft:#FDF1E7;}
+[data-cat="civil"]{--cat:var(--vp-n-500);--catSoft:var(--vp-n-50);}
+[data-cat="all"]{--cat:var(--vp-text-soft);--catSoft:var(--vp-bg-alt);}
+[data-bs-theme="dark"] [data-cat="electrical"]{--cat:var(--vp-green-300);--catSoft:rgb(88 176 88 / .16);}
+[data-bs-theme="dark"] [data-cat="regulatory"]{--cat:var(--vp-blue-200);--catSoft:rgb(107 169 178 / .18);}
+[data-bs-theme="dark"] [data-cat="electrical-regulatory"]{--cat:var(--vp-blue-300);--catSoft:rgb(107 169 178 / .14);}
+[data-bs-theme="dark"] [data-cat="om"]{--cat:var(--vp-amber-300);--catSoft:rgb(250 150 72 / .16);}
+[data-bs-theme="dark"] [data-cat="civil"]{--cat:var(--vp-n-300);--catSoft:rgb(211 220 221 / .12);}
+
+/* ---- the mix bar --------------------------------------------------------- */
+.vp-mix{display:flex;flex-direction:column;gap:.9rem;margin-bottom:clamp(1.5rem,3vw,2rem);}
+.vp-mix__bar{
+  display:flex;height:14px;border-radius:999px;overflow:hidden;
+  background:var(--vp-bg-sunken);
+}
+.vp-mix__seg{
+  width:var(--w);border:0;padding:0;cursor:pointer;
+  background:var(--cat);
+  /* Grows from nothing on first paint, in sequence, so the bar reads as being
+     built out of the register rather than drawn over it. */
+  transform-origin:left;
+  animation:vp-mix-grow 720ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 90ms);
+  transition:opacity var(--vp-dur) var(--vp-ease),filter var(--vp-dur) var(--vp-ease);
+}
+@keyframes vp-mix-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+.vp-mix__seg:hover{filter:brightness(1.12);}
+/* When one category is chosen the rest recede rather than disappear — the
+   proportions stay readable. */
+.vp-mix__bar[data-filtered] .vp-mix__seg:not([data-on]){opacity:.26;}
+
+.vp-mix__key{
+  display:flex;flex-wrap:wrap;gap:.4rem .5rem;list-style:none;margin:0;padding:0;
+}
+.vp-mix__keyBtn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.35rem .7rem;border-radius:var(--vp-radius-pill);
+  border:1px solid var(--vp-border);background:transparent;
+  font-family:inherit;font-size:.8125rem;color:var(--vp-text-soft);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-mix__keyBtn:hover{border-color:var(--cat);color:var(--vp-text);}
+.vp-mix__keyBtn[aria-pressed="true"]{background:var(--catSoft);border-color:var(--cat);color:var(--vp-text);}
+.vp-mix__dot{width:9px;height:9px;border-radius:50%;background:var(--cat);flex:none;}
+.vp-mix__n{
+  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---- filters and rows take the same tones -------------------------------- */
+.vp-filter[data-cat][aria-pressed="true"]{
+  border-color:var(--cat);color:var(--cat);background:var(--catSoft);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-mix__seg{animation:none !important;}
+}
+
+/* ------------------------------------------------------------ shared ----- */
+.vp-sourcenote{
+  font-size:.8125rem;line-height:1.65;color:var(--vp-text-muted);
+  margin:clamp(1.5rem,3vw,2rem) 0 0;max-width:72ch;
+}
+
+/* ---- closing band, shared by the three About sub-pages ------------------- */
+.vp-band{
+  display:grid;gap:1.25rem;
+  padding:clamp(1.5rem,3vw,2.25rem);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-surface);
+}
+@media (min-width:768px){
+  .vp-band{grid-template-columns:1fr auto;align-items:center;gap:2rem;}
+}
+.vp-band__title{
+  font-family:var(--vp-font-serif);font-size:1.125rem;font-weight:600;
+  margin:0 0 .35rem;color:var(--vp-text);
+}
+.vp-band__body{font-size:.9375rem;line-height:1.6;color:var(--vp-text-soft);margin:0;max-width:62ch;}
+
+/* ============================================================================
+   SERVICES · INDUSTRIES · PROJECTS · GALLERY · OVERVIEW
+
+   Same page-hero system as the About sub-pages (.vp-phero), so these routes
+   inherit the transparent-navbar behaviour without new machinery.
+   ========================================================================== */
+
+/* ------------------------------------------------------------- services -- */
+.vp-svcs__grid{display:block;}
+@media (min-width:1100px){
+  /* A narrow rail carries the running index beside the rows. */
+  .vp-svcs__grid{display:grid;grid-template-columns:2.75rem minmax(0,1fr);gap:2.5rem;align-items:start;}
+}
+
+.vp-rail{display:none;}
+@media (min-width:1100px){
+  .vp-rail{
+    display:flex;flex-direction:column;gap:.9rem;
+    position:sticky;top:calc(var(--vp-header-h) + 3.5rem);
+  }
+}
+.vp-rail__item{display:flex;flex-direction:column;align-items:center;gap:.5rem;}
+.vp-rail__n{
+  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
+  transition:color var(--vp-dur) var(--vp-ease);
+}
+.vp-rail__line{
+  width:1px;height:1.6rem;background:var(--vp-border);
+  transition:background var(--vp-dur) var(--vp-ease),height var(--vp-dur) var(--vp-ease);
+}
+.vp-rail__item:last-child .vp-rail__line{display:none;}
+.vp-rail__item[data-active="true"] .vp-rail__n{color:var(--vp-primary);}
+.vp-rail__item[data-active="true"] .vp-rail__line{background:var(--vp-primary);height:2.1rem;}
+
+.vp-svcs__list{display:grid;gap:clamp(2.5rem,6vw,5rem);}
+
+.vp-svc{
+  display:grid;gap:clamp(1.25rem,3vw,2.25rem);
+  align-items:center;
+}
+@media (min-width:900px){
+  .vp-svc{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(2rem,4vw,3.5rem);}
+  /* Alternating sides pull the eye down the page and stop six rows reading as
+     one uniform list. Order is swapped, not the DOM — reading order stays
+     image-then-text for a screen reader on every row. */
+  .vp-svc[data-flip="true"] .vp-svc__figure{order:2;}
+}
+
+.vp-svc__figure{
+  position:relative;border-radius:var(--vp-radius-lg);overflow:hidden;
+  background:var(--vp-bg-sunken);border:1px solid var(--vp-border);
+}
+.vp-svc__figure img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;}
+
+/* The index sits on the photograph rather than in a gutter, so it reads as a
+   plate number on a figure. */
+.vp-svc__badge{
+  position:absolute;left:0;top:0;
+  padding:.4rem .7rem;
+  background:rgb(4 22 27 / .78);color:#fff;
+  font-family:var(--vp-font-mono);font-size:.8125rem;letter-spacing:.04em;
+}
+
+.vp-svc__content{min-width:0;}
+.vp-svc__name{
+  font-family:var(--vp-font-serif);font-size:clamp(1.375rem,1.15rem + .9vw,1.875rem);
+  font-weight:600;line-height:1.24;margin:0 0 .7rem;color:var(--vp-text);
+}
+.vp-svc__summary{font-size:1rem;line-height:1.7;color:var(--vp-text-soft);margin:0;max-width:56ch;}
+
+.vp-svc__points{display:grid;gap:.45rem;margin:1.15rem 0 0;padding:0;list-style:none;}
+.vp-svc__points li{
+  position:relative;padding-left:1.15rem;
+  font-size:.9063rem;line-height:1.55;color:var(--vp-text-muted);
+}
+.vp-svc__points li::before{
+  content:"";position:absolute;left:0;top:.62em;
+  width:7px;height:1px;background:var(--vp-primary);
+  transform-origin:left center;
+  transition:transform 460ms var(--vp-ease);
+  transition-delay:calc(var(--i,0) * 90ms + 120ms);
+}
+/* Armed, not hidden by default. useReveal only sets data-anim="armed" once it
+   has confirmed motion is permitted, so if JS never runs the rules are simply
+   drawn — the site's contract is that content is visible unless something
+   actively hides it. */
+[data-anim="armed"] .vp-svc__points li::before{transform:scaleX(0);}
+[data-anim="in"] .vp-svc__points li::before{transform:scaleX(1);}
+
+.vp-svc__evidence{
+  display:inline-flex;flex-direction:column;
+  margin-top:1.4rem;padding:.85rem 1.1rem;
+  border:1px solid var(--vp-border);border-left:2px solid var(--vp-primary);
+  border-radius:var(--vp-radius);background:var(--vp-bg-alt);
+}
+.vp-svc__evidenceLabel{
+  font-size:.6875rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--vp-text-muted);margin:0 0 .3rem;
+}
+.vp-svc__count{
+  display:flex;align-items:baseline;gap:.4rem;margin:0;
+  font-family:var(--vp-font-mono);font-size:1.5rem;font-weight:500;color:var(--vp-text);
+  font-variant-numeric:tabular-nums;   /* the counter must not reflow while running */
+}
+.vp-svc__count small{font-family:var(--vp-font-sans);font-size:.8125rem;color:var(--vp-text-muted);}
+.vp-svc__evidenceNote{font-size:.8125rem;line-height:1.5;color:var(--vp-text-muted);margin:.25rem 0 0;}
+
+/* ------------------------------------------------------------ expertise -- */
+.vp-expertise{display:flex;flex-wrap:wrap;gap:.5rem;}
+.vp-expertise li{
+  padding:.45rem .85rem;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  font-size:.875rem;color:var(--vp-text-soft);
+  transition:opacity 420ms var(--vp-ease),transform 420ms var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease),color var(--vp-dur-fast) var(--vp-ease);
+  transition-delay:calc(var(--i,0) * 55ms);
+}
+/* Same contract: hidden only while armed, never by default. An earlier version
+   set opacity:0 here outright, which would have left the chips permanently
+   invisible if the observer never fired. */
+[data-anim="armed"] .vp-expertise li{opacity:0;transform:translateY(6px);}
+[data-anim="in"] .vp-expertise li{opacity:1;transform:none;}
+.vp-expertise li:hover{
+  background:var(--vp-primary);border-color:var(--vp-primary);
+  color:var(--vp-primary-contrast);
+}
+
+/* motion.css already neutralises durations under reduced motion, but the armed
+   state is a transform/opacity, not a duration — so it has to be released
+   explicitly or the content would simply stay hidden. */
+@media (prefers-reduced-motion:reduce){
+  [data-anim="armed"] .vp-svc__points li::before,
+  [data-anim="in"] .vp-svc__points li::before{transform:scaleX(1) !important;}
+  [data-anim="armed"] .vp-expertise li,
+  [data-anim="in"] .vp-expertise li{opacity:1 !important;transform:none !important;}
+}
+
+/* ------------------------------------------------------------ industries -- */
+.vp-inds{display:grid;gap:clamp(1rem,2vw,1.5rem);}
+@media (min-width:768px){ .vp-inds{grid-template-columns:1fr 1fr;} }
+@media (min-width:1200px){ .vp-inds{grid-template-columns:repeat(3,1fr);} }
+
+.vp-ind{
+  display:flex;flex-direction:column;height:100%;overflow:hidden;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-surface);
+  transition:border-color var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
+}
+.vp-ind:hover{border-color:var(--vp-primary);transform:translateY(-2px);}
+.vp-ind__media{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--vp-bg-sunken);}
+.vp-ind__media img{width:100%;height:100%;object-fit:cover;display:block;}
+.vp-ind__count{
+  position:absolute;left:0;bottom:0;
+  display:flex;align-items:baseline;gap:.35rem;
+  padding:.4rem .7rem;background:rgb(4 22 27 / .82);color:#fff;
+  font-family:var(--vp-font-mono);font-size:.9375rem;font-weight:500;
+}
+.vp-ind__count small{font-family:var(--vp-font-sans);font-size:.6875rem;opacity:.8;}
+.vp-ind__body{padding:1.125rem;display:flex;flex-direction:column;flex:1;}
+.vp-ind__name{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;
+  line-height:1.3;margin:0 0 .45rem;color:var(--vp-text);
+}
+.vp-ind__summary{font-size:.9063rem;line-height:1.6;color:var(--vp-text-soft);margin:0 0 .9rem;}
+.vp-ind__clients{
+  margin-top:auto;padding-top:.75rem;border-top:1px solid var(--vp-border-soft);
+  font-size:.75rem;line-height:1.6;color:var(--vp-text-muted);
+}
+.vp-ind__clients b{display:block;font-weight:600;color:var(--vp-text-soft);margin-bottom:.2rem;
+  font-size:.6875rem;letter-spacing:.07em;text-transform:uppercase;}
+
+/* -------------------------------------------------------------- projects -- */
+
+/* Sticky, so the controls stay usable forty rows down. `top` clears the site
+   header; the backdrop blur keeps rows legible as they pass underneath. */
+.vp-regbar{
+  position:sticky;top:var(--vp-header-h);z-index:3;
+  display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;
+  margin-bottom:1rem;padding:.75rem 0;
+  background:color-mix(in srgb, var(--vp-bg) 88%, transparent);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--vp-border);
+}
+@supports not (backdrop-filter:blur(8px)){ .vp-regbar{background:var(--vp-bg);} }
+
+.vp-filters{display:flex;flex-wrap:wrap;gap:.5rem;}
+
+/* Below 768px the six chips wrap to three rows, which made the sticky bar
+   ~400px tall — half a phone screen permanently occupied, worse than not
+   sticking at all. One scrollable row keeps it near 110px. */
+@media (max-width:767.98px){
+  .vp-filters{
+    flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    /* Bleed to the viewport edges so the row reads as continuing past them,
+       and restore the inset as padding. 1.25rem / 1.75rem are .vp-container's
+       own gutters at these widths (base.css) — there is no token for them. */
+    margin-inline:-1.25rem;padding-inline:1.25rem;
+    /* Chips snap so a half-cut chip never comes to rest under the thumb. */
+    scroll-snap-type:x proximity;
+  }
+  .vp-filters::-webkit-scrollbar{display:none;}
+  .vp-filter{flex:none;scroll-snap-align:start;}
+  .vp-search{max-width:none;}
+}
+@media (min-width:576px) and (max-width:767.98px){
+  .vp-filters{margin-inline:-1.75rem;padding-inline:1.75rem;}
+}
+.vp-filter{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:44px;
+  padding:.4rem .875rem;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  background:transparent;color:var(--vp-text-soft);
+  font-size:.875rem;font-family:inherit;cursor:pointer;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease),
+             background var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-filter:hover{border-color:var(--vp-border-strong);color:var(--vp-text);}
+.vp-filter[aria-pressed="true"]{
+  border-color:var(--vp-primary);color:var(--vp-primary);background:var(--vp-bg-alt);
+}
+.vp-filter__n{font-family:var(--vp-font-mono);font-size:.75rem;opacity:.75;}
+
+/* ---- search ---- */
+.vp-search{position:relative;display:flex;align-items:center;flex:1 1 15rem;max-width:20rem;}
+.vp-search__icon{
+  position:absolute;left:.7rem;display:grid;place-items:center;
+  color:var(--vp-text-muted);pointer-events:none;
+}
+.vp-search__input{
+  width:100%;min-height:40px;padding:.45rem 2rem .45rem 2.1rem;
+  border:1px solid var(--vp-border-strong);border-radius:var(--vp-radius-pill);
+  background:var(--vp-bg);color:var(--vp-text);
+  font-family:inherit;font-size:.9063rem;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-search__input::placeholder{color:var(--vp-text-muted);}
+.vp-search__input:focus{outline:none;border-color:var(--vp-primary);}
+/* The browser's own clear affordance would sit on top of ours. */
+.vp-search__input::-webkit-search-cancel-button{display:none;}
+.vp-search__clear{
+  position:absolute;right:.4rem;display:grid;place-items:center;
+  width:28px;height:28px;border:0;border-radius:50%;
+  background:transparent;color:var(--vp-text-muted);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-search__clear:hover{background:var(--vp-bg-sunken);color:var(--vp-text);}
+
+/* ---- result count ---- */
+.vp-regcount{
+  display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
+  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--vp-text-muted);
+  margin:0 0 .75rem;
+}
+.vp-regcount__reset{
+  border:0;background:none;padding:0;cursor:pointer;
+  font:inherit;letter-spacing:inherit;text-transform:inherit;
+  color:var(--vp-primary);text-decoration:underline;text-underline-offset:3px;
+}
+.vp-regcount__reset:hover{color:var(--vp-primary-hover);}
+
+/* ---- the register, as cards ---------------------------------------------
+   NAMED .vp-rcard, NOT .vp-card. components.css already owns a global
+   `.vp-card`, and about.css is a lazily-loaded sheet — so the two only
+   collided once a visitor had opened a page that pulls about.css in, and then
+   stayed collided for the rest of the session. css-collisions.test.js exists
+   for exactly this and caught it.
+   Fifty-two entries were a flat four-column list: correct, readable, and
+   completely without hierarchy — every row looked like every other row, so the
+   eye had nothing to catch on. Each entry is now a card that leads with the
+   register's own number and its voltage class, carries the category as a
+   coloured top edge, and closes with the organisation that placed the order. */
+.vp-reg{
+  display:grid;gap:clamp(.75rem,1.4vw,1.1rem);
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,25rem),1fr));
+}
+
+@keyframes vp-reg-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* ANIMATION FILL MODE IS `backwards`, NOT `both`, AND THAT MATTERS.
+   vp-reg-in ends at `transform:none`. Under `both` that final value persists
+   after the animation finishes — and in the CSS cascade an animation beats a
+   normal author declaration, so every `:hover{transform:...}` on a card
+   carrying it was silently dead. `backwards` holds the start state through the
+   stagger delay, then hands the element back to its own styles. */
+.vp-rcard{
+  position:relative;display:flex;flex-direction:column;
+  padding:1.4rem 1.35rem 1.15rem;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius);
+  overflow:hidden;
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease),
+             transform var(--vp-dur) var(--vp-ease);
+  animation:vp-reg-in 420ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * var(--stagger,38ms));
+}
+/* The category, as an edge. Present at rest so a card is identifiable while
+   scrolling, and it thickens on hover rather than appearing from nothing. */
+.vp-rcard::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:var(--cat);
+  transition:height var(--vp-dur) var(--vp-ease);
+}
+.vp-rcard:hover{
+  border-color:var(--cat);
+  transform:translateY(-3px);
+  box-shadow:0 22px 44px -28px rgb(7 21 24 / .42);
+}
+.vp-rcard:hover::before{height:5px;}
+
+/* The register's own entry number, ghosted into the corner. */
+.vp-rcard__n{
+  position:absolute;top:.5rem;right:.9rem;
+  font-family:var(--vp-font-serif);font-size:3.25rem;font-weight:600;
+  line-height:1;letter-spacing:-.03em;
+  color:var(--cat);opacity:.1;
+  transition:opacity var(--vp-dur) var(--vp-ease);
+  pointer-events:none;
+}
+.vp-rcard:hover .vp-rcard__n{opacity:.2;}
+
+.vp-rcard__top{display:flex;align-items:center;gap:.4rem;min-height:1.5rem;margin-bottom:.5rem;}
+.vp-rcard__kv{
+  display:inline-flex;align-items:center;
+  padding:.2rem .5rem;border-radius:var(--vp-radius-sm);
+  background:var(--catSoft);color:var(--cat);
+  font-family:var(--vp-font-mono);font-size:.6875rem;font-weight:600;
+  letter-spacing:.03em;white-space:nowrap;
+}
+.vp-rcard__what{
+  font-family:var(--vp-font-serif);
+  font-size:1.0313rem;font-weight:600;line-height:1.42;
+  margin:0;color:var(--vp-text);
+  /* Clears the ghosted numeral so a long title never runs under it. */
+  padding-right:2.5rem;text-wrap:pretty;
+}
+.vp-rcard__scope{
+  font-size:.8438rem;line-height:1.6;color:var(--vp-text-muted);margin:.45rem 0 0;
+}
+.vp-rcard__rule{
+  display:block;width:2rem;height:2px;margin:.9rem 0 .8rem;
+  background:var(--cat);opacity:.5;
+  transform-origin:left;transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-rcard:hover .vp-rcard__rule{transform:scaleX(1.9);}
+.vp-rcard__client{
+  display:flex;align-items:flex-start;gap:.45rem;
+  font-size:.875rem;line-height:1.5;color:var(--vp-text-soft);margin:0;
+}
+.vp-rcard__client svg{flex:none;margin-top:.15rem;color:var(--cat);}
+.vp-rcard__cat{
+  margin-top:auto;padding-top:.9rem;
+  font-family:var(--vp-font-mono);font-size:.6563rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--vp-text-muted);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-rcard{animation:none !important;transition:none !important;}
+  .vp-rcard:hover{transform:none !important;}
+}
+
+.vp-reg__empty{
+  padding:clamp(1.5rem,3vw,2.25rem);
+  border:1px dashed var(--vp-border-strong);border-radius:var(--vp-radius-lg);
+  background:var(--vp-bg-alt);color:var(--vp-text-soft);
+  font-size:.9375rem;line-height:1.65;
+  animation:vp-reg-in 320ms var(--vp-ease) backwards;
+}
+.vp-reg__empty strong{color:var(--vp-text);}
+
+/* ---- named capacities ---- */
+/* HAIRLINES ARE DRAWN BY THE CELLS, not by a 1px grid gap over a tinted
+   container. The gap technique is neat until a grid does not divide evenly —
+   six capabilities across four columns, eleven strengths across three, five
+   figures across two — and then every unfilled track shows the container's
+   border colour as a grey hole. Cells that do not exist cannot draw a rule, so
+   the grid simply ends. (Same defect, same fix, as the partner wall.) */
+.vp-caps{
+  display:grid;gap:0;background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);overflow:hidden;
+}
+@media (min-width:640px){ .vp-caps{grid-template-columns:repeat(2,1fr);} }
+@media (min-width:1100px){ .vp-caps{grid-template-columns:repeat(4,1fr);} }
+.vp-cap{
+  background:var(--vp-surface);padding:1.1rem 1.2rem;
+  transition:background var(--vp-dur-fast) var(--vp-ease);
+  box-shadow:inset -1px -1px 0 0 var(--vp-border);
+}
+.vp-cap:hover{background:var(--vp-bg-alt);}
+.vp-cap__v{
+  font-family:var(--vp-font-mono);font-size:1.25rem;font-weight:500;
+  font-variant-numeric:tabular-nums;color:var(--vp-text);margin:0 0 .3rem;
+}
+.vp-cap__t{
+  font-family:var(--vp-font-mono);font-size:.6875rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--vp-primary);margin:0 0 .4rem;
+}
+.vp-cap__c{font-size:.8438rem;line-height:1.5;color:var(--vp-text-muted);margin:0;}
+
+.vp-figs{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,9rem),1fr));}
+.vp-fig{
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  background:var(--vp-bg-alt);padding:.85rem .95rem;
+}
+.vp-fig__v{font-family:var(--vp-font-mono);font-size:1.0625rem;font-weight:500;color:var(--vp-text);}
+.vp-fig__k{font-size:.75rem;line-height:1.5;color:var(--vp-text-muted);margin:.2rem 0 0;}
+
+/* --------------------------------------------------------------- gallery -- */
+
+/* ---- gallery mosaic -----------------------------------------------------
+   Four sizes on a dense grid, so the page has a few big frames to land on
+   instead of a wall of identical rectangles — see data/gallery.js for which
+   photograph gets which size and why.
+
+   NO HOLES, BY ARITHMETIC RATHER THAN BY HOPE. The twelve frames occupy 24
+   grid cells (2 big at 4, 3 wide at 2, 3 tall at 2, 4 unit at 1), and 24
+   divides exactly by the 2, 3 and 4 column counts used below — so every
+   breakpoint closes on a full row. `dense` then backfills anything the source
+   order would otherwise leave open.
+
+   Rows are a FIXED height, not an aspect ratio: a cell that spans two rows has
+   to be exactly twice a cell that spans one, or the mosaic will not tile. */
+/* Phones get ONE column, and the mosaic starts at 640px.
+   Area dividing by the column count is necessary but not sufficient: the cells
+   also have to PACK. At two columns the 2x2 and 1x2 shapes leave a two-cell
+   hole no matter how `dense` reorders them, because only one unit cell remains
+   to pair with the last portrait. A single column cannot have a hole at all,
+   and a full-width photograph is the right answer on a phone regardless. */
+/* The mosaic is written with PLAIN, FIXED lengths — no custom properties and
+   no clamp() in the track sizes. The tile's height and the grid row must agree
+   exactly for a two-row tile to line up with two one-row tiles beside it, and
+   any indirection between the two is a chance for them to disagree.
+   The gap is fixed at .9rem from 640px up for the same reason: a two-row tile
+   is 2 x row + 1 gap, and that arithmetic has to be exact. */
+.vp-gal{display:grid;gap:.9rem;grid-template-columns:1fr;}
+
+/* Phones: one column, tile carries its own ratio, no holes possible. */
+@media (max-width:639.98px){
+  .vp-gal{gap:.6rem;}
+  .vp-gal__item{aspect-ratio:4/3;}
+}
+
+/* TWO columns from 640 to 1100, not three. At three columns this set cannot
+   tile: the two 2x2 frames each take a portrait beside them and the three
+   wides each take a unit, leaving one portrait and one unit — three cells that
+   cannot form a 3-wide block, so the holes land mid-grid. At two columns the
+   2x2 frames are demoted to full width, leaving only 1x1, 2x1 and 1x2. */
+@media (min-width:640px) and (max-width:1099.98px){
+  .vp-gal{grid-template-columns:repeat(2,1fr);grid-auto-rows:10rem;grid-auto-flow:dense;}
+  .vp-gal__item{height:10rem;}
+  .vp-gal__cell[data-span="big"]{grid-column:span 2;}
+  .vp-gal__cell[data-span="wide"]{grid-column:span 2;}
+  .vp-gal__cell[data-span="tall"]{grid-row:span 2;}
+  .vp-gal__cell[data-span="tall"] .vp-gal__item{height:20.9rem;}
+}
+
+/* Four columns: 24 cells, six exact rows. */
+@media (min-width:1100px){
+  .vp-gal{grid-template-columns:repeat(4,1fr);grid-auto-rows:12rem;grid-auto-flow:dense;}
+  .vp-gal__item{height:12rem;}
+  .vp-gal__cell[data-span="big"]{grid-column:span 2;grid-row:span 2;}
+  .vp-gal__cell[data-span="wide"]{grid-column:span 2;}
+  .vp-gal__cell[data-span="tall"]{grid-row:span 2;}
+  .vp-gal__cell[data-span="big"] .vp-gal__item,
+  .vp-gal__cell[data-span="tall"] .vp-gal__item{height:24.9rem;}
+}
+
+.vp-gal__cell{
+  display:flex;min-width:0;
+  animation:vp-reg-in 520ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 55ms);
+}
+/* NO `height` here. The breakpoints above state the tile height, and this rule
+   sits after them — a `height:100%` at this point silently wins against every
+   one of them, which is precisely how the mosaic collapsed. */
+.vp-gal__item{
+  display:block;position:relative;width:100%;
+  padding:0;border:0;background:none;cursor:zoom-in;
+  border-radius:var(--vp-radius);overflow:hidden;
+  border:1px solid var(--vp-border);
+  transition:border-color var(--vp-dur) var(--vp-ease);
+}
+.vp-gal__item:hover,.vp-gal__item:focus-visible{border-color:var(--vp-primary);}
+
+/* The frame fills its cell — no aspect-ratio, or a 2x2 cell would letterbox.
+   The image is clipped by the frame so the hover zoom has something to scale
+   inside rather than pushing its neighbours. */
+.vp-gal__frame{
+  position:absolute;inset:0;display:block;overflow:hidden;
+  background:var(--vp-bg-sunken);
+}
+.vp-gal__frame img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform 700ms var(--vp-ease);
+}
+.vp-gal__item:hover .vp-gal__frame img,
+.vp-gal__item:focus-visible .vp-gal__frame img{transform:scale(1.06);}
+
+/* The caption sits ON the photograph now. Below it, every cell would need room
+   for text and the mosaic could not tile on a fixed row height. */
+.vp-gal__cap{
+  position:absolute;left:0;right:0;bottom:0;z-index:1;
+  padding:1.75rem .8rem .7rem;
+  background:linear-gradient(180deg,rgb(4 22 27 / 0),rgb(4 22 27 / .78));
+  text-align:left;pointer-events:none;
+}
+.vp-gal__title{
+  font-size:.8125rem;line-height:1.35;font-weight:600;color:#fff;
+  text-shadow:0 1px 3px rgb(4 22 27 / .6);
+}
+.vp-gal__cell[data-span="big"] .vp-gal__title{font-size:.9375rem;}
+
+.vp-gal__zoom{
+  position:absolute;top:.6rem;right:.6rem;
+  display:grid;place-items:center;width:32px;height:32px;
+  border-radius:var(--vp-radius-sm);
+  background:rgb(4 22 27 / .62);color:#fff;
+  opacity:1;transform:none;
+  transition:opacity var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
+}
+@media (hover:hover){
+  .vp-gal__zoom{opacity:0;transform:translateY(-4px);}
+  .vp-gal__item:hover .vp-gal__zoom,
+  .vp-gal__item:focus-visible .vp-gal__zoom{opacity:1;transform:none;}
+}
+
+/* The previous gallery's rules lived here — a second `.vp-gal__item` that set
+   `height:100%` and `display:flex`, plus `.vp-gal{grid-auto-rows:auto}`. They
+   sat AFTER the mosaic above and quietly won every cascade against it: the row
+   height was forced back to `auto`, the tile took its height from content that
+   is absolutely positioned, and every cell collapsed to 2px. Deleted rather
+   than patched around. */
+
+/* An honest banner rather than implying the photography is of Vedanjay sites. */
+.vp-notice{
+  display:flex;gap:.75rem;align-items:flex-start;
+  padding:1rem 1.125rem;margin-bottom:clamp(1.5rem,3vw,2rem);
+  border:1px solid var(--vp-border);border-left:2px solid var(--vp-accent);
+  border-radius:var(--vp-radius);background:var(--vp-bg-alt);
+}
+.vp-notice p{font-size:.875rem;line-height:1.6;color:var(--vp-text-soft);margin:0;}
+
+/* ============================================================ OVERVIEW ==== */
+
+/* ---- figures ---- */
+/*
+  RENAMED on 5 Sep 2026, same reason as .vp-keystr above.
+  `.vp-tech` belongs to sections.css (the homepage Expertise figures) and
+  `.vp-stat` to base.css (a global data-readout utility). Redefining either
+  here leaked onto those the moment a lazy page chunk loaded.
+*/
+.vp-figures{
+  display:grid;gap:0;background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);overflow:hidden;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));
+}
+.vp-figure{background:var(--vp-surface);padding:clamp(1.1rem,2.2vw,1.6rem);
+  box-shadow:inset -1px -1px 0 0 var(--vp-border);
+}
+.vp-figure__value{
+  display:flex;align-items:baseline;gap:.35rem;margin:0 0 .35rem;
+  font-family:var(--vp-font-serif);
+  font-size:clamp(1.75rem,1.4rem + 1.4vw,2.5rem);font-weight:600;
+  line-height:1;letter-spacing:-.015em;color:var(--vp-text);
+  /* Tabular figures so a counting number cannot shuffle its own width. */
+  font-variant-numeric:tabular-nums;
+}
+.vp-figure__unit{
+  font-family:var(--vp-font-sans);font-size:.9375rem;font-weight:600;
+  color:var(--vp-accent-text);letter-spacing:0;
+}
+.vp-figure__label{font-size:.9063rem;line-height:1.5;color:var(--vp-text-soft);margin:0;}
+.vp-figure__note{font-size:.75rem;line-height:1.5;color:var(--vp-text-muted);margin:.3rem 0 0;}
+
+/* ---- story ---- */
+.vp-story{display:grid;gap:clamp(1.75rem,4vw,3rem);}
+@media (min-width:992px){
+  .vp-story{grid-template-columns:minmax(0,38fr) minmax(0,62fr);gap:clamp(2.5rem,5vw,4.5rem);align-items:start;}
+  /* The aside holds its position while the narrative scrolls past it. */
+  .vp-story__aside{position:sticky;top:calc(var(--vp-header-h) + 2.5rem);}
+}
+.vp-story__figure{
+  display:block;margin-top:1.75rem;border-radius:var(--vp-radius-lg);
+  overflow:hidden;border:1px solid var(--vp-border);background:var(--vp-bg-sunken);
+}
+.vp-story__figure img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;}
+
+.vp-story__body{display:grid;gap:0;}
+.vp-story__p{
+  position:relative;padding-left:1.75rem;
+  font-size:clamp(1rem,.97rem + .18vw,1.0938rem);line-height:1.8;
+  color:var(--vp-text-soft);margin:0 0 1.5rem;max-width:64ch;
+}
+.vp-story__p:last-child{margin-bottom:0;}
+/* A hairline runs beside each paragraph and grows in — the narrative reads as
+   a sequence rather than three loose blocks. */
+.vp-story__p::before{
+  content:"";position:absolute;left:0;top:.55em;bottom:.35em;width:2px;
+  background:linear-gradient(var(--vp-primary),transparent);
+  transform-origin:top center;
+  transition:transform 720ms var(--vp-ease);
+  transition-delay:calc(var(--i,0) * 120ms + 140ms);
+}
+[data-anim="armed"] .vp-story__p::before{transform:scaleY(0);}
+[data-anim="in"] .vp-story__p::before{transform:scaleY(1);}
+
+/* ---- six lines index ---- */
+.vp-lines-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--vp-border);}
+.vp-lines-list li{
+  display:flex;align-items:baseline;gap:1.25rem;
+  padding:.95rem .25rem;border-bottom:1px solid var(--vp-border);
+  transition:padding-inline-start var(--vp-dur) var(--vp-ease),
+             background var(--vp-dur) var(--vp-ease);
+}
+.vp-lines-list li:hover{padding-inline-start:1rem;background:var(--vp-bg-alt);}
+.vp-lines-list__n{
+  font-family:var(--vp-font-mono);font-size:.8125rem;color:var(--vp-primary);flex:none;
+}
+.vp-lines-list__t{
+  font-family:var(--vp-font-serif);font-size:clamp(1.0625rem,1rem + .35vw,1.25rem);
+  font-weight:600;color:var(--vp-text);
+}
+
+/* ---- coverage ---- */
+.vp-cover{background:var(--vp-bg-alt);border-block:1px solid var(--vp-border);}
+.vp-areas{border-top:1px solid var(--vp-border);}
+.vp-areas li{
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:.35rem 1.5rem;padding:1rem .25rem;border-bottom:1px solid var(--vp-border);
+  position:relative;
+}
+/* A rule sweeps across each row as it enters. */
+.vp-areas li::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:var(--vp-primary);transform-origin:left center;
+  transition:transform 620ms var(--vp-ease);
+  transition-delay:calc(var(--i,0) * 110ms + 100ms);
+}
+[data-anim="armed"] .vp-areas li::after{transform:scaleX(0);}
+[data-anim="in"] .vp-areas li::after{transform:scaleX(0);}
+[data-anim="in"] .vp-areas li:hover::after{transform:scaleX(1);}
+.vp-areas__name{
+  font-family:var(--vp-font-serif);font-size:clamp(1.125rem,1rem + .5vw,1.375rem);
+  font-weight:600;color:var(--vp-text);
+}
+.vp-areas__basis{font-size:.875rem;color:var(--vp-text-muted);}
+
+.vp-techgrid{display:grid;gap:0;background:var(--vp-surface);border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius);overflow:hidden;}
+.vp-techgrid__item{background:var(--vp-surface);padding:1rem 1.125rem;
+  box-shadow:inset -1px -1px 0 0 var(--vp-border);
+}
+.vp-techgrid__name{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;
+  margin:0 0 .25rem;color:var(--vp-text);
+}
+.vp-techgrid__body{font-size:.875rem;line-height:1.6;color:var(--vp-text-muted);margin:0;}
+
+/* ---- strengths ---- */
+/*
+  RENAMED from .vp-strengths on 5 Sep 2026.
+
+  sections.css has owned `.vp-strengths` since the homepage was built —
+  there it is a Bootstrap row with a top border, and its children are
+  `.col-*` wrappers. This grid was added later for the About page under the
+  same name, and the two collided.
+
+  It did not show up on a direct homepage load, because about.css ships in
+  the LAZY page chunks. But the moment a visitor opened About, Services,
+  Careers or Projects, that CSS was injected and stayed — so navigating back
+  Home turned `Why Vedanjay Power` into a 3-column grid with a 1px gap and a
+  rounded border, collapsing each item from 400px to 133px wide.
+*/
+.vp-keystr{
+  display:grid;gap:0;background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);overflow:hidden;
+}
+@media (min-width:768px){ .vp-keystr{grid-template-columns:1fr 1fr;} }
+@media (min-width:1200px){ .vp-keystr{grid-template-columns:repeat(3,1fr);} }
+.vp-keystr__item{
+  background:var(--vp-surface);padding:1.15rem 1.3rem;
+  transition:background var(--vp-dur) var(--vp-ease);
+  box-shadow:inset -1px -1px 0 0 var(--vp-border);
+}
+.vp-keystr__item:hover{background:var(--vp-bg-alt);}
+.vp-keystr__name{
+  font-family:var(--vp-font-serif);font-size:1rem;font-weight:600;
+  margin:0 0 .35rem;color:var(--vp-text);
+  padding-left:.9rem;position:relative;
+}
+/* A small brand tick appears per card, staggered across the grid. */
+.vp-keystr__name::before{
+  content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;
+  border-radius:50%;background:var(--vp-primary);
+  transform:scale(1);transition:transform 420ms var(--vp-ease);
+  transition-delay:calc(var(--i,0) * 45ms + 80ms);
+}
+[data-anim="armed"] .vp-keystr__name::before{transform:scale(0);}
+[data-anim="in"] .vp-keystr__name::before{transform:scale(1);}
+.vp-keystr__body{font-size:.875rem;line-height:1.65;color:var(--vp-text-muted);margin:0;padding-left:.9rem;}
+
+/* ---- onward ---- */
+.vp-onward{display:grid;gap:clamp(1rem,2vw,1.5rem);}
+@media (min-width:768px){ .vp-onward{grid-template-columns:repeat(3,1fr);} }
+.vp-onward__card{
+  display:flex;flex-direction:column;height:100%;
+  padding:clamp(1.15rem,2.2vw,1.5rem);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-surface);
+  transition:border-color var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
+}
+.vp-onward__card:hover{border-color:var(--vp-primary);transform:translateY(-2px);}
+.vp-onward__t{
+  font-family:var(--vp-font-serif);font-size:1.125rem;font-weight:600;
+  margin:0 0 .45rem;color:var(--vp-text);
+}
+.vp-onward__b{font-size:.9063rem;line-height:1.6;color:var(--vp-text-soft);margin:0 0 1rem;flex:1;}
+
+/* Motion is enhancement: the armed state must be released, since motion.css
+   only neutralises durations, not transforms. */
+@media (prefers-reduced-motion:reduce){
+  [data-anim="armed"] .vp-story__p::before,
+  [data-anim="in"] .vp-story__p::before{transform:scaleY(1) !important;}
+  [data-anim="armed"] .vp-keystr__name::before,
+  [data-anim="in"] .vp-keystr__name::before{transform:scale(1) !important;}
+}
+
+/* ---- closing band, shared by the three About sub-pages ------------------- */
+.vp-band{
+  display:grid;gap:1.25rem;
+  padding:clamp(1.5rem,3vw,2.25rem);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-surface);
+}
+@media (min-width:768px){
+  .vp-band{grid-template-columns:1fr auto;align-items:center;gap:2rem;}
+}
+.vp-band__title{
+  font-family:var(--vp-font-serif);font-size:1.125rem;font-weight:600;
+  margin:0 0 .35rem;color:var(--vp-text);
+}
+.vp-band__body{font-size:.9375rem;line-height:1.6;color:var(--vp-text-soft);margin:0;max-width:62ch;}
+
+/* ============================================================= CAREERS ==== */
+
+/* The role-card styles that lived here (.vp-jobs / .vp-job*) went with the
+   role list itself — see the note in pages/Careers.jsx. */
+
+/* ---- careers: speculative applications ---------------------------------- */
+.vp-apply{
+  display:grid;gap:clamp(1.25rem,3vw,2.5rem);align-items:center;
+  margin-top:clamp(1.5rem,3vw,2.25rem);
+  padding:clamp(1.35rem,2.8vw,2rem);
+  background:var(--vp-bg-alt);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+}
+@media (min-width:900px){ .vp-apply{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);} }
+.vp-apply__t{
+  font-family:var(--vp-font-serif);font-size:var(--vp-fs-h3);font-weight:600;
+  margin:0 0 .5rem;color:var(--vp-text);
+}
+.vp-apply__b{font-size:.9375rem;line-height:1.7;color:var(--vp-text-soft);margin:0;}
+.vp-apply__b a{color:var(--vp-primary);text-decoration:underline;text-underline-offset:3px;}
+.vp-apply__ways{display:flex;flex-direction:column;gap:.6rem;}
+.vp-apply__way{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.8rem 1rem;border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  background:var(--vp-surface);color:var(--vp-text);text-decoration:none;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),
+             transform var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-apply__way:hover{border-color:var(--vp-primary);transform:translateY(-2px);color:var(--vp-text);}
+.vp-apply__way svg{flex:none;color:var(--vp-primary);}
+.vp-apply__wayLabel{
+  display:block;font-family:var(--vp-font-mono);font-size:.6875rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--vp-text-muted);
+}
+.vp-apply__wayValue{display:block;font-size:.9375rem;font-weight:600;}
+
+/* ---- disciplines: the register's own categories and counts ---- */
+.vp-disc{
+  display:grid;gap:0;background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);overflow:hidden;
+}
+@media (min-width:768px){ .vp-disc{grid-template-columns:1fr 1fr;} }
+.vp-disc__item{
+  display:flex;gap:1rem;align-items:baseline;
+  background:var(--vp-surface);padding:1.15rem 1.3rem;
+  transition:background var(--vp-dur-fast) var(--vp-ease);
+  animation:vp-reg-in 460ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 60ms);
+  box-shadow:inset -1px -1px 0 0 var(--vp-border);
+}
+.vp-disc__item:hover{background:var(--vp-bg-alt);}
+.vp-disc__n{
+  flex:none;min-width:2.25rem;
+  font-family:var(--vp-font-mono);font-size:1.375rem;font-weight:500;
+  font-variant-numeric:tabular-nums;color:var(--vp-primary);margin:0;
+}
+.vp-disc__body{min-width:0;}
+.vp-disc__t{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;
+  margin:0 0 .3rem;color:var(--vp-text);
+}
+.vp-disc__b{font-size:.875rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
+
+/* ---- what the work asks ---- */
+.vp-reality{display:grid;gap:clamp(1rem,2vw,1.5rem);}
+@media (min-width:900px){ .vp-reality{grid-template-columns:repeat(3,1fr);} }
+.vp-reality__item{
+  padding-top:1.15rem;border-top:2px solid var(--vp-primary);
+  animation:vp-reg-in 460ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 80ms);
+}
+.vp-reality__t{
+  font-family:var(--vp-font-serif);font-size:1.125rem;font-weight:600;
+  line-height:1.3;margin:0 0 .5rem;color:var(--vp-text);
+}
+.vp-reality__b{font-size:.9375rem;line-height:1.7;color:var(--vp-text-soft);margin:0;}
+
+/* ---- named service breakdown (capability 01 only) ------------------------- */
+.vp-svc__services{
+  list-style:none;margin:1.25rem 0 0;padding:0;
+  display:grid;gap:0;background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);overflow:hidden;
+}
+@media (min-width:700px){ .vp-svc__services{grid-template-columns:repeat(3,1fr);} }
+.vp-svc__services li{
+  background:var(--vp-surface);padding:.85rem .95rem;
+  transition:background var(--vp-dur-fast) var(--vp-ease);
+  box-shadow:inset -1px -1px 0 0 var(--vp-border);
+}
+.vp-svc__services li:hover{background:var(--vp-bg-alt);}
+.vp-svc__serviceName{
+  font-family:var(--vp-font-serif);font-size:.9375rem;font-weight:600;
+  margin:0 0 .3rem;color:var(--vp-text);
+}
+.vp-svc__serviceBody{
+  font-size:.8125rem;line-height:1.6;color:var(--vp-text-muted);margin:0;
+}
+
+/* ---- partner wall --------------------------------------------------------- */
+/* ONE sheet per group, not one box per logo.
+   The marks are keyed to transparency (see scripts that built /partners/*.png),
+   so a card would have to be drawn deliberately — and isn't. What separates the
+   cells is a 1px gap that lets the plate colour show through, the way rules
+   separate entries on a printed contact sheet. No per-cell border, radius or
+   shadow exists anywhere below. */
+/* Layout and label column come from .vp-edcol above. */
+
+/* Paper is fixed, not themed: these marks were drawn for white, and one sheet
+   that stays the same in both themes is steadier than two tinted approximations.
+
+   WHAT CHANGED: the sheet used to be pure white on a white page, which made it
+   invisible — the logos looked as though they were floating on nothing. It now
+   carries a faint tint, a hairline and a real shadow, so it reads as a sheet
+   laid ON the page rather than as a hole in it. */
+.vp-pwall__plate{
+  --paper:#FFFFFF;
+  --rule:#E3E9E9;
+  background:linear-gradient(180deg,#FCFDFD 0%,#F2F6F6 100%);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);
+  overflow:hidden;
+  box-shadow:0 18px 44px -30px rgb(7 21 24 / .35);
+}
+[data-bs-theme="dark"] .vp-pwall__plate{
+  --paper:#F4F7F7;
+  --rule:#D3DBDB;
+  background:linear-gradient(180deg,#F7FAFA 0%,#E9EFEF 100%);
+  border-color:rgb(234 242 240 / .14);
+  box-shadow:0 24px 60px -34px rgb(0 0 0 / .8);
+}
+.vp-pwall__grid{
+  display:grid;margin:0;padding:0;list-style:none;
+  grid-template-columns:repeat(auto-fill,minmax(min(50%,10.5rem),1fr));
+}
+.vp-pwall__cell{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.65rem;
+  background:var(--paper);
+  padding:clamp(1.1rem,2.4vw,1.6rem) 1rem;
+  min-height:8.25rem;
+  position:relative;
+  /* The rules are drawn BY the cells, not by a 1px grid gap over a tinted
+     plate. A gap would be simpler, but a group that does not fill its last row
+     — Engineering & institutional has two members against five columns — would
+     leave the plate colour showing through as a grey slab. Cells that do not
+     exist cannot draw a rule, so the sheet just ends. */
+  box-shadow:inset -1px -1px 0 0 var(--rule);
+  transition:background var(--vp-dur) var(--vp-ease),
+             transform var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease);
+  animation:vp-reg-in 460ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 40ms);
+}
+.vp-pwall__mark{
+  display:block;width:auto;height:auto;
+  max-width:100%;max-height:2.75rem;object-fit:contain;
+  /* Full colour at rest, deliberately.
+     A grey-until-hover wall is the usual move here and it looks better on a
+     desktop screenshot — but hover does not exist on a touch device, so on a
+     phone it degrades to a permanently faded wall that never resolves. Several
+     of these marks are pale to begin with (Enrich, PickRenew) and simply
+     vanish. The sheet and its hairlines are what stop this reading as cards;
+     the logos do not have to be dimmed as well. */
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-pwall__name{
+  font-size:.6875rem;line-height:1.35;text-align:center;
+  letter-spacing:.045em;text-transform:uppercase;
+  color:#67787A;
+  transition:color var(--vp-dur-fast) var(--vp-ease);
+  overflow-wrap:anywhere;
+}
+/* A real lift, not a tint change. The cell rises out of the sheet, takes a
+   brand-green edge and its own shadow, and the mark grows into the space. */
+.vp-pwall__cell:hover,.vp-pwall__cell:focus-within{
+  background:#FFFFFF;
+  transform:translateY(-4px);
+  box-shadow:0 20px 40px -22px rgb(7 21 24 / .38);
+  outline:1px solid var(--vp-primary);
+  outline-offset:-1px;
+  z-index:1;
+}
+.vp-pwall__cell:hover .vp-pwall__mark,
+.vp-pwall__cell:focus-within .vp-pwall__mark{transform:scale(1.11);}
+.vp-pwall__cell:hover .vp-pwall__name,
+.vp-pwall__cell:focus-within .vp-pwall__name{color:var(--vp-primary-hover);}
+
+/* ---- technology partner --------------------------------------------------- */
+/* ENERCAST has no artwork on the company's listing. A blank plate would read as
+   a missing image, so the one partner without a mark is set as a statement
+   instead — the absence becomes the layout rather than a hole in it. */
+.vp-tpartner{
+  display:grid;gap:clamp(1rem,2.5vw,2rem);align-items:center;
+  padding:clamp(1.5rem,3.5vw,2.75rem) 0;
+  border-top:1px solid var(--vp-border);
+  border-bottom:1px solid var(--vp-border);
+}
+@media (min-width:820px){
+  .vp-tpartner{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(2rem,5vw,5rem);}
+}
+.vp-tpartner__name{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(1.5rem,1.15rem + 1.5vw,2.25rem);
+  font-weight:600;line-height:1.15;margin:0;color:var(--vp-text);
+}
+.vp-tpartner__role{
+  display:block;font-family:var(--vp-font-mono);
+  font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--vp-accent-text);margin-bottom:.6rem;
+}
+.vp-tpartner__body{
+  font-size:var(--vp-fs-body);line-height:1.65;color:var(--vp-text-soft);margin:0;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-pwall__cell{animation:none !important;transition:none !important;}
+  .vp-pwall__cell:hover,.vp-pwall__cell:focus-within{transform:none !important;}
+  .vp-pwall__cell:hover .vp-pwall__mark,
+  .vp-pwall__cell:focus-within .vp-pwall__mark{transform:none !important;}
+}
+
+
+/* ---- vision & mission ----------------------------------------------------- */
+.vp-vm{display:grid;gap:clamp(1.75rem,4vw,3.5rem);}
+@media (min-width:900px){ .vp-vm{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);align-items:start;} }
+.vp-vm__vision{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(1.375rem,1.1rem + 1.1vw,1.875rem);
+  font-weight:600;line-height:1.35;margin:0;color:var(--vp-text);
+  max-width:34ch;
+}
+
+.vp-mission{display:grid;gap:0;border-top:1px solid var(--vp-border);}
+.vp-mission li{
+  display:grid;grid-template-columns:2.4rem 1fr;gap:.75rem;align-items:baseline;
+  padding:.85rem 0;border-bottom:1px solid var(--vp-border);
+  animation:vp-reg-in 460ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 55ms);
+}
+.vp-mission__n{
+  font-family:var(--vp-font-mono);font-size:.75rem;font-weight:500;
+  color:var(--vp-primary);
+}
+.vp-mission__t{font-size:.9375rem;line-height:1.65;color:var(--vp-text-soft);}
+
+/* ---- core values ---------------------------------------------------------- */
+.vp-values{display:grid;gap:clamp(1rem,2vw,1.5rem);}
+@media (min-width:700px){ .vp-values{grid-template-columns:repeat(2,1fr);} }
+@media (min-width:1100px){ .vp-values{grid-template-columns:repeat(4,1fr);} }
+.vp-value{
+  animation:vp-reg-in 460ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 60ms);
+}
+/* A rule that grows on hover — the value cards carry no border, so the rule is
+   the only chrome and it stays quiet until you look at it. */
+.vp-value__rule{
+  display:block;height:2px;width:1.75rem;margin-bottom:.9rem;
+  background:var(--vp-primary);
+  transition:width var(--vp-dur-slow) var(--vp-ease);
+}
+.vp-value:hover .vp-value__rule{width:3.5rem;}
+.vp-value__name{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;
+  margin:0 0 .4rem;color:var(--vp-text);
+}
+.vp-value__body{font-size:.875rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
+
+/* ---- milestone timeline --------------------------------------------------- */
+/* ---- milestones: a horizontal strip of connected cards ------------------
+   The rail is ONE line behind the whole track, not a border on each card:
+   drawn per card it breaks at every gap, which is the opposite of connected.
+   Its offset is fixed (2.35rem) and every card reserves that space at the top,
+   so the dots land on it whatever the card contains. */
+.vp-ms{display:flex;flex-direction:column;gap:1rem;}
+.vp-ms__viewport{
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  cursor:grab;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.vp-ms__viewport::-webkit-scrollbar{display:none;}
+.vp-ms__viewport:active{cursor:grabbing;}
+.vp-ms__viewport:focus-visible{outline:2px solid var(--vp-focus);outline-offset:4px;border-radius:var(--vp-radius);}
+
+.vp-ms__track{
+  position:relative;display:flex;gap:1.25rem;
+  list-style:none;margin:0;padding:0 0 .5rem;
+  width:max-content;
+}
+/* the rail */
+.vp-ms__track::before{
+  content:"";position:absolute;left:0;right:0;top:2.35rem;height:2px;
+  background:linear-gradient(90deg,
+    var(--vp-border) 0%,var(--vp-primary) 12%,var(--vp-primary) 88%,var(--vp-border) 100%);
+  opacity:.35;
+}
+
+.vp-ms__item{
+  position:relative;flex:0 0 auto;
+  width:clamp(15rem,26vw,18.5rem);
+  scroll-snap-align:start;
+  padding:4rem 1.35rem 1.5rem;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);
+  box-shadow:0 1px 2px rgb(7 21 24 / .04);
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease),
+             transform var(--vp-dur) var(--vp-ease);
+  animation:vp-reg-in 560ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 60ms);
+}
+.vp-ms__item:hover{
+  border-color:var(--vp-primary);
+  box-shadow:0 18px 40px -26px rgb(7 21 24 / .4);
+  transform:translateY(-3px);
+}
+/* The cards are opaque, so the track rail behind them only shows in the gaps —
+   the line appeared to stop at every card. This carries it THROUGH each card at
+   the same height, so dot and rail read as one continuous run. */
+.vp-ms__item::after{
+  content:"";position:absolute;left:0;right:0;top:calc(2.35rem - 1px);
+  height:2px;background:var(--vp-primary);opacity:.26;
+}
+
+/* Sits ON the rail: same 2.35rem, less half its own height. */
+.vp-ms__dot{
+  z-index:1;
+  position:absolute;left:1.35rem;top:calc(2.35rem - 7px);
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--vp-primary);background:var(--vp-bg);
+  transition:background var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
+}
+.vp-ms__item:hover .vp-ms__dot{background:var(--vp-primary);transform:scale(1.18);}
+.vp-ms__year{
+  font-family:var(--vp-font-mono);font-size:.6875rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--vp-primary);
+  margin:0 0 .4rem;
+}
+.vp-ms__name{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;
+  line-height:1.3;margin:0 0 .4rem;color:var(--vp-text);
+}
+.vp-ms__text{font-size:.875rem;line-height:1.6;color:var(--vp-text-muted);margin:0;}
+
+.vp-ms__controls{display:flex;align-items:center;gap:1.25rem;}
+.vp-ms__progress{
+  flex:1;height:2px;background:var(--vp-border);border-radius:999px;overflow:hidden;
+}
+.vp-ms__progressFill{
+  display:block;height:100%;width:100%;background:var(--vp-primary);
+  transform-origin:left;transition:transform 120ms linear;
+}
+.vp-ms__arrows{display:flex;gap:.5rem;}
+.vp-ms__arrow{
+  display:grid;place-items:center;width:40px;height:40px;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  background:var(--vp-surface);color:var(--vp-text-soft);cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-ms__arrow:hover:not(:disabled){
+  background:var(--vp-primary);border-color:var(--vp-primary);color:var(--vp-primary-contrast);
+}
+.vp-ms__arrow:disabled{opacity:.35;cursor:default;}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-ms__item{animation:none !important;transition:none !important;}
+  .vp-ms__viewport{scroll-behavior:auto;}
+}
+
+/* ============================================================ POLISH ======
+   Team and Awards presentation, 5 Sep 2026.
+   Additive only — these refine the existing .vp-award block rather than
+   replacing it. (The team block that used to live here was rewritten as
+   .vp-tcard when the roster became a three-card grid.)
+   ========================================================================== */
+
+/* ---- awards --------------------------------------------------------------- */
+.vp-award{animation:vp-reg-in 500ms var(--vp-ease) backwards;
+  animation-delay:calc(var(--i,0) * 65ms);}
+/* Lift the whole card, not just the image, and let the certificate breathe. */
+.vp-award{transition:transform var(--vp-dur) var(--vp-ease),
+                     border-color var(--vp-dur) var(--vp-ease),
+                     box-shadow var(--vp-dur) var(--vp-ease);}
+.vp-award:hover{transform:translateY(-3px);box-shadow:var(--vp-shadow);}
+.vp-award__result{
+  display:inline-flex;align-items:center;gap:.35rem;
+}
+.vp-award__result::before{
+  content:"";width:5px;height:5px;border-radius:50%;
+  background:var(--vp-accent);flex:none;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-award{animation:none !important;}
+  .vp-award:hover{transform:none !important;}
+}

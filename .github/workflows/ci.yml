@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Install
+        run: |
+          npm ci
+          npm --prefix frontend ci
+
+      # The pack is a build artefact. If it differs from what is committed, a
+      # fact changed without the generated file being regenerated — which would
+      # ship stale content to visitors.
+      - name: Knowledge pack is current
+        run: npm run pack:check
+
+      - name: Tests
+        run: npm test
+
+      - name: Build frontend
+        run: npm --prefix frontend run build
+
+      # The credential boundary. This is the cheapest check in the pipeline and
+      # it guards the highest-impact failure.
+      - name: No secrets in the client bundle
+        run: |
+          if grep -rIlE 'sk-[A-Za-z0-9]{16}|sk-ant-|PROVIDER_API_KEY|NOTIFY_TOKEN|NOTIFY_WEBHOOK_URL|Bearer [A-Za-z0-9]{16}' frontend/dist; then
+            echo "::error::Credential-shaped string found in frontend/dist"
+            exit 1
+          fi
+          echo "clean"
+
+      # Protects the budget for the ~97% of visitors who never open the chat.
+      - name: Bundle budgets
+        run: node scripts/check-size.mjs

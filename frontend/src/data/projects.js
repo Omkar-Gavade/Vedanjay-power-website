@@ -1,58 +1,108 @@
+import { projects as rows, PROJECT_TOTAL, projectCounts } from './projects.generated.js';
+
+export { PROJECT_TOTAL, projectCounts };
+
 /**
- * Featured engagement for the homepage.
- * Drawn verbatim in substance from the legacy project register (rows 12-16).
- * Contract dates and values are not published anywhere and remain TO VERIFY #14.
+ * The voltage class a register row names for its own work.
+ *
+ * Derived, never asserted. Row 2 reads "132KV EHV Feeder Bay Erection Work at
+ * Existing 220KV S/s" — two classes, and they mean different things: the bay
+ * built is 132 kV, the substation it sits in is 220 kV. The FIRST match is the
+ * work's own class in every row of this register, so taking the highest number
+ * would overstate 10 of the 25 rows that name a voltage at all.
+ *
+ * 25 of 52 rows name one. The rest get no badge rather than a guessed one.
+ * A test asserts every extracted value is a member of `voltageClasses`.
  */
-export const featuredEngagement = {
-  slug: 'suzlon-29-4mw-telemetry-sldc-sync',
-  client: 'Suzlon Gujarat Wind Park Limited',
-  title: 'Telemetry, AMR metering and SLDC synchronisation for a 29.4 MW wind project',
-  facts: [
-    { label: 'Capacity', value: '29.4 MW' },
-    { label: 'Technology', value: 'Wind' },
-    { label: 'Voltage', value: '33 kV' },
-    { label: 'Authority', value: 'SLDC Jabalpur / MPPKVVCL' },
-  ],
-  brief:
-    'A 29.4 MW wind project in Madhya Pradesh was mechanically complete but could not export to the grid until its metering and telemetry were installed, tested and accepted by the state load despatch centre.',
-  work: [
-    'Installed and commissioned the telemetering system to MPPTCL/MPPKVVCL specification.',
-    'Erected, tested and commissioned the 33 kV TVM metering system in the DP yard.',
-    'Completed AMR metering installation and testing with SLDC Jabalpur and MPPKVVCL.',
-    'Carried the liaison through to commissioning, AMR acceptance, grid and synchronisation code from SLDC MPPTCL Jabalpur.',
-  ],
-  outcome:
-    'Five separate mandates across the engagement — metering, telemetry, AMR and grid synchronisation — taking the project from mechanical completion to accepted, metered grid export.',
-  verified: true,
+const VOLTAGE = /(\d{2,3}(?:\/\d{1,3})?)\s*KV\b/i;
+
+const voltageOf = (row) => {
+  const m = VOLTAGE.exec(`${row.particulars} ${row.scope ?? ''}`);
+  return m ? `${m[1]} kV` : null;
 };
 
 /**
- * Distribution across the 52-row register, by category as published.
- * Counts are derived by parsing docs/06-content/project-register.md and MUST
- * sum to 52 — the section renders the sum as the headline figure, so a wrong
- * count here publishes a wrong number.
+ * Register rows, enriched for display.
+ *
+ * `search` is precomputed rather than assembled per keystroke: the register is
+ * filtered on every character typed, and rebuilding 52 concatenations each time
+ * is work that never changes.
  */
-export const registerBreakdown = [
-  { category: 'Electrical infrastructure', count: 17 },
-  { category: 'Regulatory liaisoning', count: 15 },
-  { category: 'Operations & maintenance', count: 8 },
-  { category: 'Infrastructure & liaisoning', count: 7 },
-  { category: 'Civil infrastructure', count: 5 },
+export const projects = rows.map((row) => ({
+  ...row,
+  voltage: voltageOf(row),
+  search: `${row.particulars} ${row.scope ?? ''} ${row.client}`.toLowerCase(),
+}));
+
+/**
+ * Category metadata for the 52-row register.
+ *
+ * The source publishes six category strings, but two of them are the same
+ * category spelled differently ("Operation and Maintanace" / "…Maintanance").
+ * The generator merges them, which is why O&M shows 8 rather than 4.
+ */
+export const projectCategories = [
+  { id: 'all', label: 'All work', blurb: null },
+  {
+    id: 'electrical', label: 'Electrical infrastructure',
+    blurb: 'EHV feeder bays, substation works, transmission lines, capacitor banks and metering yards.',
+  },
+  {
+    id: 'regulatory', label: 'Liaisoning & regulatory',
+    blurb: 'CEIG approvals, SLDC coordination, net metering, telemetry commissioning and open-access documentation.',
+  },
+  {
+    id: 'electrical-regulatory', label: 'Electrical & liaisoning',
+    blurb: 'Metering and telemetry installations taken through to utility acceptance.',
+  },
+  { id: 'om', label: 'Operation & maintenance', blurb: 'Transmission line and plant O&M, AMC and manpower deployment.' },
+  { id: 'civil', label: 'Civil infrastructure', blurb: 'Foundations, water tanks, entrance structures and site civil works.' },
 ];
 
-export const voltageClasses = ['220 kV', '132 kV', '33 kV', '33/11 kV', '132/25 kV'];
+/** Voltage classes evidenced across the register. */
+export const voltageClasses = ['220 kV', '132 kV', '132/25 kV', '33 kV', '33/11 kV', 'LT'];
 
-/** The register as captured in docs/06-content/project-register.md. */
-export const REGISTER_TOTAL = 52;
+/** Plant capacities named in the register. Nothing is aggregated into a total —
+ *  the source does not support one, and summing part of a register would be a
+ *  fabricated statistic. */
+export const namedCapacities = [
+  { capacity: '29.4 MW', tech: 'Wind', client: 'Suzlon Gujarat Wind Park' },
+  { capacity: '10 MW', tech: 'Solar', client: 'Refex Energy' },
+  { capacity: '800 kW', tech: 'Wind', client: 'Kataria Wires' },
+  { capacity: '405 kWp', tech: 'Solar', client: 'ReNew Surya Prakash' },
+  { capacity: '182 kWp', tech: 'Solar', client: 'Tata Power Solar / Gabriel Dewas' },
+  { capacity: '52 km + 18 km', tech: '33 kV line O&M', client: 'ReNew Wind Energy' },
+  { capacity: '3 km', tech: '33 kV line', client: 'Ujaas Energy (AMU Aligarh)' },
+];
 
-/* The homepage prints the sum of registerBreakdown as its headline figure, so a
-   miscount here publishes a wrong number. Fail loudly in development. */
-if (import.meta.env.DEV) {
-  const sum = registerBreakdown.reduce((n, r) => n + r.count, 0);
-  if (sum !== REGISTER_TOTAL) {
-    console.error(
-      `[data/projects] registerBreakdown sums to ${sum} but the register holds ` +
-      `${REGISTER_TOTAL} rows. Fix the counts before shipping.`,
-    );
-  }
+/** Repeat clients, grouped by parent organisation across named entities and
+ *  circles. Counts are derived from the register at build time, not typed. */
+export const repeatClients = [
+  { name: 'MPPTCL', match: /MPPTCL|MPPKVVCL/i },
+  { name: 'Suzlon', match: /Suzlon/i },
+  /* Anchored: a bare /Renew/ also matches "Siemens Gamesa RENEWable Power",
+     which inflated ReNew from the register's 5 orders to 7. */
+  { name: 'ReNew', match: /ReNew (Wind|Surya)|Renew (Wind|Surya)/i },
+  { name: 'Regen Powertech', match: /Regen/i },
+  { name: 'Vikram Solar', match: /Vikram/i },
+  { name: 'Tata Power Solar', match: /Tata Power/i },
+  { name: 'Waaree Energies', match: /WAAREE/i },
+  { name: 'Gamesa / Siemens Gamesa', match: /Gamesa/i },
+].map((c) => ({ ...c, orders: projects.filter((p) => c.match.test(p.client)).length }))
+  .sort((a, b) => b.orders - a.orders);
+
+export const countFor = (id) => (id === 'all' ? PROJECT_TOTAL : (projectCounts[id] ?? 0));
+
+/**
+ * Filters the register by category and free text together.
+ *
+ * Kept next to the data rather than in the page so the matching rule is tested
+ * once, in one place, against the real 52 rows.
+ */
+export function filterProjects(category, query) {
+  const q = query.trim().toLowerCase();
+  return projects.filter((p) => (
+    (category === 'all' || p.category === category)
+    && (q === '' || p.search.includes(q))
+  ));
 }

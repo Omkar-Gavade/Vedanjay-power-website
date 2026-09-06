@@ -2,10 +2,13 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "vedanjay-frontend",
+      "name": "vedanjay-web",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "frontend", "--", "--port", "5173", "--strictPort"],
-      "port": 5173
+      "runtimeArgs": [
+        "run",
+        "dev:web"
+      ],
+      "port": 5180
     }
   ]
 }

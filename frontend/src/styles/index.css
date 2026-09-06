@@ -1,12 +1,16 @@
 /* Bootstrap supplies ONLY the responsive foundation — grid, flex, spacing,
-   display and the utilities API. Every component (buttons, nav, cards) is ours,
-   so the full framework would be ~160KB of unused component CSS. */
+   display and the utilities API. Every component is ours. */
 @import 'bootstrap/dist/css/bootstrap-grid.min.css';
 @import 'bootstrap/dist/css/bootstrap-utilities.min.css';
 
-@import '@fontsource-variable/archivo/wdth.css';
-@import '@fontsource/ibm-plex-mono/400.css';
-@import '@fontsource/ibm-plex-mono/500.css';
+/* Source Sans 3 / Source Serif 4 — a superfamily drawn together, used across
+   corporate and editorial publishing. Restrained, humanist, not a startup face.
+   IBM Plex Mono is kept ONLY for technical readouts (capacities, voltages). */
+@import '@fontsource/source-sans-3/latin-400.css';
+@import '@fontsource/source-sans-3/latin-600.css';
+@import '@fontsource/source-serif-4/latin-500.css';
+@import '@fontsource/source-serif-4/latin-600.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
 
 @import './tokens.css';
 @import './base.css';

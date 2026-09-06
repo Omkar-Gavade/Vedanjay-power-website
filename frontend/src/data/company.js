@@ -1,55 +1,96 @@
 /**
- * Single source of truth for company identity and contact details.
- * Every fact here is cross-referenced to docs/06-content/company-facts.md.
- * Facts marked `verified: false` are NOT rendered in production — see ./verification.js
+ * Company identity and contact.
+ * SOURCE OF TRUTH: Vedanjay Power Website Information Requirement Document (IRD).
+ * Nothing here is inferred. Items the IRD marks "to be confirmed" are omitted.
  */
 export const company = {
-  legalName: 'Vedanjay Power Private Limited',
+  legalName: 'Vedanjay Power Pvt. Ltd.',
   name: 'Vedanjay Power',
-  shortName: 'VPPL',
-  tagline: 'Connecting to a more sustainable future',
+  tagline: 'Connecting to a More Sustainable Future',
+  established: 2011,                                    // IRD §1
+  website: 'https://vedanjay-power.com/',
 
-  /** VERIFIED — MCA registry. `MP2011` segment gives state + year of incorporation. */
-  cin: 'U40100MP2011PTC026570',
-  incorporated: 2011,
-  stateOfIncorporation: 'Madhya Pradesh',
+  /** IRD §1 — Company Overview (short). Used verbatim in substance. */
+  overview:
+    'Vedanjay Power Pvt. Ltd. is a power-sector solutions company providing end-to-end services ' +
+    'across renewable energy, open-access power, forecasting and scheduling, electrical ' +
+    'infrastructure, metering, telemetry, transmission and grid consultancy.',
 
   offices: [
     {
       id: 'indore',
-      label: 'Indore',
-      role: 'Registered office',
-      /** VERIFIED as published on the legacy site. Note: the MCA record shows a
-       *  different landmark and PIN (452001). See TO VERIFY #10. */
+      role: 'Corporate Office',
+      city: 'Indore',
+      lines: ['4/F/S3, Nai Sadak, Scheme No. 78', 'Indore – 452010', 'Madhya Pradesh, India'],
+      /**
+       * Geocodable subset of the address above, for the contact-page map.
+       *
+       * NOT a new fact — every token appears in `lines`. The unit designator
+       * ("4/F/S3") and "Nai Sadak" are dropped because Google cannot resolve
+       * the combination and falls back to an unmarked area view. Verified
+       * 4 Sep 2026: this query returns a marker whose info card reads
+       * "Scheme Number 78, Part II … Indore, Madhya Pradesh 452010" — the
+       * published PIN.
+       */
+      mapQuery: 'Scheme No. 78, Indore, Madhya Pradesh 452010, India',
+    },
+    {
+      id: 'pune',
+      role: 'Branch Office',
+      city: 'Pune',
       lines: [
-        'Plot No. 4/F/53, Scheme No. 78',
-        'Opp. Sagar Automobile, A.B. Road',
-        'Indore 452008, Madhya Pradesh',
+        'Flat No. 210, Grand Horizon',
+        'Behind Brahma Hotel, Sinhagad Road',
+        'Pune City, Pune – 411041',
+        'Maharashtra, India',
       ],
-      verified: true,
+      /**
+       * As above. Verified 4 Sep 2026: returns a marker labelled "Grand
+       * Horizon" whose info card reads "Sinhgad Rd … behind Bramha Hotel",
+       * matching the published landmark.
+       */
+      mapQuery: 'Grand Horizon, Sinhagad Road, Pune, Maharashtra, India',
     },
   ],
 
-  phones: [
-    { label: 'Office', value: '0731-4239605', href: 'tel:+917314239605' },
-    { label: 'Mobile', value: '+91 73142 39605', href: 'tel:+917314239605' },
-  ],
+  phone: { display: '7666901814', href: 'tel:+917666901814' },
+  whatsapp: { display: '7666901814', href: 'https://wa.me/917666901814' },
+  emails: {
+    general: 'projects@vedanjay-power.com',
+    operations: 'forecasting.india@vedanjay-power.com',
+  },
 
-  emails: [
-    { label: 'Enquiries', value: 'services@vedanjay-power.com' },
-  ],
-
+  /**
+   * Social accounts.
+   *
+   * Only LinkedIn is stated in the source document (IRD §22), so only LinkedIn
+   * carries a URL. Facebook and X are declared with `href: null` — the icons
+   * render as part of the footer set but do not navigate, because inventing a
+   * handle would be worse than an inactive button.
+   *
+   * To activate: paste the verified profile URL into `href`. Nothing else changes.
+   */
   social: [
-    { label: 'LinkedIn', href: 'https://in.linkedin.com/company/vedanjay-power-private-limited' },
+    {
+      id: 'linkedin', label: 'LinkedIn',
+      href: 'https://in.linkedin.com/company/vedanjay-power-private-limited',
+    },
+    {
+      id: 'facebook', label: 'Facebook',
+      href: 'https://www.facebook.com/people/Vedanjay-Power-Private-Limited/100061144302620/',
+    },
+    /* Supplied as a twitter.com address and kept verbatim: it redirects to
+       x.com, and the company's own handle is the canonical thing to publish. */
+    { id: 'x', label: 'X', href: 'https://twitter.com/VedanjayPower' },
   ],
 
-  /** VERIFIED as published — legacy about-us.html */
-  coreMarkets: ['Madhya Pradesh', 'Maharashtra'],
+  /** IRD §1 — Areas of Operation. Registrations, not marketing reach. */
+  operatingAreas: [
+    { name: 'Maharashtra', basis: 'Registered SLDC operations' },
+    { name: 'Madhya Pradesh', basis: 'Registered SLDC operations' },
+    { name: 'Telangana', basis: 'Registered SLDC operations' },
+    { name: 'Western Region', basis: 'Registered WRLDC operations' },
+  ],
 };
 
-/** Computed at render time. The legacy site hard-codes 2017 — the clearest
- *  signal of abandonment on the whole site. */
 export const currentYear = () => new Date().getFullYear();
-
-/** Years since incorporation, computed — never hard-coded. */
-export const yearsEstablished = () => currentYear() - company.incorporated;

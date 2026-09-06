@@ -1,8 +1,55 @@
 {
-  "_note": "TEMPORARY development placeholders. Not Vedanjay brand assets. Replace via frontend/src/data/media.js — see the header comment in that file.",
+  "_note": "TEMPORARY licensed placeholders pending Vedanjay's own photography. Not brand assets. Replace via frontend/src/data/media.js \u2014 see the header comment there.",
   "source": "Unsplash (https://unsplash.com)",
-  "license": "Unsplash License — free for commercial and non-commercial use, no permission or attribution required. https://unsplash.com/license",
-  "retrieved": "2026-08-31",
-  "delivery": "images.unsplash.com CDN, downloaded at w=1800 q=72, then re-encoded locally to <=1800px (full) and <=1000px (sm/) for the srcset.",
-  "variants": { "full": "images/<slug>.jpg (max 1800px)", "small": "images/sm/<slug>.jpg (max 1000px)" }
+  "license": "Unsplash License \u2014 free for commercial and non-commercial use, no permission or attribution required. https://unsplash.com/license",
+  "retrieved": "2026-09-03",
+  "subject_policy": "Power, grid and renewable infrastructure and operations only. No office/meeting stock, no handshakes, no coal or smokestack imagery.",
+  "delivery": "Downloaded from images.unsplash.com at w=1800 q=72, then re-encoded locally to <=1800px (full) and <=1000px (sm/) for the srcset.",
+  "variants": {
+    "full": "images/<name>.jpg (max 1800px)",
+    "small": "images/sm/<name>.jpg (max 1000px)"
+  },
+  "files": [
+    "contact-transmission.jpg",
+    "cta-dusk.jpg",
+    "hero-solar.jpg",
+    "hero-substation.jpg",
+    "hero-wind.jpg",
+    "ind-generators.jpg",
+    "ind-utilities.jpg",
+    "ops-control-desk.jpg",
+    "ops-monitoring.jpg",
+    "proj-grid.jpg",
+    "proj-solar-field.jpg",
+    "svc-electrical.jpg",
+    "svc-forecasting.jpg",
+    "svc-liaisoning.jpg",
+    "svc-open-access.jpg"
+  ],
+  "brand_assets": {
+    "note": "The Vedanjay Power logo is the company's own asset, NOT stock. Supplied by the client / taken from vedanjay-power.com/img/logo.png. Used whole and unmodified.",
+    "files": [
+      "brand/vedanjay-power-logo.png",
+      "brand/vedanjay-power-logo@2x.png"
+    ],
+    "intrinsic": "400x99"
+  },
+  "per_file_provenance": {
+    "contact-transmission.jpg": {
+      "source": "https://unsplash.com/photos/electricity-pylon-and-power-lines-over-a-distant-cityscape-3jE_CJHhsmA",
+      "photographer": "Amirreza Taqavi",
+      "asset": "images.unsplash.com/photo-1780076001255-993d215e7195",
+      "license": "Unsplash License - free for commercial use, no attribution required",
+      "license_verified": "Photo page states \"Free to use under the Unsplash License\"; free Download button (not Unsplash+)",
+      "retrieved": "2026-09-04",
+      "used_for": "Contact page hero"
+    }
+  },
+  "company_owned": {
+    "note": "public/gallery/ is Vedanjay Power's OWN site photography, recovered from vedanjay-power.com/image-gallery.html on 2026-09-05. It is NOT stock and is not covered by the Unsplash licence above.",
+    "count": 12,
+    "captions": "Describe only what is visible. The source carries no project name, client, location or date \u2014 see frontend/src/data/gallery.js.",
+    "people": "Four frames show identifiable site crew. They were already published on the company's own public website; confirm consent before any wider reuse."
+  },
+  "company_owned_brand": "public/brand/ and public/team/ are the company's own assets (logo emblem, leadership portraits)."
 }

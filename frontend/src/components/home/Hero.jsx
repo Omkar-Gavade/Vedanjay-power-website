@@ -1,79 +1,55 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { heroSequence, getMedia } from '../../data/media.js';
-import { credentials } from '../../data/credentials.js';
-import { onlyVerified } from '../../data/verification.js';
 import { company } from '../../data/company.js';
-import { ROUTES, enquiryHref } from '../../constants/routes.js';
+import { proofPoints } from '../../data/stats.js';
+import { getMedia, smallSrc, heroSlides } from '../../data/media.js';
+import { ROUTES } from '../../constants/routes.js';
+import { useHeroSlideshow } from '../../hooks/useHeroSlideshow.js';
 import { Button } from '../ui/Button.jsx';
 import { RevealLines } from '../ui/Reveal.jsx';
 
-const DWELL = 6500;
-
 /**
- * Rotating photographic hero.
+ * Hero with a cross-dissolving slideshow.
  *
- * Why stills and not video: Vedanjay's subject matter is static infrastructure —
- * substations, feeder bays, metering, arrays. It photographs far better than it
- * films, and four stills cost roughly 260 KB against several megabytes of video,
- * with no autoplay, battery or mobile-data penalty. Recorded as D-034.
- *
- * The rotation pauses on hover/focus, when the tab is hidden, and entirely under
- * prefers-reduced-motion — where it becomes a single static frame.
+ * Only the first frame is fetched eagerly; the rest are lazy, so the slideshow
+ * costs one image on first paint and the others arrive during the first dwell.
+ * All movement is transform/opacity only — no layout property animates.
  */
 export function Hero() {
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const reduced = useRef(false);
-  const timer = useRef(null);
+  const { index, go, reduced } = useHeroSlideshow(heroSlides.length);
 
-  const proof = onlyVerified(credentials).slice(0, 4);
-
-  const go = useCallback((i) => setIndex(((i % heroSequence.length) + heroSequence.length) % heroSequence.length), []);
-
-  useEffect(() => {
-    reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced.current) return undefined;
-
-    const onVisibility = () => setPaused(document.hidden);
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, []);
-
-  useEffect(() => {
-    if (reduced.current || paused) return undefined;
-    timer.current = setTimeout(() => go(index + 1), DWELL);
-    return () => clearTimeout(timer.current);
-  }, [index, paused, go]);
+  /**
+   * Scrolls to whatever section follows the hero.
+   *
+   * Smoothness comes from `html { scroll-behavior: smooth }` in base.css, which
+   * already switches to `auto` under prefers-reduced-motion — so this stays a
+   * plain scrollIntoView rather than duplicating the motion decision here.
+   */
+  const scrollToNext = () => {
+    document.querySelector('.vp-hero')?.nextElementSibling
+      ?.scrollIntoView({ block: 'start' });
+  };
 
   return (
-    <section
-      className="vp-hero"
-      data-paused={paused ? 'true' : 'false'}
-      aria-roledescription="carousel"
-      aria-label="Vedanjay Power capabilities"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-    >
-      <div className="vp-hero__stage">
-        {heroSequence.map((slug, i) => {
-          const item = getMedia(slug);
-          if (!item) return null;
+    <section className="vp-hero" aria-labelledby="hero-h">
+      <div className="vp-hero__media" role="presentation">
+        {heroSlides.map((slide, i) => {
+          const img = getMedia(slide.slug);
+          if (!img) return null;
           const active = i === index;
           return (
             <div
-              key={slug}
-              className="vp-hero-slide"
+              key={slide.slug}
+              className="vp-hero__slide"
               data-active={active ? 'true' : 'false'}
-              aria-hidden={!active}
+              data-pan={slide.pan}
+              aria-hidden="true"
             >
               <img
-                src={item.src}
-                srcSet={`${item.src.replace('/images/', '/images/sm/')} 1000w, ${item.src} 1800w`}
+                src={img.src}
+                srcSet={`${smallSrc(img.src)} 1000w, ${img.src} 1800w`}
                 sizes="100vw"
-                alt={i === 0 ? item.alt : ''}
-                style={{ objectPosition: item.focal }}
+                alt=""
+                width="1800" height="1013"
+                style={{ objectPosition: img.focal }}
                 loading={i === 0 ? 'eager' : 'lazy'}
                 fetchPriority={i === 0 ? 'high' : 'low'}
                 decoding={i === 0 ? 'sync' : 'async'}
@@ -83,76 +59,80 @@ export function Hero() {
           );
         })}
       </div>
-
       <div className="vp-hero__scrim" aria-hidden="true" />
 
-      <div className="vp-hero__body">
-        <div className="vp-container">
-          <div className="row">
-            <div className="col-12 col-lg-11 col-xl-9">
-              <p className="vp-eyebrow vp-label vp-hero__eyebrow mb-3">
-                Renewable power consultancy &middot; Est. {company.incorporated}
-              </p>
+      <div className="vp-hero__body vp-container">
+        <div className="row">
+          <div className="col-12 col-lg-10 col-xl-8">
+            <p className="vp-hero__kicker vp-label mb-3 vp-enter" style={{ '--enter': '0ms' }}>
+              Power-sector solutions · Established {company.established}
+            </p>
 
-              <h1 className="vp-display vp-hero__title mb-0">
-                <RevealLines
-                  lines={['We get renewable projects', 'approved, connected', 'and scheduled.']}
-                  delay={120}
-                />
-              </h1>
+            <h1 id="hero-h" className="vp-h1 vp-hero__title mb-0">
+              <RevealLines lines={['Connecting to a More', 'Sustainable Future']} delay={90} />
+            </h1>
 
-              <p className="vp-lead vp-hero__lead mt-4 mb-0">
-                Open access, grid connectivity, forecasting and O&amp;M for India&rsquo;s renewable
-                generators, utilities and industrial power buyers.
-              </p>
+            <p className="vp-lead vp-hero__lead mt-4 mb-0 vp-enter" style={{ '--enter': '360ms' }}>
+              {company.overview}
+            </p>
 
-              <div className="d-flex flex-column flex-sm-row gap-3 mt-4 mt-lg-5">
-                <Button to={ROUTES.services} variant="accent" size="lg" arrow>Explore our services</Button>
-                <Button to={enquiryHref('general')} variant="ghostLight" size="lg">Talk to an engineer</Button>
-              </div>
+            <div className="d-flex flex-column flex-sm-row gap-3 mt-4 mt-lg-5 vp-enter"
+                 style={{ '--enter': '460ms' }}>
+              <Button to={ROUTES.services} variant="primary" size="lg">Explore Our Capabilities</Button>
+              <Button to={ROUTES.contact} variant="ghostLight" size="lg">Contact Us</Button>
             </div>
           </div>
+        </div>
 
-          {/* Frame control + scroll cue */}
-          <div className="d-flex align-items-center justify-content-between gap-3 mt-5 pt-2">
-            <div className="vp-hero__nav" role="group" aria-label="Choose hero image">
-              {heroSequence.map((slug, i) => (
+        {/* Bottom row: numbered slide indicators on the left, scroll cue on the
+            right. Indicators use our own numeral + rule treatment rather than the
+            reference's styling. */}
+        <div className="vp-hero__foot vp-enter" style={{ '--enter': '620ms' }}>
+          {heroSlides.length > 1 ? (
+            <div className="vp-hero__dots" role="group" aria-label="Hero image">
+              {heroSlides.map((s, i) => (
                 <button
-                  key={slug}
+                  key={s.slug}
                   type="button"
                   className="vp-hero__dot"
                   aria-current={i === index ? 'true' : 'false'}
-                  aria-label={`Image ${i + 1} of ${heroSequence.length}`}
-                  data-seen={i < index ? 'true' : 'false'}
-                  style={{ '--hero-dwell': `${DWELL}ms` }}
+                  aria-label={`Show image ${i + 1} of ${heroSlides.length}`}
                   onClick={() => go(i)}
                 >
-                  <span className="vp-mono d-none d-sm-inline" style={{ fontSize: '.75rem' }}>
-                    0{i + 1}
+                  <span className="vp-hero__dot-num" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
                   </span>
                   <span className="vp-hero__dot-track" aria-hidden="true">
-                    <span className="vp-hero__dot-fill" />
+                    {/* The fill doubles as the dwell timer; static under reduced motion. */}
+                    {!reduced && i === index && <span className="vp-hero__dot-fill" />}
                   </span>
                 </button>
               ))}
             </div>
+          ) : <span />}
 
-            <span className="vp-hero__cue vp-label" aria-hidden="true">
-              <span className="vp-hero__cue-line" />
-              Scroll
-            </span>
-          </div>
+          <button
+            type="button"
+            className="vp-hero__scroll"
+            onClick={scrollToNext}
+            aria-label="Scroll to the next section"
+          >
+            <span className="vp-hero__scroll-label" aria-hidden="true">Scroll</span>
+            <span className="vp-hero__scroll-line" aria-hidden="true" />
+          </button>
         </div>
       </div>
 
-      {/* Proof strip — verified credentials only */}
-      <div className="vp-hero__proof">
+      {/* Proof strip — verified statistics only (source document §14, §4). */}
+      <div className="vp-proof">
         <div className="vp-container">
-          <ul className="row g-0">
-            {proof.map((c) => (
-              <li key={c.id} className="col-6 col-lg-3 vp-hero__proof-item pe-3">
-                <p className="vp-sm vp-hero__proof-value mb-1">{c.label}</p>
-                <p className="vp-sm vp-hero__proof-label mb-0">{c.detail}</p>
+          <ul className="vp-proof__list">
+            {proofPoints.map((p, i) => (
+              <li key={p.id} className="vp-proof__item vp-enter" style={{ '--enter': `${700 + i * 70}ms` }}>
+                <span className="vp-proof__value">
+                  {p.value}{p.unit && <span className="vp-proof__unit"> {p.unit}</span>}
+                </span>
+                <span className="vp-proof__label">{p.label}</span>
               </li>
             ))}
           </ul>

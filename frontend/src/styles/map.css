@@ -1,0 +1,149 @@
+/* =============================================== INTERACTIVE PORTFOLIO MAP ==
+   Loaded only with the lazy map chunk — never in the initial CSS bundle.
+   Class names are unique to this sheet; css-collisions.test.js enforces that. */
+
+.vp-mapwrap{display:grid;gap:clamp(1.5rem,3vw,2.5rem);align-items:center;}
+@media (min-width:900px){
+  .vp-mapwrap{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(2rem,5vw,4rem);}
+}
+.vp-mapwrap__figure{min-width:0;}
+.vp-mapwrap__aside{display:flex;flex-direction:column;align-items:stretch;gap:1.1rem;min-width:0;}
+
+.vp-mapfig{position:relative;}
+.vp-map__pending{aspect-ratio:1000 / 1134;width:100%;}
+
+.vp-map{
+  display:block;width:100%;height:auto;
+
+  --vp-map-land:#EDF1F1;      /* India, no capacity */
+  --vp-map-edge:#FFFFFF;      /* state borders */
+  --vp-map-coast:#C9D4D5;     /* national boundary */
+  --vp-map-shadow:#8FA3A5;
+  /* Neighbouring land, held at a whisper: present enough that the country is
+     not floating in a void, faint enough that it never competes with the
+     data. */
+  --vp-map-ctx:#F2F5F5;
+  --vp-map-ctxEdge:#E7ECEC;
+  /* Five steps of the brand green, light to dark. */
+  --vp-band-0:#CFE6CF;
+  --vp-band-1:#A9D8A9;
+  --vp-band-2:#7CC17C;
+  --vp-band-3:#4C9F51;
+  --vp-band-4:#2A6B2F;
+}
+[data-bs-theme="dark"] .vp-map{
+  --vp-map-land:#1E3034;
+  --vp-map-edge:#0D1A1D;
+  --vp-map-coast:#31474B;
+  --vp-map-shadow:#000000;
+  --vp-map-ctx:#141F22;
+  --vp-map-ctxEdge:#18262A;
+  --vp-band-0:#2E5233;
+  --vp-band-1:#37703C;
+  --vp-band-2:#428B47;
+  --vp-band-3:#52A657;
+  --vp-band-4:#7FC67F;
+}
+
+.vp-map__ctx path{
+  fill:var(--vp-map-ctx);stroke:var(--vp-map-ctxEdge);stroke-width:1;
+  vector-effect:non-scaling-stroke;pointer-events:none;
+}
+.vp-map__state{
+  fill:var(--vp-map-land);
+  transition:fill var(--vp-dur) var(--vp-ease);
+}
+.vp-map__state[data-band="0"]{fill:var(--vp-band-0);}
+.vp-map__state[data-band="1"]{fill:var(--vp-band-1);}
+.vp-map__state[data-band="2"]{fill:var(--vp-band-2);}
+.vp-map__state[data-band="3"]{fill:var(--vp-band-3);}
+.vp-map__state[data-band="4"]{fill:var(--vp-band-4);}
+.vp-map__state[data-band]{cursor:pointer;}
+.vp-map__state[data-on]{fill:var(--vp-accent);}
+
+/* Borders come from the DISSOLVED outline. A stroke on the fill path would
+   draw all 760 district boundaries. non-scaling-stroke keeps the hairline one
+   pixel whether the map is 340px wide on a phone or 700px on a desktop. */
+.vp-map__edge{
+  fill:none;stroke:var(--vp-map-edge);stroke-width:1;
+  vector-effect:non-scaling-stroke;pointer-events:none;
+}
+.vp-map__coast{
+  fill:none;stroke:var(--vp-map-coast);stroke-width:1.4;
+  stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none;
+}
+
+/* ---- tooltip ------------------------------------------------------------ */
+.vp-maptip{
+  position:absolute;z-index:2;pointer-events:none;
+  transform:translate(-50%,calc(-100% - 14px));
+  display:flex;flex-direction:column;gap:.05rem;
+  padding:.5rem .7rem;border-radius:var(--vp-radius);
+  background:var(--vp-blue-950);color:#fff;
+  box-shadow:var(--vp-shadow);white-space:nowrap;
+}
+.vp-maptip__state{font-family:var(--vp-font-serif);font-size:.9375rem;font-weight:600;line-height:1.2;}
+.vp-maptip__mw{font-family:var(--vp-font-mono);font-size:.8125rem;color:var(--vp-green-300);}
+.vp-maptip__n{font-size:.75rem;color:#9AAFB0;}
+
+/* ---- aside: the ranked table ------------------------------------------- */
+.vp-maplede{
+  display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0;
+  padding-bottom:1rem;border-bottom:1px solid var(--vp-border);
+}
+.vp-maplede__n{
+  font-family:var(--vp-font-serif);font-size:var(--vp-fs-stat);font-weight:600;
+  line-height:1;letter-spacing:-.02em;color:var(--vp-text);
+  font-variant-numeric:tabular-nums;
+}
+.vp-maplede__u{font-family:var(--vp-font-mono);font-size:1rem;color:var(--vp-primary);}
+.vp-maplede__l{font-size:.875rem;color:var(--vp-text-muted);flex-basis:100%;margin-top:.3rem;}
+
+.vp-mapbars{list-style:none;margin:0;padding:0;}
+.vp-mapbars li + li{border-top:1px solid var(--vp-border-soft);}
+.vp-mapbar{
+  position:relative;display:grid;width:100%;text-align:left;
+  grid-template-columns:1.6rem minmax(0,1fr) auto;
+  gap:.1rem .75rem;align-items:baseline;
+  padding:.7rem .5rem .7rem .2rem;
+  background:transparent;border:0;color:inherit;font-family:inherit;cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-mapbar:hover,.vp-mapbar[aria-pressed="true"]{background:var(--vp-bg-alt);}
+.vp-mapbar__rank{
+  grid-row:1 / span 2;align-self:center;
+  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
+  font-variant-numeric:tabular-nums;
+}
+.vp-mapbar__state{font-size:1rem;font-weight:600;color:var(--vp-text);line-height:1.3;}
+.vp-mapbar__mw{
+  font-family:var(--vp-font-mono);font-size:.9375rem;color:var(--vp-text);
+  font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;
+}
+.vp-mapbar__mw span{font-size:.75rem;color:var(--vp-text-muted);margin-left:.2rem;}
+/* The bar is the same encoding as the map's shading, so the two read as one
+   chart rather than as two competing ones. */
+.vp-mapbar__track{
+  grid-column:2 / 4;display:block;height:4px;margin-top:.4rem;
+  border-radius:999px;background:var(--vp-bg-sunken);overflow:hidden;
+}
+.vp-mapbar__fill{
+  display:block;height:100%;width:var(--w);border-radius:999px;
+  background:linear-gradient(90deg,var(--vp-green-400),var(--vp-green-700));
+  transform-origin:left;animation:vp-mapbar-grow 900ms var(--vp-ease) both;
+  animation-delay:calc(var(--i,0) * 70ms);
+}
+@keyframes vp-mapbar-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+.vp-mapbar__meta{
+  grid-column:2 / 4;display:flex;justify-content:space-between;gap:.75rem;
+  font-size:.75rem;color:var(--vp-text-muted);margin-top:.35rem;
+}
+.vp-mapbar__share{font-family:var(--vp-font-mono);font-variant-numeric:tabular-nums;}
+
+.vp-mapnote{font-size:.8125rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
+.vp-mapnote strong{color:var(--vp-text-soft);font-weight:600;}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-mapbar__fill{animation:none !important;}
+  .vp-map__state,.vp-mapbar{transition:none !important;}
+}

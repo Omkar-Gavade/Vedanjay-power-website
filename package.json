@@ -1,0 +1,21 @@
+{
+  "name": "vedanjaypower",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "dev": "wrangler dev --remote",
+    "deploy": "npm run build && wrangler deploy",
+    "test": "vitest run",
+    "dev:web": "cd frontend && npm run dev -- --port 5180 --strictPort",
+    "projects": "node scripts/build-projects.mjs",
+    "projects:check": "node scripts/build-projects.mjs --check",
+    "notify:test": "node scripts/notify-test.mjs",
+    "map": "node scripts/build-india-map.mjs",
+    "map:check": "node scripts/build-india-map.mjs --check"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.0",
+    "wrangler": "^4.42.0"
+  }
+}

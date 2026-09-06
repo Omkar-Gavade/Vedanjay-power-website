@@ -1,218 +1,280 @@
 /* ============================================================================
-   NAVBAR — semi-transparent over the hero, condensing to a solid bar on scroll.
-   Subtle, not heavy glassmorphism: a light blur and a hairline, nothing more.
+   NAVBAR — translucent architectural glass.
+
+   DESIGN NOTE. The bar is translucent and blurred, but it does NOT sit over the
+   hero photograph: the supplied logo is a full lockup with a dark wordmark and
+   an even darker tagline, and over imagery the tagline stops being readable.
+   Instead the hero begins beneath the header, and page content passes *under*
+   the glass as you scroll — which is where the blur actually reads.
+
+   Opacity is deliberately high (0.72 → 0.88 on scroll) rather than the 0.3-ish
+   values typical of decorative glassmorphism: the logo and the nav labels have
+   to stay legible over whatever is behind them.
    ========================================================================== */
 
 .vp-header{
   position:fixed;inset-inline:0;top:0;z-index:var(--vp-z-header);
-  transition:transform var(--vp-dur) var(--vp-ease);
 }
-.vp-header[data-hidden="true"]{transform:translateY(-100%);}
 
-/* The bar itself. Two states cross-fade via background/border/blur only —
-   no layout properties animate, so this never costs a reflow. */
 .vp-header__bar{
-  position:relative;
-  border-bottom:1px solid transparent;
-  transition:background-color var(--vp-dur) var(--vp-ease),
-             border-color var(--vp-dur) var(--vp-ease),
-             backdrop-filter var(--vp-dur) var(--vp-ease),
-             box-shadow var(--vp-dur) var(--vp-ease);
-}
-.vp-header[data-solid="true"] .vp-header__bar{
   background:var(--vp-header-bg);
-  border-bottom-color:var(--vp-header-border);
-  backdrop-filter:blur(16px) saturate(150%);
-  -webkit-backdrop-filter:blur(16px) saturate(150%);
-  box-shadow:0 1px 0 rgb(0 0 0 / .02);
+  border-bottom:1px solid var(--vp-header-line);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  transition:background-color 420ms var(--vp-ease),
+             border-color 420ms var(--vp-ease),
+             box-shadow 420ms var(--vp-ease),
+             backdrop-filter 420ms var(--vp-ease);
+}
+.vp-header[data-scrolled="true"] .vp-header__bar{
+  background:var(--vp-header-bg-scrolled);
+  border-bottom-color:var(--vp-header-line-scrolled);
+  backdrop-filter:blur(20px) saturate(170%);
+  -webkit-backdrop-filter:blur(20px) saturate(170%);
+  box-shadow:0 1px 0 rgb(4 34 42 / .04), 0 10px 30px -24px rgb(4 34 42 / .5);
+}
+/* No backdrop-filter support: fall back to an opaque bar rather than an
+   unreadable translucent one. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .vp-header__bar{background:var(--vp-bg);}
+  .vp-header[data-scrolled="true"] .vp-header__bar{background:var(--vp-bg);}
 }
 
-/* Over the hero: a top-down scrim belongs to the HEADER, not the photograph,
-   so contrast is guaranteed whatever image is showing. */
-.vp-header__scrim{
-  position:absolute;inset-inline:0;top:0;height:170px;pointer-events:none;
-  background:linear-gradient(180deg,rgb(4 22 27 / .78) 0%,rgb(4 22 27 / .34) 55%,transparent 100%);
-  opacity:1;transition:opacity var(--vp-dur) var(--vp-ease);
+/* ---------------------------------------------------------------- overlay --
+   On pages with a full-bleed dark hero the header sits INSIDE the hero: the bar
+   is genuinely transparent, so the photograph runs behind it and the two read
+   as one composition. No wash, no border, no blur, no shadow — anything there
+   reads as a band stacked on top of the hero, which is the exact problem this
+   state exists to remove.
+
+   Contrast for the nav labels comes from the HERO's own top scrim (see the
+   `--nav-scrim` block in hero.css / contact.css / about.css), not from a plate
+   behind the navbar.
+
+   This state applies only at the top of the page: Header.jsx sets
+   data-overlay={overlay && !solid}, so scrolling drops it and the themed glass
+   bar takes over. That revert matters — white labels on white glass would be
+   invisible in light theme.
+   -------------------------------------------------------------------------- */
+.vp-header[data-overlay="true"] .vp-header__bar{
+  background:transparent;
+  border-bottom-color:transparent;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+  box-shadow:none;
 }
-.vp-header[data-solid="true"] .vp-header__scrim{opacity:0;}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .vp-header[data-overlay="true"] .vp-header__bar{
+    background:transparent;
+  }
+}
+
+/* The brand rule reads as a hairline over photography rather than a band. */
+.vp-header[data-overlay="true"] .vp-header__rule{
+  opacity:.85;height:2px;
+}
+
+/* Nav labels and controls invert over the hero.
+   FULL white, not .9: over a photograph the nav was the single item setting
+   how dark the hero tint had to be (it needed .612, more than any other text
+   on the page). Ten per cent of ink was costing the photograph five per cent
+   of its brightness. The current page is marked by the underline, not by
+   being brighter than its neighbours. */
+.vp-header[data-overlay="true"] .vp-nav__link{
+  color:#fff;
+}
+.vp-header[data-overlay="true"] .vp-nav__link:hover,
+.vp-header[data-overlay="true"] .vp-nav__link[aria-current="page"]{
+  color:#fff;
+}
+.vp-header[data-overlay="true"] .vp-nav__caret{opacity:.9;}
+.vp-header[data-overlay="true"] .vp-burger{color:#fff;}
+.vp-header[data-overlay="true"] .vp-theme-toggle{
+  color:rgb(255 255 255 / .92);border-color:rgb(255 255 255 / .3);
+}
+.vp-header[data-overlay="true"] .vp-theme-toggle:hover{
+  background:rgb(255 255 255 / .14);border-color:rgb(255 255 255 / .55);color:#fff;
+}
+
+/* The supplied logo carries a dark wordmark and a darker tagline, so over
+   photography it takes the same white plate already used in the footer and in
+   the dark theme. The asset itself is never altered. */
+.vp-header[data-overlay="true"] .vp-brand{
+  background:#fff;border-radius:2px;padding:.4rem .65rem;margin-block:.2rem;
+}
+
+/* A hairline of brand colour along the very top — a small, deliberate mark of
+   identity that costs nothing and reads as considered rather than decorative. */
+.vp-header__rule{
+  height:3px;
+  background:linear-gradient(90deg,
+    var(--vp-green-500) 0%, var(--vp-green-500) 42%,
+    var(--vp-blue-700) 42%, var(--vp-blue-700) 78%,
+    var(--vp-amber-500) 78%, var(--vp-amber-500) 100%);
+}
 
 .vp-header__inner{
-  display:flex;align-items:center;gap:1rem;
+  display:flex;align-items:center;gap:1.25rem;
   height:var(--vp-header-h-sm);
   transition:height var(--vp-dur) var(--vp-ease);
 }
-@media (min-width:992px){
+@media (min-width:1200px){
   .vp-header__inner{height:var(--vp-header-h);}
-  .vp-header[data-solid="true"] .vp-header__inner{height:68px;}
+  .vp-header[data-scrolled="true"] .vp-header__inner{height:70px;}
 }
 
-/* ------------------------------------------------------------------ brand - */
-.vp-brand{display:inline-flex;align-items:center;gap:.7rem;flex:none;min-height:44px;}
-.vp-brand__mark{width:34px;height:34px;flex:none;}
-@media (min-width:992px){.vp-brand__mark{width:38px;height:38px;}}
-.vp-brand__name{
-  font-size:1.0625rem;font-weight:700;letter-spacing:.13em;line-height:1;
-  font-stretch:106%;
+/* ------------------------------------------------------------------ brand -- */
+/* The logo is used whole and unmodified; only its rendered height changes.
+   Intrinsic ratio is 400x99, so width is derived and never distorts. */
+.vp-brand{display:inline-flex;align-items:center;flex:none;min-height:44px;}
+.vp-brand__img{
+  height:34px;width:auto;display:block;
+  transition:height var(--vp-dur) var(--vp-ease);
 }
-.vp-brand__sub{
-  display:block;margin-top:.28rem;
-  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.24em;line-height:1;
+@media (min-width:576px){.vp-brand__img{height:40px;}}
+@media (min-width:1200px){
+  .vp-brand__img{height:48px;}
+  .vp-header[data-scrolled="true"] .vp-brand__img{height:40px;}
 }
-/* Over-hero (transparent) vs solid colouring */
-.vp-header[data-solid="false"] .vp-brand__name{color:#fff;}
-.vp-header[data-solid="false"] .vp-brand__sub{color:rgb(255 255 255 / .72);}
-.vp-header[data-solid="true"] .vp-brand__name{color:var(--vp-text);}
-.vp-header[data-solid="true"] .vp-brand__sub{color:var(--vp-text-muted);}
+/* The lockup carries a dark wordmark and an even darker tagline. On any dark
+   surface it needs a light plate rather than a recolour — the asset itself is
+   never altered. Applied in the footer, and in the header under the dark theme. */
+.vp-brand--plated{
+  background:#fff;padding:.6rem .85rem;border-radius:2px;display:inline-flex;
+}
+[data-bs-theme="dark"] .vp-header .vp-brand{
+  background:#fff;border-radius:2px;
+  padding:.4rem .6rem;
+  margin-block:.2rem;
+}
+[data-bs-theme="dark"] .vp-header .vp-brand__img{height:30px;}
+@media (min-width:576px){[data-bs-theme="dark"] .vp-header .vp-brand__img{height:34px;}}
+@media (min-width:1200px){
+  [data-bs-theme="dark"] .vp-header .vp-brand__img{height:40px;}
+  [data-bs-theme="dark"] .vp-header[data-scrolled="true"] .vp-brand__img{height:34px;}
+}
 
-/* -------------------------------------------------------------- nav links - */
+/* -------------------------------------------------------------- nav links -- */
 .vp-nav{display:none;margin-inline-start:auto;}
-@media (min-width:992px){.vp-nav{display:block;}}
-.vp-nav__list{display:flex;align-items:center;gap:.15rem;}
+@media (min-width:1200px){.vp-nav{display:block;}}
+.vp-nav__list{display:flex;align-items:center;gap:.1rem;}
 .vp-nav__item{position:relative;}
 
 .vp-nav__link{
   position:relative;display:inline-flex;align-items:center;gap:.35rem;
-  min-height:44px;padding:0 .95rem;
-  font-size:.9375rem;font-weight:500;letter-spacing:.005em;
+  min-height:44px;padding:0 .9rem;
+  font-size:.9688rem;font-weight:600;color:var(--vp-text-soft);
   transition:color var(--vp-dur-fast) var(--vp-ease);
 }
-.vp-header[data-solid="false"] .vp-nav__link{color:rgb(255 255 255 / .88);}
-.vp-header[data-solid="false"] .vp-nav__link:hover{color:#fff;}
-.vp-header[data-solid="true"] .vp-nav__link{color:var(--vp-text-soft);}
-.vp-header[data-solid="true"] .vp-nav__link:hover{color:var(--vp-text);}
-.vp-nav__link[aria-current="page"]{color:inherit;font-weight:600;}
-.vp-header[data-solid="false"] .vp-nav__link[aria-current="page"]{color:#fff;}
-.vp-header[data-solid="true"] .vp-nav__link[aria-current="page"]{color:var(--vp-text);}
+.vp-nav__link:hover{color:var(--vp-text);}
+.vp-nav__link[aria-current="page"]{color:var(--vp-text);}
 
-/* Active / open indicator — a 2px amber underline that scales from the left */
+/* Active/open marker: a short rule under the label, brand green. */
 .vp-nav__link::after{
-  content:"";position:absolute;left:.95rem;right:.95rem;bottom:6px;height:2px;
-  background:var(--vp-accent);transform:scaleX(0);transform-origin:left center;
+  content:"";position:absolute;left:.9rem;right:.9rem;bottom:10px;height:2px;
+  background:var(--vp-primary);transform:scaleX(0);transform-origin:left center;
   transition:transform var(--vp-dur-fast) var(--vp-ease);
 }
 .vp-nav__link[aria-current="page"]::after,
 .vp-nav__item[data-open="true"] .vp-nav__link::after{transform:scaleX(1);}
 
 .vp-nav__caret{
-  font-size:.5rem;opacity:.65;
+  width:9px;height:9px;opacity:.6;
   transition:transform var(--vp-dur) var(--vp-ease);
 }
 .vp-nav__item[data-open="true"] .vp-nav__caret{transform:rotate(180deg);}
 
-/* ------------------------------------------------------------- mega menu -- */
-.vp-mega{
-  position:absolute;inset-inline:0;top:100%;
-  background:var(--vp-bg);
-  border-top:1px solid var(--vp-border-soft);
-  border-bottom:1px solid var(--vp-border);
-  box-shadow:var(--vp-shadow);
-  animation:vp-menu-in var(--vp-dur) var(--vp-ease);
-}
+/* --------------------------------------------------------------- dropdown -- */
 .vp-dropdown{
-  position:absolute;top:100%;left:0;min-width:19rem;
+  position:absolute;top:100%;left:0;min-width:16rem;
   background:var(--vp-bg);border:1px solid var(--vp-border);
-  border-radius:0 0 var(--vp-radius) var(--vp-radius);
-  box-shadow:var(--vp-shadow);padding:.5rem;
+  border-top:2px solid var(--vp-primary);
+  box-shadow:var(--vp-shadow);padding:.4rem;
   animation:vp-menu-in var(--vp-dur) var(--vp-ease);
 }
-
 .vp-menu-link{
-  display:block;padding:.75rem .9rem;border-radius:var(--vp-radius-sm);
+  display:block;padding:.7rem .85rem;
   transition:background-color var(--vp-dur-fast) var(--vp-ease);
 }
 .vp-menu-link:hover,.vp-menu-link:focus-visible{background:var(--vp-bg-alt);}
 .vp-menu-link__title{
-  display:flex;align-items:baseline;gap:.55rem;
-  font-weight:600;color:var(--vp-text);
+  display:block;font-weight:600;color:var(--vp-text);font-size:.9688rem;
   transition:color var(--vp-dur-fast) var(--vp-ease);
 }
 .vp-menu-link:hover .vp-menu-link__title{color:var(--vp-primary);}
-.vp-menu-link__idx{font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);}
-.vp-menu-link__desc{margin-top:.15rem;font-size:.875rem;color:var(--vp-text-muted);line-height:1.45;}
+.vp-menu-link__desc{display:block;margin-top:.1rem;font-size:.875rem;color:var(--vp-text-muted);}
+.vp-menu-note{
+  padding:.5rem .85rem .3rem;font-size:.8125rem;color:var(--vp-text-muted);
+  border-top:1px solid var(--vp-border-soft);margin-top:.3rem;
+}
 
-.vp-mega__aside{border-left:1px solid var(--vp-border-soft);}
-.vp-mega__feature{display:block;border-radius:var(--vp-radius);overflow:hidden;}
-
-/* ---------------------------------------------------------- theme toggle -- */
+/* ---------------------------------------------------------- theme toggle --- */
 .vp-theme-toggle{
   position:relative;display:inline-flex;align-items:center;justify-content:center;
-  width:44px;height:44px;border-radius:var(--vp-radius-pill);
-  border:1px solid transparent;flex:none;
+  width:44px;height:44px;flex:none;color:var(--vp-text-soft);
+  border:1px solid var(--vp-border);
   transition:background-color var(--vp-dur-fast) var(--vp-ease),
-             border-color var(--vp-dur-fast) var(--vp-ease),
-             color var(--vp-dur-fast) var(--vp-ease);
+             color var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease);
 }
-.vp-header[data-solid="false"] .vp-theme-toggle{color:rgb(255 255 255 / .9);border-color:rgb(255 255 255 / .22);}
-.vp-header[data-solid="false"] .vp-theme-toggle:hover{background:rgb(255 255 255 / .14);border-color:rgb(255 255 255 / .4);}
-.vp-header[data-solid="true"] .vp-theme-toggle{color:var(--vp-text-soft);border-color:var(--vp-border);}
-.vp-header[data-solid="true"] .vp-theme-toggle:hover{background:var(--vp-bg-alt);color:var(--vp-text);}
-
+.vp-theme-toggle:hover{background:var(--vp-bg-alt);color:var(--vp-text);border-color:var(--vp-border-strong);}
 .vp-theme-toggle__icon{
-  position:absolute;width:19px;height:19px;
+  position:absolute;width:18px;height:18px;
   transition:opacity var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
 }
-.vp-theme-toggle__icon--sun{opacity:0;transform:rotate(-70deg) scale(.55);}
+.vp-theme-toggle__icon--sun{opacity:0;transform:rotate(-60deg) scale(.6);}
 .vp-theme-toggle__icon--moon{opacity:1;transform:none;}
 [data-bs-theme="dark"] .vp-theme-toggle__icon--sun{opacity:1;transform:none;}
-[data-bs-theme="dark"] .vp-theme-toggle__icon--moon{opacity:0;transform:rotate(70deg) scale(.55);}
+[data-bs-theme="dark"] .vp-theme-toggle__icon--moon{opacity:0;transform:rotate(60deg) scale(.6);}
 
-/* --------------------------------------------------------- mobile toggle -- */
+/* --------------------------------------------------------- mobile toggle --- */
 .vp-burger{
   display:inline-flex;flex-direction:column;justify-content:center;gap:5px;
-  width:44px;height:44px;padding:0 10px;flex:none;
+  width:44px;height:44px;padding:0 10px;flex:none;color:var(--vp-text);
 }
-@media (min-width:992px){.vp-burger{display:none;}}
-.vp-burger span{
-  display:block;height:1.5px;width:100%;border-radius:2px;background:currentColor;
-  transition:transform var(--vp-dur) var(--vp-ease),opacity var(--vp-dur-fast) var(--vp-ease),width var(--vp-dur) var(--vp-ease);
-}
-.vp-burger span:last-child{width:62%;}
-.vp-header[data-solid="false"] .vp-burger{color:#fff;}
-.vp-header[data-solid="true"] .vp-burger{color:var(--vp-text);}
+@media (min-width:1200px){.vp-burger{display:none;}}
+.vp-burger span{display:block;height:2px;width:100%;background:currentColor;}
+.vp-burger span:last-child{width:64%;}
 
-/* ---------------------------------------------------------------- drawer -- */
+/* ---------------------------------------------------------------- drawer --- */
 .vp-drawer-backdrop{
   position:fixed;inset:0;z-index:var(--vp-z-drawer);
-  background:rgb(4 22 27 / .62);backdrop-filter:blur(3px);
+  background:rgb(4 22 27 / .55);
   opacity:0;pointer-events:none;transition:opacity var(--vp-dur) var(--vp-ease);
 }
 .vp-drawer-backdrop[data-open="true"]{opacity:1;pointer-events:auto;}
 
 .vp-drawer{
   position:fixed;inset-block:0;right:0;z-index:calc(var(--vp-z-drawer) + 1);
-  width:min(100%,26rem);display:flex;flex-direction:column;
+  width:min(100%,25rem);display:flex;flex-direction:column;
   background:var(--vp-bg);border-left:1px solid var(--vp-border);
-  animation:vp-drawer-in 380ms var(--vp-ease);
+  animation:vp-drawer-in 320ms var(--vp-ease);
 }
 .vp-drawer__head{
-  display:flex;align-items:center;justify-content:space-between;
-  height:var(--vp-header-h-sm);padding-inline:1.25rem;flex:none;
-  border-bottom:1px solid var(--vp-border-soft);
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  min-height:var(--vp-header-h-sm);padding:.75rem 1.25rem;flex:none;
+  border-bottom:1px solid var(--vp-border);
 }
 .vp-drawer__body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:.5rem 0 1rem;}
-.vp-drawer__foot{flex:none;border-top:1px solid var(--vp-border-soft);padding:1.25rem;}
+.vp-drawer__foot{flex:none;border-top:1px solid var(--vp-border);padding:1.25rem;}
 
-.vp-drawer__row{
-  display:flex;align-items:center;justify-content:space-between;gap:.5rem;
-  border-bottom:1px solid var(--vp-border-soft);
-}
+.vp-drawer__row{display:flex;align-items:center;border-bottom:1px solid var(--vp-border-soft);}
 .vp-drawer__link{
-  flex:1;display:flex;align-items:center;min-height:58px;padding-inline:1.25rem;
+  flex:1;display:flex;align-items:center;min-height:56px;padding-inline:1.25rem;
   font-size:1.0625rem;font-weight:600;color:var(--vp-text);
 }
 .vp-drawer__link[aria-current="page"]{color:var(--vp-primary);}
 .vp-drawer__expand{
   display:flex;align-items:center;justify-content:center;
-  width:58px;height:58px;flex:none;color:var(--vp-text-muted);
+  width:56px;height:56px;flex:none;color:var(--vp-text-muted);
 }
 .vp-drawer__expand svg{transition:transform var(--vp-dur) var(--vp-ease);}
 .vp-drawer__expand[aria-expanded="true"] svg{transform:rotate(180deg);}
-
-.vp-drawer__sub{padding:.25rem 0 .75rem 1.25rem;}
+.vp-drawer__sub{padding:.2rem 0 .7rem 1.25rem;}
 .vp-drawer__sublink{
-  display:flex;align-items:center;min-height:46px;
-  padding-inline:1rem;border-left:1px solid var(--vp-border);
-  font-size:.9375rem;color:var(--vp-text-soft);
+  display:flex;align-items:center;min-height:46px;padding-inline:1rem;
+  border-left:2px solid var(--vp-border);
+  font-size:.9688rem;color:var(--vp-text-soft);
   transition:color var(--vp-dur-fast) var(--vp-ease),border-color var(--vp-dur-fast) var(--vp-ease);
 }
 .vp-drawer__sublink:hover{color:var(--vp-primary);border-color:var(--vp-primary);}

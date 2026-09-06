@@ -1,82 +1,15 @@
-import { company, yearsEstablished } from './company.js';
-
 /**
- * Homepage "Vedanjay in numbers".
+ * Proof strip. SOURCE: IRD §14 (Company Statistics) and §4 (Key Strengths).
  *
- * The legacy site publishes contradictory figures — 100 MW vs 110 MW open access,
- * 700 MW commissioned vs +30 MW O&M, "50+ clients" against 41 logos. None can be
- * sourced. All are blocked on TO VERIFY #1-#4.
- *
- * Every figure below is instead DERIVED FROM DATA WE HOLD and can be recounted
- * from docs/06-content/project-register.md at any time. Four defensible numbers
- * beat eight contradictory ones.
- *
- * `asOf` is required on every stat — the component will not render without it.
+ * The IRD marks Projects Completed, Installed Capacity, Clients Served and
+ * Employees as "To be confirmed" — those are absent here entirely rather than
+ * estimated. Every entry below is stated in the document.
  */
-export const stats = [
-  {
-    id: 'works',
-    value: 52,
-    suffix: '',
-    label: 'Works executed',
-    detail: 'Named contracts for utilities, IPPs and industrial clients',
-    asOf: 'Register as published',
-    verified: true,
-  },
-  {
-    id: 'clients',
-    value: 41,
-    suffix: '',
-    label: 'Named clients',
-    detail: 'Across utilities, RE generators, industry and commercial',
-    asOf: 'Register as published',
-    verified: true,
-  },
-  {
-    id: 'voltage',
-    value: 220,
-    suffix: ' kV',
-    label: 'Highest voltage class',
-    detail: 'Executed at 220, 132, 33 and 33/11 kV, plus 132/25 kV traction',
-    asOf: 'Register as published',
-    verified: true,
-  },
-  {
-    id: 'established',
-    value: yearsEstablished(),
-    suffix: '',
-    label: `Years established`,
-    detail: `Incorporated ${company.incorporated} · CIN ${company.cin}`,
-    asOf: 'MCA registry',
-    verified: true,
-  },
-
-  /* ---- Blocked on TO VERIFY #1-#4. Not rendered. ---------------------- */
-  {
-    id: 'commissioned-mw',
-    value: 700, suffix: '+ MW',
-    label: 'Commissioned',
-    detail: 'Wind and solar grid-connect projects',
-    asOf: null,
-    verified: false,
-    blockedBy: 'TO VERIFY #3 — conflicts with the +30 MW O&M figure',
-  },
-  {
-    id: 'forecasting-mw',
-    value: 2000, suffix: ' MW',
-    label: 'Under forecasting',
-    detail: 'Wind and solar forecasting portfolio',
-    asOf: null,
-    verified: false,
-    blockedBy: 'TO VERIFY #2 — largest claim on the legacy site, no evidence held',
-  },
-  {
-    id: 'open-access-mw',
-    value: 110, suffix: ' MW',
-    label: 'Open access power sold',
-    detail: 'Across Madhya Pradesh and Maharashtra',
-    asOf: null,
-    verified: false,
-    blockedBy: 'TO VERIFY #1 — legacy site states both 100 MW and 110 MW',
-  },
+export const proofPoints = [
+  { id: 'established', value: '2011', label: 'Established' },
+  { id: 'experience', value: '15+', unit: 'years', label: 'In the power sector' },
+  { id: 'portfolio', value: '5,000+', unit: 'MW', label: 'QCA portfolio' },
+  { id: 'sldc', value: '3', unit: 'states', label: 'Registered SLDC operations' },
+  { id: 'wrldc', value: 'WRLDC', label: 'Western Region registered' },
+  { id: 'tech', value: 'Solar · Wind · Hybrid', label: 'Renewable technologies' },
 ];

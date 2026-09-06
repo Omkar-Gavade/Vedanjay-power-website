@@ -1,0 +1,52 @@
+name = "vedanjaypower"
+compatibility_date = "2026-09-01"
+main = "worker/index.js"
+
+[assets]
+directory = "./frontend/dist"
+binding = "ASSETS"
+# The Worker is woken ONLY for API paths. Every other request is served straight
+# from the asset store — no invocation, no added latency for a site that is 99%
+# static. Widening this would make every image and JS chunk a billable call.
+run_worker_first = ["/api/*"]
+# Client-side routes (e.g. /contact/) have no matching asset. Without this a
+# deep link or refresh returns 404 from the asset store and the SPA never boots.
+not_found_handling = "single-page-application"
+
+# `period` accepts ONLY 10 or 60 seconds, so the plan's "3 per 10 minutes" is
+# expressed as 3/60s plus the client's single-submit guard.
+[[ratelimits]]
+name = "ENQUIRY_LIMIT"
+namespace_id = "1002"
+[ratelimits.simple]
+limit = 3
+period = 60
+
+[observability]
+enabled = true
+
+# No [vars] for the assistant any more. It used to carry CHAT_MODEL,
+# CHAT_ENABLED and a CHAT_FALLBACK_* pair pointing at Groq, plus an [ai] binding
+# and a rate limit. The assistant is now client-side (frontend/src/data/
+# assistant.js), so there is no model to name, no key to rotate, no daily neuron
+# quota to run out of, and no kill switch to need.
+
+# Enquiry persistence so a failed notification never loses a lead.
+# ONE-TIME SETUP (not run automatically — it creates account resources):
+#   npx wrangler d1 create vedanjay-enquiries
+#   # paste the printed database_id below, then:
+#   npx wrangler d1 execute vedanjay-enquiries --remote --file worker/migrations/0001_enquiry.sql
+# Until database_id is filled in, leave this block commented out: the enquiry
+# route degrades to notification-only rather than failing.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "vedanjay-enquiries"
+# database_id = "<paste-from-wrangler-d1-create>"
+
+# Secrets (never in this file — it is committed):
+#   wrangler secret put RL_SALT
+#   wrangler secret put NOTIFY_WEBHOOK_URL
+#   wrangler secret put NOTIFY_TOKEN
+#
+# CHAT_FALLBACK_KEY is no longer read by anything and should be deleted:
+#   wrangler secret delete CHAT_FALLBACK_KEY

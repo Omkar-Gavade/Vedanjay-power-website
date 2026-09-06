@@ -1,3 +1,13 @@
+> **⚠️ CORRECTION — 3 September 2026**
+>
+> **This document does not describe the deployed system.** It specifies an
+> Express/Node backend on a container, which was never built. The site actually
+> deploys as a **Cloudflare Worker** serving `./frontend/dist` as static assets
+> (`wrangler.toml`), and the API lives in `worker/` inside that same Worker.
+>
+> Current description: [`docs/chatbot/04-technical-architecture.md`](../chatbot/04-technical-architecture.md).
+> Kept for history — the stack changed after it was written.
+
 # Deployment Architecture
 
 **Constraint from the brief:** cloud deployment, with frontend and backend clearly separated.

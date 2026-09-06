@@ -1,0 +1,368 @@
+/* ============================================================================
+   CONTACT PAGE
+
+   Imported by the lazy Contact route, never by index.css, so it costs the
+   homepage nothing. Every value is an existing token — no new colour, radius or
+   duration is introduced here.
+
+   Rhythm is deliberate: image hero → light editorial rows → DARK locations →
+   light form. The dark band is the page's tonal contrast; without it the whole
+   route is bordered rectangles on one flat surface.
+   ========================================================================== */
+
+/* =========================================================== 1. HERO ====== */
+.vp-chero{
+  position:relative;isolation:isolate;
+  display:flex;align-items:flex-end;
+  min-height:clamp(30rem,62vh,40rem);
+  padding-block:calc(var(--vp-header-h) + clamp(2rem,5vw,3.5rem)) clamp(2.5rem,6vw,4.5rem);
+  border-bottom:1px solid var(--vp-border);
+  overflow:hidden;
+}
+.vp-chero__media{position:absolute;inset:0;z-index:-2;background:var(--vp-blue-950);}
+.vp-chero__media img{width:100%;height:100%;object-fit:cover;}
+
+/* Two layers. The first is a short top-edge scrim that carries the transparent
+   navbar — the header sits INSIDE this hero, so its contrast has to come from
+   the hero rather than from a plate behind the bar. The second is the
+   horizontal scrim that keeps the type column legible without flattening the
+   photograph into a grey wash. */
+.vp-chero::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    linear-gradient(180deg,rgb(4 22 27 / .30) 0%,rgb(4 22 27 / .12) 140px,transparent 220px),
+    linear-gradient(100deg,
+      rgb(4 22 27 / .62) 0%,
+      rgb(4 22 27 / .48) 38%,
+      rgb(4 22 27 / .20) 66%,
+      rgb(4 22 27 / .10) 100%);
+}
+@media (max-width:767.98px){
+  /* Portrait crop puts the tower behind the type, so the scrim goes vertical
+     and heavier — legibility wins over showing the whole frame. */
+  .vp-chero::before{
+    background:linear-gradient(180deg,
+      rgb(4 22 27 / .58) 0%,
+      rgb(4 22 27 / .64) 45%,
+      rgb(4 22 27 / .82) 100%);
+  }
+}
+
+.vp-chero__inner{position:relative;width:100%;}
+.vp-chero__panel{max-width:44rem;}
+
+/* The hero sits on its own dark ground regardless of theme, so it re-points the
+   text tokens the same way the homepage dark sections do. */
+.vp-chero,
+.vp-chero .vp-eyebrow{color:#EDF3F2;}
+.vp-chero .vp-eyebrow{color:#A7BABB;}
+.vp-chero .vp-eyebrow::before{background:var(--vp-green-400);}
+
+.vp-chero__title{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(2.25rem,1.6rem + 3.1vw,4rem);
+  font-weight:600;line-height:1.08;letter-spacing:-.015em;
+  color:#fff;margin:0;
+}
+.vp-chero__lead{color:#C6D6D6;max-width:44ch;}
+
+.vp-chero__cta{
+  display:flex;flex-wrap:wrap;gap:.75rem;
+  margin-top:clamp(1.75rem,3vw,2.5rem);
+}
+/* The outline button sits on a photograph, so it needs a light border rather
+   than the theme border it would otherwise inherit. */
+.vp-chero__cta .vp-btn--outline{
+  border-color:rgb(255 255 255 / .38);color:#fff;
+  backdrop-filter:blur(2px);
+}
+.vp-chero__cta .vp-btn--outline:hover{
+  border-color:#fff;background:rgb(255 255 255 / .10);color:#fff;
+}
+@media (max-width:575.98px){
+  .vp-chero__cta{flex-direction:column;align-items:stretch;}
+  .vp-chero__cta .vp-btn{width:100%;}
+}
+
+/* ==================================== 2. PRIMARY: CONNECT + ENQUIRY ======= */
+.vp-primary{
+  background:var(--vp-bg-alt);
+  border-bottom:1px solid var(--vp-border);
+  /* The hero CTA jumps to #enquiry, which IS this section, so the sticky-header
+     offset belongs here rather than on a separate anchor element. */
+  scroll-margin-top:calc(var(--vp-header-h) + 1rem);
+}
+
+.vp-primary__grid{display:grid;gap:clamp(2.5rem,5vw,4rem);}
+@media (min-width:992px){
+  /* ~38 / 62. The form is the primary action and needs the width; the contact
+     rows are compact by design, and stretching them to 50% would waste space
+     on both sides. minmax(0,…) stops the iframe forcing the column wider. */
+  .vp-primary__grid{
+    grid-template-columns:minmax(0,35fr) minmax(0,65fr);
+    gap:clamp(2rem,3vw,3.5rem);
+    align-items:start;
+  }
+  /* A ~2,000px form beside a ~700px column would leave 1,300px of dead space.
+     Sticky turns that into an asset: the contact routes stay in view for the
+     whole time someone is working through the form. */
+  .vp-primary__aside{
+    position:sticky;
+    top:calc(var(--vp-header-h) + 2rem);
+  }
+}
+
+/* ---------------------------------------------- ways to connect ---------- */
+.vp-connect__intro{
+  font-size:1.0313rem;line-height:1.62;color:var(--vp-text-soft);
+  max-width:34ch;
+}
+.vp-connect__list{
+  margin-top:clamp(1.75rem,3vw,2.25rem);
+  border-top:1px solid var(--vp-border);
+}
+.vp-connect__row{
+  display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem;
+  align-items:start;
+  padding-block:1.15rem;
+  border-bottom:1px solid var(--vp-border);
+}
+.vp-connect__icon{
+  display:grid;place-items:center;width:36px;height:36px;flex:none;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  color:var(--vp-primary);
+}
+.vp-connect__body{min-width:0;}
+.vp-connect__label{
+  display:flex;align-items:center;gap:.55rem;
+  font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--vp-text-soft);margin:0 0 .2rem;
+}
+.vp-connect__flag{
+  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.04em;
+  padding:.08rem .38rem;border:1px solid var(--vp-primary);
+  border-radius:var(--vp-radius-sm);color:var(--vp-primary);text-transform:none;
+}
+.vp-connect__value{
+  /* `flex` not `inline-flex`: as an inline box the action link sat on the same
+     line and collided with the value ("+91 7666901814Call us →").
+     `width:fit-content` keeps the hit area to the text, not the whole column. */
+  display:flex;width:fit-content;max-width:100%;
+  align-items:center;min-height:44px;margin-block:-.35rem;
+  font-family:var(--vp-font-mono);font-size:1rem;font-weight:500;
+  color:var(--vp-text);text-decoration:none;overflow-wrap:anywhere;
+  transition:color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-connect__value:hover{color:var(--vp-primary);}
+.vp-connect__note{
+  font-size:.8438rem;line-height:1.55;color:var(--vp-text-muted);margin:.15rem 0 0;
+}
+.vp-connect__action{
+  display:flex;width:fit-content;align-items:center;gap:.4rem;min-height:44px;
+  font-size:.9063rem;font-weight:600;color:var(--vp-primary);text-decoration:none;
+}
+.vp-connect__action:hover{color:var(--vp-primary-hover);}
+.vp-connect__action .vp-arrow{transition:transform var(--vp-dur-fast) var(--vp-ease);}
+.vp-connect__action:hover .vp-arrow{transform:translateX(4px);}
+
+/* ------------------------------------------------------- enquiry --------- */
+.vp-enquiry__intro{
+  font-size:1.0313rem;line-height:1.62;color:var(--vp-text-soft);max-width:52ch;
+}
+.vp-enquiry__frame{
+  margin-top:clamp(1.5rem,2.5vw,2rem);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-surface);overflow:hidden;
+  /* Restrained: a large shadow here would read as a SaaS dashboard card. */
+  box-shadow:var(--vp-shadow-sm);
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease);
+}
+.vp-enquiry__frame[data-open]{border-color:var(--vp-primary);box-shadow:var(--vp-shadow);}
+
+/* ---- the disclosure ------------------------------------------------------
+   The form is ~2000px of third-party iframe. Closed by default, it opens on a
+   deliberate press. */
+.vp-enquiry__toggle{
+  display:flex;align-items:center;gap:.9rem;width:100%;text-align:left;
+  padding:clamp(1rem,2vw,1.25rem);
+  background:var(--vp-surface);border:0;cursor:pointer;font-family:inherit;
+  transition:background var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-enquiry__toggle:hover{background:var(--vp-bg-alt);}
+.vp-enquiry__toggleIcon{
+  display:grid;place-items:center;width:42px;height:42px;flex:none;
+  border-radius:var(--vp-radius);
+  background:var(--vp-green-50);color:var(--vp-primary);
+  transition:background var(--vp-dur) var(--vp-ease),transform var(--vp-dur) var(--vp-ease);
+}
+[data-bs-theme="dark"] .vp-enquiry__toggleIcon{background:rgb(88 176 88 / .16);color:var(--vp-green-300);}
+.vp-enquiry__toggle:hover .vp-enquiry__toggleIcon{transform:translateY(-2px);}
+.vp-enquiry__toggleText{display:flex;flex-direction:column;gap:.15rem;min-width:0;}
+.vp-enquiry__toggleTitle{
+  font-family:var(--vp-font-serif);font-size:1.0625rem;font-weight:600;color:var(--vp-text);
+}
+.vp-enquiry__toggleHint{font-size:.8125rem;color:var(--vp-text-muted);}
+.vp-enquiry__chev{
+  margin-left:auto;flex:none;display:grid;place-items:center;
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--vp-border);color:var(--vp-text-soft);
+  transition:transform var(--vp-dur) var(--vp-ease),
+             border-color var(--vp-dur) var(--vp-ease),
+             color var(--vp-dur) var(--vp-ease);
+}
+.vp-enquiry__frame[data-open] .vp-enquiry__chev{
+  transform:rotate(180deg);border-color:var(--vp-primary);color:var(--vp-primary);
+}
+
+/* No CSS transition on height: the component animates it with the Web
+   Animations API and sets the final height synchronously, so opening the panel
+   never depends on an animation running. See the note in EnquiryPanel.jsx. */
+.vp-enquiry__reveal{height:0;overflow:hidden;}
+.vp-enquiry__revealInner{
+  opacity:0;transform:translateY(-6px);
+  transition:opacity 320ms var(--vp-ease),transform 320ms var(--vp-ease);
+}
+.vp-enquiry__frame[data-open] .vp-enquiry__revealInner{
+  opacity:1;transform:none;
+  /* Content fades in slightly after the panel starts moving, so it reads as
+     revealed rather than as two things happening at once. */
+  transition-delay:140ms;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-enquiry__reveal,.vp-enquiry__revealInner,.vp-enquiry__chev{transition:none !important;}
+  /* The component also skips the measure-and-animate path under this setting
+     and sets the final height directly. */
+  .vp-enquiry__revealInner{transform:none !important;}
+}
+.vp-enquiry__bar{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.8rem 1.125rem;
+  border-bottom:1px solid var(--vp-border);
+  background:var(--vp-surface);
+}
+.vp-enquiry__bar span{
+  font-size:.8125rem;font-weight:600;color:var(--vp-text-soft);
+}
+.vp-enquiry__bar a{
+  display:inline-flex;align-items:center;gap:.35rem;
+  min-height:44px;font-size:.8125rem;color:var(--vp-text-soft);
+}
+.vp-enquiry__bar a:hover{color:var(--vp-primary);}
+
+/* Google owns everything inside the frame and it is always light. A thin inset
+   on our own ground makes it read as a document panel placed deliberately
+   rather than a white page stitched into a dark one — kept tight so it does
+   not eat the width the form needs. */
+.vp-enquiry__stage{
+  position:relative;
+  padding:clamp(.375rem,.8vw,.75rem);
+  background:var(--vp-bg-sunken);
+}
+
+/* Height is fixed per breakpoint: a cross-origin iframe cannot report its
+   content height. Measured against the live form and set generously so it
+   never scrolls inside its own frame — nested scrolling is the worst thing
+   about most embedded forms. Wider columns wrap less, so need less height. */
+.vp-enquiry__embed{
+  display:block;width:100%;border:0;
+  height:2180px;
+  border-radius:var(--vp-radius);
+  background:#fff;
+}
+@media (min-width:576px){ .vp-enquiry__embed{height:2020px;} }
+@media (min-width:992px){ .vp-enquiry__embed{height:1960px;} }
+@media (min-width:1200px){ .vp-enquiry__embed{height:1900px;} }
+
+.vp-enquiry__loading{
+  position:absolute;inset:clamp(.375rem,.8vw,.75rem);
+  border-radius:var(--vp-radius);
+  display:grid;place-items:center;align-content:center;gap:.75rem;
+  background:var(--vp-surface);color:var(--vp-text-muted);
+  font-size:.9375rem;text-align:center;
+}
+.vp-enquiry__skeleton{
+  display:grid;place-items:center;
+  height:28rem;color:var(--vp-text-muted);font-size:.9375rem;
+}
+.vp-enquiry__spinner{
+  width:26px;height:26px;border-radius:50%;
+  border:2px solid var(--vp-border-strong);border-top-color:var(--vp-primary);
+  animation:vp-spin 800ms linear infinite;
+}
+@keyframes vp-spin{to{transform:rotate(360deg);}}
+
+/* =================================================== 3. LOCATIONS ========= */
+.vp-locations{background:var(--vp-blue-900);}
+
+.vp-offices{display:grid;gap:.75rem;}
+@media (min-width:576px) and (max-width:991.98px){
+  .vp-offices{grid-template-columns:1fr 1fr;}
+}
+.vp-office{
+  width:100%;text-align:left;display:block;
+  padding:1.125rem 1.25rem;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  background:rgb(255 255 255 / .03);color:inherit;
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             background var(--vp-dur) var(--vp-ease);
+}
+.vp-office:hover{border-color:var(--vp-border-strong);background:rgb(255 255 255 / .06);}
+.vp-office[aria-checked="true"]{
+  border-color:var(--vp-primary);
+  background:rgb(88 176 88 / .10);
+}
+.vp-office__head{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.6rem;}
+.vp-office__pin{
+  display:grid;place-items:center;width:32px;height:32px;flex:none;
+  border-radius:var(--vp-radius-pill);
+  border:1px solid var(--vp-border);color:var(--vp-text-muted);
+  transition:color var(--vp-dur) var(--vp-ease),border-color var(--vp-dur) var(--vp-ease);
+}
+.vp-office[aria-checked="true"] .vp-office__pin{
+  color:var(--vp-primary);border-color:var(--vp-primary);
+}
+.vp-office__city{
+  display:block;font-family:var(--vp-font-serif);
+  font-size:1.1875rem;font-weight:600;line-height:1.25;color:var(--vp-text);
+}
+.vp-office__role{
+  display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--vp-text-muted);margin-top:.15rem;
+}
+.vp-office[aria-checked="true"] .vp-office__role{color:var(--vp-primary);}
+.vp-office__addr{
+  font-size:.875rem;line-height:1.65;color:var(--vp-text-soft);margin:0;font-style:normal;
+}
+
+.vp-map{
+  position:relative;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  overflow:hidden;background:var(--vp-blue-950);
+  height:clamp(22rem,50vw,34rem);
+}
+@media (min-width:992px){ .vp-map{height:100%;min-height:30rem;} }
+/* Absolute fill, not height:100%.
+   At >=992px the container's height comes from `min-height` against an
+   indefinite parent, so a percentage height on the child had nothing to
+   resolve against and collapsed the iframe to its default 150px inside a
+   480px box. Absolute positioning fills the box however its height is
+   derived. */
+.vp-map iframe{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;}
+
+/* Caption band names the pin the visitor is looking at — the map's own marker
+   label is Google's and cannot be styled. */
+.vp-map__cap{
+  position:absolute;left:0;right:0;bottom:0;
+  display:flex;align-items:center;gap:.55rem;
+  padding:.7rem 1rem;
+  background:linear-gradient(transparent,rgb(4 22 27 / .88) 42%);
+  color:#EDF3F2;font-size:.875rem;font-weight:600;
+  pointer-events:none;
+}
+.vp-map__dot{
+  width:8px;height:8px;border-radius:50%;flex:none;
+  background:var(--vp-green-400);
+  box-shadow:0 0 0 4px rgb(88 176 88 / .28);
+}

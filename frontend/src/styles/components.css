@@ -7,7 +7,7 @@
 .vp-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
   min-height:52px;padding:.875rem 1.75rem;
-  border-radius:var(--vp-radius-sm);border:1px solid transparent;
+  border-radius:2px;border:1px solid transparent;
   font-size:.9688rem;font-weight:600;line-height:1.2;
   text-align:center;white-space:nowrap;cursor:pointer;
   transition:background-color var(--vp-dur-fast) var(--vp-ease),
@@ -31,8 +31,7 @@
 .vp-btn--outline:hover{border-color:var(--vp-primary);color:var(--vp-primary);}
 
 .vp-btn--ghost-light{
-  background:rgb(255 255 255 / .08);border-color:rgb(255 255 255 / .3);color:#fff;
-  backdrop-filter:blur(6px);
+  background:rgb(255 255 255 / .06);border-color:rgb(255 255 255 / .38);color:#fff;
 }
 .vp-btn--ghost-light:hover{background:rgb(255 255 255 / .16);border-color:rgb(255 255 255 / .55);color:#fff;}
 
