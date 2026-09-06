@@ -75,6 +75,7 @@
   }
 }
 @keyframes vp-chat-sheet-in{from{transform:translateY(100%);}to{transform:none;}}
+@keyframes vp-chat-sheet-out{from{transform:none;}to{transform:translateY(100%);}}
 
 /* Desktop: an anchored card that leaves the page visible. */
 @media (min-width:576px){
@@ -90,6 +91,19 @@
   .vp-chat-panel{width:420px;height:min(680px,calc(100dvh - 3rem));}
 }
 @keyframes vp-chat-card-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+@keyframes vp-chat-card-out{from{opacity:1;transform:none;}to{opacity:0;transform:translateY(10px) scale(.985);}}
+
+/* Closing plays out instead of cutting. The panel is a large surface and having
+   it disappear between frames reads as a glitch rather than a dismissal. The
+   unmount is timed in JS, so these only have to finish first. */
+@media (max-width:575.98px){
+  .vp-chat-panel[data-closing="true"]{animation:vp-chat-sheet-out 180ms var(--vp-ease) both;}
+}
+@media (min-width:576px){
+  .vp-chat-panel[data-closing="true"]{animation:vp-chat-card-out 170ms var(--vp-ease) both;}
+}
+.vp-chat-backdrop[data-closing="true"]{animation:vp-fade-out 170ms var(--vp-ease) both;}
+@keyframes vp-fade-out{from{opacity:1;}to{opacity:0;}}
 
 /* ------------------------------------------------------------------ head --- */
 .vp-chat-head{
@@ -121,6 +135,15 @@
 }
 .vp-chat-dot{
   width:6px;height:6px;border-radius:50%;background:var(--vp-primary);flex:none;
+}
+
+/* Below 576px the head carries a 34px mark and two 40px controls, leaving the
+   text about 210px — just under what this line needs, so it wrapped to two rows
+   and pushed against the title. The title and the mark already say what the
+   panel is, so the subtitle is what gives way. */
+@media (max-width:575.98px){
+  .vp-chat-head__status{display:none;}
+  .vp-chat-head{padding-top:.75rem;padding-bottom:.75rem;}
 }
 
 /* 44px: the pointer target stays full size even though the glyph is 16px. */

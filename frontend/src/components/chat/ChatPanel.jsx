@@ -34,6 +34,10 @@ const save = (messages) => {
   try { sessionStorage.setItem(STORE, JSON.stringify(messages.slice(-24))); } catch { /* ignore */ }
 };
 
+/* The whole reveal fits in this budget whatever the answer's length. */
+const TYPE_MS = 620;
+const TICK_MS = 22;
+
 const prefersStill = () => typeof matchMedia === 'function'
   && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -96,11 +100,17 @@ function useTypedText(text, active) {
     /* Whole words, not characters: a per-character reveal at this length reads
        as a stutter and takes far too long on a 500-character answer. */
     const parts = text.split(/(\s+)/);
+    /* FIXED DURATION, not a fixed rate. Revealing two words per tick made the
+       animation as long as the answer — a 1,400-character reply took over four
+       seconds, which reads as a hung panel rather than an assistant thinking.
+       The step scales with the length instead, so every answer lands in about
+       the same beat and a long one simply reveals in larger pieces. */
+    const step = Math.max(2, Math.ceil(parts.length / (TYPE_MS / TICK_MS)));
     const id = setInterval(() => {
-      i += 2;
+      i += step;
       setShown(parts.slice(0, i).join(''));
       if (i >= parts.length) clearInterval(id);
-    }, 22);
+    }, TICK_MS);
     return () => clearInterval(id);
   }, [text, active]);
 
@@ -116,7 +126,12 @@ function BotMessage({ msg, typing, onPick }) {
     <div className="vp-cm" data-role="bot">
       <span className="vp-cm__mark" aria-hidden="true"><MarkIcon /></span>
       <div className="vp-cm__col">
-        <div className="vp-cm__bubble">
+        {/* The COMPLETE answer, for assistive technology, present from the first
+            frame. The visible bubble reveals a word at a time and is hidden from
+            the accessibility tree, so a screen reader is read the whole answer
+            once instead of being re-interrupted on every tick of the animation. */}
+        <p className="visually-hidden">{msg.text}</p>
+        <div className="vp-cm__bubble" aria-hidden="true">
           {/* Answers are plain text with line breaks — no markdown parser, and
               nothing from the page is interpolated as HTML. */}
           {shown.split('\n').map((line, i) => (
@@ -151,14 +166,30 @@ export default function ChatPanel({ onClose }) {
   const [messages, setMessages] = useState(() => (load() ?? []).map((m) => ({ ...m, fresh: false })));
   const [thinking, setThinking] = useState(false);
   const [draft, setDraft] = useState('');
+  const [closing, setClosing] = useState(false);
   const panelRef = useRef(null);
   const bodyRef = useRef(null);
   const inputRef = useRef(null);
   const timer = useRef(null);
+  const exit = useRef(null);
 
-  useFocusTrap(panelRef, true, onClose);
+  /* Closing plays out rather than cutting: the panel is a large surface, and
+     having it vanish between frames reads as a glitch. The unmount is driven by
+     a timer rather than `animationend` so a browser that never fires the event
+     — or a reduced-motion rule that removes the animation entirely — still
+     closes the panel. */
+  const requestClose = useCallback(() => {
+    if (prefersStill()) { onClose(); return; }
+    setClosing(true);
+    exit.current = setTimeout(onClose, 190);
+  }, [onClose]);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useFocusTrap(panelRef, true, requestClose);
+
+  useEffect(() => () => { clearTimeout(timer.current); clearTimeout(exit.current); }, []);
+
+  /* The composer is the point of the panel, so it takes focus on open. */
+  useEffect(() => { inputRef.current?.focus(); }, []);
   useEffect(() => { save(messages); }, [messages]);
 
   /* Follow the conversation as it grows, including while an answer types. */
@@ -169,21 +200,26 @@ export default function ChatPanel({ onClose }) {
   }, [messages, thinking]);
 
   const respond = useCallback((query) => {
-    const offered = [...messages].reverse().find((m) => m.role === 'bot')?.next ?? [];
+    /* The previous answer IS the context: what it offered as follow-ups, and
+       which topic it was, so "tell me more" has something to open. */
+    const prevBot = [...messages].reverse().find((m) => m.role === 'bot');
+    const context = { offered: prevBot?.next ?? [], last: prevBot?.topicId ?? null };
+
     setMessages((prev) => [...prev, { id: uid(), role: 'user', text: query }]);
     setThinking(true);
     /* A beat before answering. Instant replies to a typed question read as a
        lookup table rather than an assistant, and the pause is what makes the
        typing indicator meaningful rather than decorative. */
     timer.current = setTimeout(() => {
-      const a = answer(query, offered);
+      const a = answer(query, context);
       setThinking(false);
       setMessages((prev) => [...prev, {
         id: uid(),
         role: 'bot',
         text: a.text,
-        link: a.topic?.link ?? null,
+        link: a.link,
         next: a.next,
+        topicId: a.topic?.id ?? null,
         fresh: true,
       }]);
     }, 420);
@@ -215,9 +251,11 @@ export default function ChatPanel({ onClose }) {
 
   return (
     <>
-      <div className="vp-chat-backdrop" onClick={onClose} aria-hidden="true" />
+      <div className="vp-chat-backdrop" data-closing={closing ? 'true' : 'false'}
+           onClick={requestClose} aria-hidden="true" />
       <div
         className="vp-chat-panel"
+        data-closing={closing ? 'true' : 'false'}
         role="dialog"
         aria-modal="true"
         aria-labelledby="vp-chat-title"
@@ -238,7 +276,7 @@ export default function ChatPanel({ onClose }) {
               <RestartIcon />
             </button>
           )}
-          <button type="button" className="vp-chat-icon-btn" onClick={onClose}
+          <button type="button" className="vp-chat-icon-btn" onClick={requestClose}
                   aria-label="Close assistant">
             <CloseIcon />
           </button>
@@ -264,7 +302,8 @@ export default function ChatPanel({ onClose }) {
               </div>
             </div>
           ) : (
-            <div className="vp-chat-thread">
+            <div className="vp-chat-thread" role="log" aria-live="polite"
+                 aria-relevant="additions" aria-label="Conversation">
               {messages.map((m) => (m.role === 'user' ? (
                 <div className="vp-cm" data-role="user" key={m.id}>
                   <div className="vp-cm__bubble">{m.text}</div>
