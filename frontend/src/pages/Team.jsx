@@ -35,7 +35,7 @@ function LinkedInIcon() {
 }
 
 export default function Team() {
-  const hero = getMedia('about-operations');
+  const hero = getMedia('grid-transmission');
 
   return (
     <>

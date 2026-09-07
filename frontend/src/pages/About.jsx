@@ -35,7 +35,7 @@ const NUMERIC = new Set(['established', 'experience', 'portfolio', 'sldc']);
 
 export default function About() {
   const hero = getMedia('footprint');
-  const story = getMedia('about-operations');
+  const story = getMedia('grid-transmission');
   const figures = proofPoints.filter((p) => NUMERIC.has(p.id));
 
   return (

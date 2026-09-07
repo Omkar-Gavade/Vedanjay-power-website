@@ -147,12 +147,12 @@
   padding:.4rem .6rem;
   margin-block:.2rem;
 }
-[data-bs-theme="dark"] .vp-header .vp-brand__img{height:30px;}
-@media (min-width:576px){[data-bs-theme="dark"] .vp-header .vp-brand__img{height:34px;}}
-@media (min-width:1200px){
-  [data-bs-theme="dark"] .vp-header .vp-brand__img{height:40px;}
-  [data-bs-theme="dark"] .vp-header[data-scrolled="true"] .vp-brand__img{height:34px;}
-}
+/* NO height override for dark.
+   The dark rules used to shrink the logo to 30/34/40px against light's
+   34/40/48px, presumably to keep the white plate's TOTAL height in line. The
+   effect a visitor actually sees is the logo changing size the moment they
+   toggle the theme, which reads as a rendering fault. The image is now one size
+   in both themes and the plate's padding absorbs the difference. */
 
 /* -------------------------------------------------------------- nav links -- */
 .vp-nav{display:none;margin-inline-start:auto;}

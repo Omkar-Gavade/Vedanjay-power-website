@@ -99,46 +99,78 @@
 .vp-maplede__u{font-family:var(--vp-font-mono);font-size:1rem;color:var(--vp-primary);}
 .vp-maplede__l{font-size:.875rem;color:var(--vp-text-muted);flex-basis:100%;margin-top:.3rem;}
 
-.vp-mapbars{list-style:none;margin:0;padding:0;}
+/* ---------------------------------------------------------------- ranking ---
+   A panel, not a loose list. Seven rows with hairline separators and a 4px
+   track underneath each read as unfinished text; boxing them and letting each
+   row's own width carry the value makes the aside read as the map's other half.
+   ------------------------------------------------------------------------- */
+.vp-mapbars{
+  list-style:none;margin:0;padding:0;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  background:var(--vp-surface);overflow:hidden;
+}
 .vp-mapbars li + li{border-top:1px solid var(--vp-border-soft);}
+
 .vp-mapbar{
-  position:relative;display:grid;width:100%;text-align:left;
-  grid-template-columns:1.6rem minmax(0,1fr) auto;
-  gap:.1rem .75rem;align-items:baseline;
-  padding:.7rem .5rem .7rem .2rem;
+  position:relative;isolation:isolate;
+  display:grid;width:100%;text-align:left;
+  grid-template-columns:1.75rem minmax(0,1fr) auto;
+  gap:.15rem .7rem;align-items:baseline;
+  padding:.72rem .85rem .72rem .7rem;
   background:transparent;border:0;color:inherit;font-family:inherit;cursor:pointer;
   transition:background var(--vp-dur-fast) var(--vp-ease);
 }
-.vp-mapbar:hover,.vp-mapbar[aria-pressed="true"]{background:var(--vp-bg-alt);}
+
+/* The value, drawn as the row itself. Sits behind the text on its own layer,
+   fading out to the right so the row ends softly instead of as a hard block. */
+.vp-mapbar__fill{
+  position:absolute;inset:0 auto 0 0;z-index:-1;
+  width:var(--w);
+  background:linear-gradient(90deg,
+    color-mix(in srgb, var(--vp-primary) 15%, transparent),
+    color-mix(in srgb, var(--vp-primary) 7%, transparent));
+  border-right:1px solid color-mix(in srgb, var(--vp-primary) 38%, transparent);
+  transform-origin:left;
+  animation:vp-mapbar-grow 900ms var(--vp-ease) both;
+  animation-delay:calc(var(--i,0) * 70ms);
+}
+@keyframes vp-mapbar-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+.vp-mapbar:hover .vp-mapbar__fill,
+.vp-mapbar[aria-pressed="true"] .vp-mapbar__fill{
+  background:linear-gradient(90deg,
+    color-mix(in srgb, var(--vp-primary) 26%, transparent),
+    color-mix(in srgb, var(--vp-primary) 12%, transparent));
+  border-right-color:var(--vp-primary);
+}
+/* A left accent on the active row, so the row picked on the map is findable
+   in the list without scanning the names. */
+.vp-mapbar[aria-pressed="true"]::before{
+  content:"";position:absolute;inset:0 auto 0 0;width:3px;
+  background:var(--vp-primary);
+}
+
 .vp-mapbar__rank{
   grid-row:1 / span 2;align-self:center;
   font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
   font-variant-numeric:tabular-nums;
 }
-.vp-mapbar__state{font-size:1rem;font-weight:600;color:var(--vp-text);line-height:1.3;}
+.vp-mapbar__state{
+  font-size:.9375rem;font-weight:600;color:var(--vp-text);line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .vp-mapbar__mw{
-  font-family:var(--vp-font-mono);font-size:.9375rem;color:var(--vp-text);
+  grid-column:3;grid-row:1;
+  font-family:var(--vp-font-mono);font-size:1rem;font-weight:600;color:var(--vp-text);
   font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;
 }
-.vp-mapbar__mw span{font-size:.75rem;color:var(--vp-text-muted);margin-left:.2rem;}
-/* The bar is the same encoding as the map's shading, so the two read as one
-   chart rather than as two competing ones. */
-.vp-mapbar__track{
-  grid-column:2 / 4;display:block;height:4px;margin-top:.4rem;
-  border-radius:999px;background:var(--vp-bg-sunken);overflow:hidden;
+.vp-mapbar__unit{font-size:.6875rem;font-weight:400;color:var(--vp-text-muted);margin-left:.22rem;}
+.vp-mapbar__count{grid-column:2;grid-row:2;font-size:.75rem;color:var(--vp-text-muted);}
+.vp-mapbar__share{
+  grid-column:3;grid-row:2;text-align:right;
+  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
+  font-variant-numeric:tabular-nums;
 }
-.vp-mapbar__fill{
-  display:block;height:100%;width:var(--w);border-radius:999px;
-  background:linear-gradient(90deg,var(--vp-green-400),var(--vp-green-700));
-  transform-origin:left;animation:vp-mapbar-grow 900ms var(--vp-ease) both;
-  animation-delay:calc(var(--i,0) * 70ms);
-}
-@keyframes vp-mapbar-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-.vp-mapbar__meta{
-  grid-column:2 / 4;display:flex;justify-content:space-between;gap:.75rem;
-  font-size:.75rem;color:var(--vp-text-muted);margin-top:.35rem;
-}
-.vp-mapbar__share{font-family:var(--vp-font-mono);font-variant-numeric:tabular-nums;}
 
 .vp-mapnote{font-size:.8125rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
 .vp-mapnote strong{color:var(--vp-text-soft);font-weight:600;}

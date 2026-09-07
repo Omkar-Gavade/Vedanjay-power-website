@@ -14,7 +14,7 @@ export function WhoWeAre() {
         <div className="row g-4 g-lg-5 align-items-center">
           <div className="col-12 col-lg-6">
             <Reveal>
-              <Media slug="about-operations" ratio="4x3" className="vp-img-reveal vp-zoom"
+              <Media slug="grid-transmission" ratio="4x3" className="vp-img-reveal vp-zoom"
                      sizes="(max-width: 992px) 100vw, 48vw" />
             </Reveal>
           </div>

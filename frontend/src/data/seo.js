@@ -190,7 +190,7 @@ export const routeSeo = [
 export const ROUTE_HERO = {
   [ROUTES.home]: 'hero-primary',
   [ROUTES.about]: 'footprint',
-  [ROUTES.team]: 'about-operations',
+  [ROUTES.team]: 'grid-transmission',
   [ROUTES.awards]: 'tech-solar',
   [ROUTES.downloads]: 'cta-close',
   [ROUTES.partners]: 'cap-openaccess',

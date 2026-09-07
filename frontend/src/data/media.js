@@ -25,10 +25,12 @@ export const media = {
     alt: 'High-voltage substation switchyard with steel gantries and transmission towers',
     focal: '50% 55%',
   },
-  'about-operations': {
-    src: `${base}ops-control-desk.jpg`,
-    alt: 'Operator monitoring generation and system data at a control desk',
-    focal: '50% 45%',
+  /* Renamed from 'about-operations' on 7 Sep 2026 along with the photograph.
+     The slug names the subject, and this one is no longer a control desk. */
+  'grid-transmission': {
+    src: `${base}grid-transmission-dusk.jpg`,
+    alt: 'High-voltage transmission towers and conductors receding across open ground at sunset',
+    focal: '50% 55%',
   },
 
   // ---- Capabilities --------------------------------------------------------
@@ -113,7 +115,7 @@ export const getMedia = (slug) => media[slug] ?? null;
 export const heroSlides = [
   { slug: 'hero-primary',   pan: 'in-left' },
   { slug: 'cap-projects',   pan: 'in-right' },
-  { slug: 'about-operations', pan: 'in-up' },
+  { slug: 'grid-transmission', pan: 'in-up' },
   { slug: 'tech-wind',      pan: 'in-down' },
 ];
 
