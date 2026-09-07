@@ -75,12 +75,21 @@
 /* Three profile cards: photograph, then the person. Tokens throughout, so the
    card themes itself — the only place a literal colour appears is the scrim
    over the portrait, which sits on the photograph rather than on the page. */
+/* THE CARD IS SIZED TO THE PHOTOGRAPH, not the other way round.
+   The supplied portraits are 540x540 — the largest that exists; the company's
+   own legacy site carries them at 270. A card stretched across a third of a
+   1400px viewport gave the photo a 395x296 CSS frame, which on a 2x display
+   asks for 791x593 device pixels from a 540px file: the browser was upscaling
+   every face by half again, and that is what made them look soft.
+   Capping the row at 900px puts the photo at ~270 CSS px — 540 device pixels
+   at 2x, exactly the source. Nothing is invented and nothing is stretched. */
 .vp-team{
-  display:grid;gap:clamp(1.25rem,2.5vw,1.75rem);
+  display:grid;gap:clamp(1rem,2vw,1.5rem);
   grid-template-columns:1fr;
+  max-width:22rem;
 }
-@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);} }
-@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);} }
+@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:38rem;} }
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:54.5rem;} }
 
 .vp-tcard{
   position:relative;display:flex;flex-direction:column;
@@ -106,17 +115,19 @@
   box-shadow:0 26px 54px -28px rgb(0 0 0 / .7);
 }
 
-/* 4:3, not the square the portraits are supplied at.
-   A square frame across a 3-up grid made a 397x587 card — two thirds of the
-   viewport for one of three people, which is more room than a name, a title
-   and one line of text can fill. Losing a quarter of the height brings the card
-   back to a normal proportion.
+/* 4:3, not the square the portraits are supplied at. A square frame across a
+   3-up grid made a 397x587 card — more room than a name, a title and one line
+   of text can fill.
    The crop is biased UP (28%, not the 50% centre) because these are tight
    head-and-shoulders shots: centred, 4:3 would take equally from the top of the
    head and the chest, and the head is the half that matters. */
 .vp-tcard__photo{
   position:relative;aspect-ratio:4 / 3;overflow:hidden;
   background:var(--vp-bg-sunken);
+  /* The portraits are studio cut-outs on white, and the card is white, so
+     without this the top of the frame dissolves into the card and the photo
+     reads as floating rather than seated in it. */
+  border-bottom:1px solid var(--vp-border-soft);
 }
 .vp-tcard__photo img{
   width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block;
@@ -134,24 +145,24 @@
 
 /* Role sits ON the photograph, so the body below is name and substance only. */
 .vp-tcard__role{
-  position:absolute;left:1rem;bottom:.9rem;z-index:1;margin:0;
-  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.1em;
+  position:absolute;left:.85rem;bottom:.7rem;z-index:1;margin:0;
+  font-family:var(--vp-font-mono);font-size:.625rem;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;
   text-shadow:0 1px 3px rgb(4 22 27 / .6);
 }
 
 .vp-tcard__body{
   display:flex;flex-direction:column;flex:1;
-  padding:clamp(1rem,1.8vw,1.25rem);
+  padding:.9rem 1rem 1rem;
 }
 .vp-tcard__name{
   font-family:var(--vp-font-serif);
-  font-size:clamp(1.1875rem,1.1rem + .35vw,1.4375rem);
-  font-weight:600;line-height:1.25;margin:0;color:var(--vp-text);
+  font-size:1.125rem;
+  font-weight:600;line-height:1.3;margin:0;color:var(--vp-text);
 }
 /* Draws in under the name on hover — the card's one moving accent. */
 .vp-tcard__rule{
-  display:block;height:2px;width:2.25rem;margin:.7rem 0 .85rem;
+  display:block;height:2px;width:2rem;margin:.55rem 0 .65rem;
   background:var(--vp-primary);transform-origin:left;
   transform:scaleX(.45);
   transition:transform var(--vp-dur) var(--vp-ease);
@@ -159,7 +170,7 @@
 .vp-tcard:hover .vp-tcard__rule,
 .vp-tcard:focus-within .vp-tcard__rule{transform:scaleX(1);}
 .vp-tcard__focus{
-  font-size:.9375rem;line-height:1.65;color:var(--vp-text-muted);margin:0;
+  font-size:.8125rem;line-height:1.6;color:var(--vp-text-muted);margin:0;
 }
 /* Pins the link to the bottom so cards of unequal text still line up. */
 .vp-tcard__link{

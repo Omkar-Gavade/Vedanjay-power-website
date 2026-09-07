@@ -75,9 +75,13 @@ export default function Team() {
             {leadership.map((p, i) => (
               <article className="vp-tcard" key={p.id} style={{ '--i': i }}>
                 <div className="vp-tcard__photo">
+                  {/* `sizes` is the card's real width, so the browser stops
+                      guessing 100vw and reserves the right box. The intrinsic
+                      attributes stay 540x540 — the size the file actually is. */}
                   <img
                     src={p.photo}
                     alt={`${p.name}, ${p.role} of Vedanjay Power`}
+                    sizes="(min-width: 1000px) 270px, (min-width: 640px) 45vw, 90vw"
                     width="540" height="540" loading="lazy" decoding="async"
                   />
                   <p className="vp-tcard__role">{p.role}</p>
