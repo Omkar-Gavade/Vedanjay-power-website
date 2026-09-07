@@ -12,6 +12,8 @@ import { Figure } from '../components/ui/Figure.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { MilestoneStrip } from '../components/about/MilestoneStrip.jsx';
+import { ServiceExplorer } from '../components/about/ServiceExplorer.jsx';
+import { ForecastFlow } from '../components/about/ForecastFlow.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
 import { Seo } from '../components/seo/Seo.jsx';
@@ -180,20 +182,28 @@ export default function About() {
             <h2 id="wd-h" className="vp-h2 vp-measure-tight mb-4">Six service lines.</h2>
           </Reveal>
 
-          <Reveal delay={70}>
-            <ol className="vp-lines-list">
-              {capabilities.map((c, i) => (
-                <li key={c.id} style={{ '--i': i }}>
-                  <span className="vp-lines-list__n">{c.index}</span>
-                  <span className="vp-lines-list__t">{c.name}</span>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
+          <ServiceExplorer />
 
           <Reveal delay={120}>
             <Button to={ROUTES.services} variant="link" size="sm" arrow>All services</Button>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ---- how the core line actually works ---- */}
+      <section className="vp-section vp-section--flush-top" aria-labelledby="qca-h">
+        <div className="vp-container">
+          <Reveal>
+            <span className="vp-eyebrow vp-label mb-3">How the core line works</span>
+            <h2 id="qca-h" className="vp-h2 vp-measure-tight mb-2">
+              Forecasting and scheduling, end to end.
+            </h2>
+            <p className="vp-lead vp-measure-lead mb-4">
+              The first of the six lines is the one most people have to ask about. It runs
+              as a loop, every day, for every plant under coordination.
+            </p>
+          </Reveal>
+          <ForecastFlow />
         </div>
       </section>
 

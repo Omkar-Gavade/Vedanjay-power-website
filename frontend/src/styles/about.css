@@ -1730,3 +1730,187 @@
   .vp-award{animation:none !important;}
   .vp-award:hover{transform:none !important;}
 }
+
+/* ================================================== QCA FLOW DIAGRAM ======
+   Four stages, connected. The connector is drawn by the LIST, not by each
+   node, so it cannot fall out of step with the nodes when they wrap: the row
+   carries a single rule behind them and the nodes sit on it with an opaque
+   background punching through.
+   ======================================================================== */
+.vp-qca{display:flex;flex-direction:column;gap:1.25rem;}
+
+.vp-qca__flow{
+  list-style:none;margin:0;padding:0;
+  display:grid;gap:.75rem;
+  grid-template-columns:1fr;
+}
+@media (min-width:760px){
+  .vp-qca__flow{grid-template-columns:repeat(4,1fr);gap:0;}
+}
+
+.vp-qca__step{position:relative;display:flex;}
+
+/* The connector, drawn in the gap the node's own margin leaves — .35rem either
+   side of the step boundary, so .7rem of line between one node and the next.
+   It carries an ARROWHEAD: four boxes in a row is a list, and the direction is
+   the whole point of drawing this as a diagram. Coloured from the brand rather
+   than the border token, which at 12% alpha on dark was invisible. */
+.vp-qca__step + .vp-qca__step::before,
+.vp-qca__step + .vp-qca__step::after{
+  content:"";position:absolute;z-index:0;
+}
+.vp-qca__step + .vp-qca__step::before{
+  background:color-mix(in srgb, var(--vp-primary) 55%, transparent);
+}
+/* The head: two borders on a rotated square. */
+.vp-qca__step + .vp-qca__step::after{
+  width:6px;height:6px;
+  border-top:2px solid color-mix(in srgb, var(--vp-primary) 75%, transparent);
+  border-right:2px solid color-mix(in srgb, var(--vp-primary) 75%, transparent);
+}
+
+@media (max-width:759.98px){
+  .vp-qca__step + .vp-qca__step::before{
+    left:1.65rem;top:-.75rem;width:2px;height:.75rem;
+  }
+  .vp-qca__step + .vp-qca__step::after{
+    left:1.65rem;top:-.35rem;transform:translateX(-2px) rotate(135deg);
+  }
+}
+@media (min-width:760px){
+  .vp-qca__step + .vp-qca__step::before{
+    top:50%;left:-.35rem;width:.7rem;height:2px;transform:translateY(-50%);
+  }
+  .vp-qca__step + .vp-qca__step::after{
+    top:50%;left:.1rem;transform:translateY(-50%) rotate(45deg);
+  }
+}
+
+.vp-qca__node{
+  position:relative;z-index:1;flex:1;
+  display:flex;flex-direction:column;align-items:flex-start;gap:.15rem;
+  margin:0 .35rem;padding:1rem 1.05rem 1.05rem;min-height:6.25rem;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
+  text-align:left;font-family:inherit;color:inherit;cursor:pointer;
+  transition:border-color var(--vp-dur-fast) var(--vp-ease),
+             background var(--vp-dur-fast) var(--vp-ease),
+             transform var(--vp-dur-fast) var(--vp-ease);
+}
+@media (max-width:759.98px){ .vp-qca__node{margin:0;} }
+
+.vp-qca__node:hover{border-color:var(--vp-primary);transform:translateY(-2px);}
+.vp-qca__node[aria-expanded="true"]{
+  border-color:var(--vp-primary);
+  background:color-mix(in srgb, var(--vp-primary) 9%, var(--vp-surface));
+}
+.vp-qca__n{
+  font-family:var(--vp-font-mono);font-size:.6875rem;color:var(--vp-primary);
+  letter-spacing:.08em;
+}
+.vp-qca__label{
+  font-size:1.0625rem;font-weight:600;color:var(--vp-text);line-height:1.25;
+  font-family:var(--vp-font-serif);
+}
+.vp-qca__caption{
+  font-size:.75rem;color:var(--vp-text-muted);line-height:1.4;
+}
+
+/* Fixed minimum height so selecting a stage never reflows the diagram above it. */
+.vp-qca__detail{
+  min-height:4.5rem;display:flex;align-items:center;
+  padding:.9rem 1.05rem;
+  border:1px solid var(--vp-border-soft);border-radius:var(--vp-radius);
+  background:var(--vp-bg-alt);
+  transition:border-color var(--vp-dur) var(--vp-ease),
+             background var(--vp-dur) var(--vp-ease);
+}
+.vp-qca__detail[data-open="true"]{
+  border-color:color-mix(in srgb, var(--vp-primary) 42%, transparent);
+  background:color-mix(in srgb, var(--vp-primary) 6%, var(--vp-bg-alt));
+}
+.vp-qca__detailText{
+  margin:0;font-size:.9375rem;line-height:1.6;color:var(--vp-text-soft);
+}
+.vp-qca__detailText strong{color:var(--vp-text);font-weight:600;}
+.vp-qca__note{
+  margin:0;font-size:.8125rem;line-height:1.6;color:var(--vp-text-muted);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-qca__node{transition:none !important;}
+}
+
+/* ============================================== SERVICE EXPLORER =========
+   Replaces a flat list of six names. Selector on the left, detail on the
+   right; below 900px the detail follows the list instead of sitting beside it.
+   ======================================================================== */
+.vp-svcx{display:grid;gap:clamp(1.25rem,2.5vw,2rem);grid-template-columns:1fr;}
+@media (min-width:900px){
+  .vp-svcx{grid-template-columns:minmax(0,20rem) minmax(0,1fr);align-items:start;}
+}
+
+.vp-svcx__ol{list-style:none;margin:0;padding:0;}
+.vp-svcx__ol li + li{margin-top:.25rem;}
+.vp-svcx__item{
+  position:relative;display:flex;width:100%;align-items:baseline;gap:.75rem;
+  padding:.7rem .85rem;text-align:left;
+  background:transparent;border:1px solid transparent;border-radius:var(--vp-radius);
+  font-family:inherit;color:inherit;cursor:pointer;
+  transition:background var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-svcx__item:hover{background:var(--vp-bg-alt);}
+.vp-svcx__item[aria-pressed="true"]{
+  background:color-mix(in srgb, var(--vp-primary) 8%, transparent);
+  border-color:color-mix(in srgb, var(--vp-primary) 32%, transparent);
+}
+/* The selected line gets a spine, so the eye can find it without relying on
+   the tint alone. */
+.vp-svcx__item[aria-pressed="true"]::before{
+  content:"";position:absolute;inset:.45rem auto .45rem 0;width:2px;
+  background:var(--vp-primary);border-radius:999px;
+}
+.vp-svcx__n{
+  flex:none;font-family:var(--vp-font-mono);font-size:.75rem;
+  color:var(--vp-text-muted);font-variant-numeric:tabular-nums;
+}
+.vp-svcx__item[aria-pressed="true"] .vp-svcx__n{color:var(--vp-primary);}
+.vp-svcx__name{font-size:.9375rem;font-weight:600;line-height:1.35;color:var(--vp-text);}
+
+.vp-svcx__card{
+  overflow:hidden;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-surface);
+  animation:vp-svcx-in 420ms var(--vp-ease) both;
+}
+@keyframes vp-svcx-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.vp-svcx__figure{position:relative;aspect-ratio:16 / 9;overflow:hidden;background:var(--vp-bg-sunken);}
+.vp-svcx__figure img{width:100%;height:100%;object-fit:cover;display:block;}
+
+.vp-svcx__body{padding:clamp(1rem,2vw,1.4rem);}
+.vp-svcx__title{
+  font-family:var(--vp-font-serif);font-size:1.25rem;font-weight:600;
+  line-height:1.3;margin:0 0 .5rem;color:var(--vp-text);
+}
+.vp-svcx__summary{font-size:.9375rem;line-height:1.65;color:var(--vp-text-soft);margin:0 0 .9rem;}
+.vp-svcx__points{display:grid;gap:.4rem;margin:0 0 1rem;}
+.vp-svcx__points li{
+  display:flex;gap:.6rem;align-items:baseline;
+  font-size:.875rem;line-height:1.5;color:var(--vp-text-muted);
+}
+.vp-svcx__points li span{
+  flex:none;width:5px;height:5px;border-radius:50%;
+  background:var(--vp-primary);transform:translateY(-2px);
+}
+.vp-svcx__more{
+  font-size:.875rem;font-weight:600;color:var(--vp-primary);text-decoration:none;
+  border-bottom:1px solid color-mix(in srgb, var(--vp-primary) 40%, transparent);
+}
+.vp-svcx__more:hover{border-bottom-color:var(--vp-primary);}
+
+@media (prefers-reduced-motion:reduce){
+  .vp-svcx__card{animation:none !important;}
+  .vp-svcx__item{transition:none !important;}
+}

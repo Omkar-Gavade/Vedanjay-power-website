@@ -90,10 +90,13 @@ export const media = {
   },
 
   // ---- Footprint & closing -------------------------------------------------
+  /* Was a floodlit substation at night — green steel under sodium light, busy
+     and hard to lay a headline over. The company-overview hero wants breadth,
+     not equipment. */
   'footprint': {
-    src: `${base}ind-utilities.jpg`,
-    alt: 'Substation switchyard lit at dusk',
-    focal: '50% 50%',
+    src: `${base}windfarm-golden-hour.jpg`,
+    alt: 'Aerial view of wind turbines standing over patchwork farmland at golden hour',
+    focal: '50% 52%',
   },
   'cta-close': {
     src: `${base}cta-dusk.jpg`,
