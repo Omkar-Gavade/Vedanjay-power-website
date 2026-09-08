@@ -53,6 +53,7 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
   const svgRef = useRef(null);
   const pointers = useRef(new Map());
   const pinch = useRef(null);
+  const dragging = useRef(false);
 
   useEffect(() => {
     let live = true;
@@ -128,10 +129,12 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
   };
 
   const onPointerDown = (e) => {
-    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    /* Throws if the pointer is already gone by the time this runs — a stray
-       event must not take the whole handler down with it. */
-    try { e.currentTarget.setPointerCapture?.(e.pointerId); } catch { /* ignore */ }
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY, ox: e.clientX, oy: e.clientY });
+    /* NO POINTER CAPTURE HERE. Capturing on pointerdown retargets the following
+       `click` to the element that holds the capture — the svg — so it never
+       reached the turbine and tapping one did nothing. Capture is taken in
+       onPointerMove, once the pointer has actually travelled far enough to be a
+       drag; a plain click never captures and its click event lands normally. */
     if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
       pinch.current = { d: Math.hypot(a.x - b.x, a.y - b.y) };
@@ -157,6 +160,17 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
        gesture belongs to the map, because there is somewhere to pan to. A
        mouse drag always pans — it was never going to scroll the page. */
     if (e.pointerType === 'touch' && view.k === 1) return;
+
+    /* A drag only begins once the pointer has left a small dead zone. Below it
+       this is a click, and taking capture would steal that click from the
+       turbine underneath. */
+    const cur = pointers.current.get(e.pointerId);
+    if (!dragging.current && Math.hypot(e.clientX - cur.ox, e.clientY - cur.oy) < 4) return;
+    if (!dragging.current) {
+      dragging.current = true;
+      try { svgRef.current?.setPointerCapture?.(e.pointerId); } catch { /* ignore */ }
+    }
+
     const dx = (e.clientX - prev.x) * unit;
     const dy = (e.clientY - prev.y) * unit;
     setView((v) => applyView({ ...v, x: v.x + dx, y: v.y + dy }, grid.width, grid.height));
@@ -164,6 +178,7 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
   const onPointerUp = (e) => {
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinch.current = null;
+    if (pointers.current.size === 0) dragging.current = false;
   };
 
   const reset = () => setView({ k: 1, x: 0, y: 0 });
@@ -178,7 +193,7 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
           className="vp-atlas__svg"
           viewBox={`0 0 ${grid.width} ${grid.height}`}
           role="img"
-          data-grabbing={pointers.current.size === 1 ? 'true' : undefined}
+          data-grabbing={dragging.current ? 'true' : undefined}
           /* pan-y at rest so a touch drag scrolls the page; none once zoomed,
              when the map has somewhere to pan to. */
           style={{ touchAction: view.k > 1 ? 'none' : 'pan-y' }}
