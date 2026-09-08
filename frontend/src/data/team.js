@@ -41,7 +41,20 @@
  * is public. A profile now shows what exists and is silent about what does not.
  */
 
-/** @typedef {{id:string, name:string, role:string, photo:string|null, linkedin:string|null, focus:string|null}} Leader */
+/**
+ * PHOTOGRAPHS come from the "Our Team" slide of the company's own
+ * "Forecasting for Renewable Energies" deck, cropped from the slide at native
+ * resolution. They replace 540px files that were soft enough to look upscaled;
+ * the deck's are 640px of real detail, on the same white studio background.
+ *
+ * PROFILE LINKS AND EMAILS were supplied by the company on 8 Sep 2026. Only two
+ * of the three have a published address, and the third is simply absent rather
+ * than guessed at from the pattern of the other two — an invented address for a
+ * named individual is a worse failure than a missing one.
+ */
+
+/** @typedef {{id:string, name:string, role:string, photo:string|null,
+ *             linkedin:string|null, email:string|null, focus:string|null}} Leader */
 
 /** @type {Leader[]} */
 export const leadership = [
@@ -50,10 +63,9 @@ export const leadership = [
     name: 'Gajanan Yadav',
     role: 'Founder',
     photo: '/team/gajanan-yadav.jpg',
-    /* Supplied by the company. Stored without the trailing slash, which is
-       where LinkedIn itself redirects. The other two have no profile URL, and
-       the page says nothing about that rather than advertising the gap. */
+    /* Stored without the trailing slash, which is where LinkedIn redirects. */
     linkedin: 'https://www.linkedin.com/in/gajanan-yadav-645367154',
+    email: 'gajanan.yadav@vedanjay-power.com',
     focus: 'Recognised by SolarQuarter among India’s 40 Most Promising Young Business Leaders in the Solar Industry.',
   },
   {
@@ -61,7 +73,12 @@ export const leadership = [
     name: 'Anjali Yadav',
     role: 'Co Founder',
     photo: '/team/anjali-yadav.jpg',
-    linkedin: null,
+    linkedin: 'https://www.linkedin.com/in/anjali-yadav-7b692a350',
+    /* No address supplied for her. NOT inferred from the other two — the two
+       that exist follow different patterns anyway (`gajanan.yadav@` and
+       `ankitayadav@`), so there is nothing here to pattern-match even if
+       guessing were acceptable. */
+    email: null,
     focus: 'Recognised by SolarQuarter among Women Leaders in the Solar Sector.',
   },
   {
@@ -69,7 +86,8 @@ export const leadership = [
     name: 'Ankita Yadav',
     role: 'CEO',
     photo: '/team/ankita-yadav.jpg',
-    linkedin: null,
+    linkedin: 'https://www.linkedin.com/in/ankita-yadav-b06989230',
+    email: 'ankitayadav@vedanjay-power.com',
     /* No award listing or other corroboration names her, so nothing is stated
        beyond the title and photograph the company published. */
     focus: null,

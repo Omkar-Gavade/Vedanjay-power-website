@@ -51,5 +51,5 @@
     "captions": "Describe only what is visible. The source carries no project name, client, location or date — see frontend/src/data/gallery.js.",
     "people": "Four frames show identifiable site crew. They were already published on the company's own public website; confirm consent before any wider reuse."
   },
-  "company_owned_brand": "public/brand/ and public/team/ are the company's own assets (logo emblem, leadership portraits)."
+  "company_owned_brand": "public/brand/ and public/team/ are the company's own assets (logo emblem, leadership portraits). The three leadership portraits were cropped at native resolution from the 'Our Team' slide of the company's own 'Forecasting for Renewable Energies' deck on 8 Sep 2026, replacing softer 540px files."
 }
