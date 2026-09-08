@@ -83,12 +83,17 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
     });
   }, [grid, applyView]);
 
-  /* Wheel has to be non-passive to stop the page scrolling under a zoom, and
-     React's onWheel is passive, so it is bound here instead. */
+  /* A MAP MUST NOT EAT THE PAGE SCROLL. A plain wheel over this used to zoom and
+     preventDefault, which trapped the visitor: scrolling down the home page
+     stopped dead here. Only an explicit zoom gesture is taken — ctrl/⌘ + wheel,
+     which is also what a trackpad pinch sends — and everything else is left to
+     the page. React's onWheel is passive and cannot preventDefault, so the
+     listener is bound here instead. */
   useEffect(() => {
     const el = svgRef.current;
     if (!el || !grid) return undefined;
     const onWheel = (e) => {
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       const box = el.getBoundingClientRect();
       const unit = grid.width / box.width;
@@ -124,7 +129,9 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
 
   const onPointerDown = (e) => {
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    e.currentTarget.setPointerCapture?.(e.pointerId);
+    /* Throws if the pointer is already gone by the time this runs — a stray
+       event must not take the whole handler down with it. */
+    try { e.currentTarget.setPointerCapture?.(e.pointerId); } catch { /* ignore */ }
     if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
       pinch.current = { d: Math.hypot(a.x - b.x, a.y - b.y) };
@@ -146,6 +153,10 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
       return;
     }
     if (pointers.current.size !== 1) return;
+    /* One finger scrolls the PAGE until the map is zoomed in; after that the
+       gesture belongs to the map, because there is somewhere to pan to. A
+       mouse drag always pans — it was never going to scroll the page. */
+    if (e.pointerType === 'touch' && view.k === 1) return;
     const dx = (e.clientX - prev.x) * unit;
     const dy = (e.clientY - prev.y) * unit;
     setView((v) => applyView({ ...v, x: v.x + dx, y: v.y + dy }, grid.width, grid.height));
@@ -168,6 +179,10 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
           viewBox={`0 0 ${grid.width} ${grid.height}`}
           role="img"
           data-grabbing={pointers.current.size === 1 ? 'true' : undefined}
+          /* pan-y at rest so a touch drag scrolls the page; none once zoomed,
+             when the map has somewhere to pan to. */
+          style={{ touchAction: view.k > 1 ? 'none' : 'pan-y' }}
+          preserveAspectRatio="xMidYMid slice"
           aria-label={`Map of Asia centred on India. Capacity under QCA forecasting and scheduling in ${byState.map((s) => `${s.state}, ${s.mw} megawatts`).join('; ')}.`}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -225,7 +240,7 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
         </div>
 
         <p className="vp-atlas__hint" aria-hidden="true">
-          Scroll or pinch to zoom · drag to pan · tap a turbine
+          ⌘/Ctrl + scroll or pinch to zoom · drag to pan · tap a turbine
         </p>
 
         {selected && (

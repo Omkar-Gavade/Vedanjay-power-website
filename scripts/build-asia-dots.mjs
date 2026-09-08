@@ -52,13 +52,14 @@ async function cached(file, url) {
 }
 const OUT = fileURLToPath(new URL('../frontend/public/maps/asia-dots.json', import.meta.url));
 
-/* The window. Centred on India's own centre (~82.5°E, ~22.5°N) so the country
-   sits in the middle of the frame rather than off to one side, and tight
-   enough that India owns about half the width. A wider window shows more of
-   Asia and turns the subject into a detail. */
-const LON0 = 58; const LON1 = 108;
-const LAT0 = 2; const LAT1 = 42;
-const W = 1300;
+/* The window. Centred on India's own centre (~82.5°E, ~22.5°N), and shaped so
+   the projection comes out at roughly 16:9 — the latitude range is India's own
+   plus a margin, and the longitude range is whatever makes that a wide frame.
+   Doing it this way means a wide panel shows the WHOLE of India rather than
+   cropping Ladakh and Kanyakumari off a taller map. */
+const LON0 = 47; const LON1 = 118;
+const LAT0 = 4; const LAT1 = 40;
+const W = 1600;
 const CELL = 13;
 
 const merc = (lat) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI / 180) / 2)) * (180 / Math.PI);

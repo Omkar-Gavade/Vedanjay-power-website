@@ -27,8 +27,11 @@ export function PortfolioMap() {
     return () => io.disconnect();
   }, []);
 
+  /* --tight-top: the expertise strip above already ends in a full section's
+     padding, and a second one under it left ~200px of dead space between the
+     chips and this map. */
   return (
-    <section className="vp-section" aria-labelledby="map-h" ref={ref}>
+    <section className="vp-section vp-section--tight-top" aria-labelledby="map-h" ref={ref}>
       {near && (
         <Suspense fallback={null}>
           <PortfolioBody />

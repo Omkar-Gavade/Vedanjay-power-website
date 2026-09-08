@@ -31,20 +31,45 @@
   border-radius:var(--vp-radius-lg);
   background:radial-gradient(120% 90% at 50% 0%, var(--at-bg2), var(--at-bg) 70%);
   overflow:hidden;
-  box-shadow:0 30px 60px -40px rgb(4 22 27 / .6);
 }
 
-/* ---- stage --------------------------------------------------------------- */
-.vp-atlas__stage{position:relative;}
+/* WIDER THAN THE CONTAINER, BUT NOT EDGE TO EDGE. The section sits inside
+   .vp-container; this breaks out of it and then puts a margin back, so the map
+   is close to full width with air either side rather than butting the viewport.
+   `100vw` includes the scrollbar — html/body already carry `overflow-x:clip`,
+   and the measured horizontal-overflow check at 375 and 1440 is what actually
+   guards it. */
+.vp-atlaswrap{
+  --at-gutter:clamp(1rem, 3.5vw, 3.5rem);
+  width:calc(100vw - var(--at-gutter) * 2);
+  margin-inline:calc(50% - 50vw + var(--at-gutter));
+}
+
+/* ---- stage --------------------------------------------------------------
+   THE FRAME MATCHES THE DATA. The projection window is shaped to come out at
+   16:9 (see scripts/build-asia-dots.mjs), so a wide panel shows the whole of
+   India rather than slicing Ladakh off the top and Kanyakumari off the bottom —
+   which is what a 21:9 frame over a 1.13 map was doing.
+   `slice` still fills the box on the narrower phone frame, and because India is
+   centred in the window it is ocean and neighbours that go, never India. */
+.vp-atlas__stage{position:relative;aspect-ratio:16 / 9;}
 .vp-atlas__pending{
-  aspect-ratio:107 / 101;width:100%;
+  aspect-ratio:16 / 9;width:100%;
   border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
   background:var(--vp-bg-alt);
 }
 .vp-atlas__svg{
-  display:block;width:100%;height:auto;
-  touch-action:none;                /* the component owns pinch and drag */
+  /* Absolutely positioned so it cannot contribute its own intrinsic height
+     back into the stage — with the svg in flow, `aspect-ratio` on the stage was
+     ignored and the panel stayed as tall as the data. */
+  position:absolute;inset:0;
+  display:block;width:100%;height:100%;
   cursor:grab;
+}
+@media (max-width:767.98px){
+  /* Taller on a phone, where a 16:11 slice would leave India tiny. */
+  .vp-atlas__stage{aspect-ratio:1 / 1;}
+  .vp-atlas__pending{aspect-ratio:1 / 1;}
 }
 .vp-atlas__svg[data-grabbing]{cursor:grabbing;}
 
@@ -185,10 +210,14 @@
 }
 
 /* ---- section furniture --------------------------------------------------- */
-.vp-atlaswrap{display:block;}
 .vp-atlasnotes{
   display:grid;gap:.6rem;margin-top:1.1rem;
   max-width:64ch;
 }
 .vp-mapnote{font-size:.8125rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
 .vp-mapnote strong{color:var(--vp-text-soft);font-weight:600;}
+
+/* The section title, held to one line. `vp-measure-tight` is a reading measure
+   meant for prose headings and it broke this one across two rows mid-phrase. */
+.vp-atlas__title{max-width:none;}
+@media (min-width:900px){ .vp-atlas__title{white-space:nowrap;} }

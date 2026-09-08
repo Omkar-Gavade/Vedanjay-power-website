@@ -1,9 +1,5 @@
-import { Link } from 'react-router-dom';
-import { ROUTES } from '../../constants/routes.js';
-import { company } from '../../data/company.js';
 import {
-  portfolioByState, maxStateMw, unallocated,
-  PORTFOLIO_TOTAL_MW, PORTFOLIO_COUNT,
+  portfolioByState, maxStateMw, PORTFOLIO_TOTAL_MW, PORTFOLIO_COUNT,
 } from '../../data/portfolio.js';
 import { SectionHead } from '../ui/SectionHead.jsx';
 import { Reveal } from '../ui/Reveal.jsx';
@@ -26,13 +22,6 @@ import '../../styles/map.css';
  * full width it needs to be worth zooming into.
  */
 
-const mw = (n) => n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
-
-/* Registrations are a separate fact from where capacity sits, and the two do
-   not coincide — the portfolio includes states outside the three SLDC
-   registrations. Stated side by side rather than merged. */
-const sldc = company.operatingAreas.filter((a) => a.basis.includes('SLDC')).map((a) => a.name);
-
 export default function PortfolioBody() {
   return (
     <div className="vp-container">
@@ -40,9 +29,10 @@ export default function PortfolioBody() {
         id="map-h"
         eyebrow="Interactive portfolio map"
         title="Portfolio under QCA / Forecasting & Scheduling."
-        lead={`${mw(PORTFOLIO_TOTAL_MW)} MW across ${PORTFOLIO_COUNT} renewable projects, forecast and scheduled from ${portfolioByState.length} states. Every turbine marks a state we coordinate — open one to see what it carries.`}
+        titleClass="vp-atlas__title"
       />
 
+      {/* Breaks the container so the atlas runs the full width of the page. */}
       <Reveal className="vp-atlaswrap mt-4 mt-lg-5">
         <PortfolioAtlas
           byState={portfolioByState}
@@ -52,21 +42,6 @@ export default function PortfolioBody() {
         />
       </Reveal>
 
-      <div className="vp-atlasnotes">
-        {unallocated && (
-          <p className="vp-mapnote">
-            A further <strong>{mw(unallocated.mw)} MW</strong> ({unallocated.name}) spans{' '}
-            {unallocated.note}; the source does not break it down by state, so it is not
-            shaded on the map.
-          </p>
-        )}
-        <p className="vp-mapnote">
-          QCA operations are registered with the state load despatch centres of{' '}
-          {sldc.join(', ')}, and with WRLDC for the Western Region. The{' '}
-          <Link className="vp-link" to={ROUTES.projects}>full project register</Link>{' '}
-          lists every engagement with its scope.
-        </p>
-      </div>
     </div>
   );
 }

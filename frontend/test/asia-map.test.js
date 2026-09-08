@@ -99,11 +99,35 @@ describe('portfolio atlas geometry', () => {
     });
   });
 
-  it('records the window it was projected with', () => {
+  it('records the window it was projected with, shaped for a wide frame', () => {
     const b = map.bounds;
     expect(b.lon1).toBeGreaterThan(b.lon0);
     expect(b.lat1).toBeGreaterThan(b.lat0);
-    expect(map.width / map.height).toBeGreaterThan(0.9);
-    expect(map.width / map.height).toBeLessThan(1.5);
+    /* ~16:9 on purpose: the panel is wide, and a window taller than the frame
+       gets sliced, which took Ladakh off the top and Kanyakumari off the
+       bottom. The window is shaped to the frame instead. */
+    expect(map.width / map.height).toBeGreaterThan(1.6);
+    expect(map.width / map.height).toBeLessThan(2.0);
+  });
+
+  it('fits the whole of India inside the frame, with margin', () => {
+    /* The requirement a wide frame is easy to break: India must never touch an
+       edge, or the panel is cropping the subject. */
+    const rows = indiaDots.map((d) => d.cy);
+    const cols = indiaDots.map((d) => d.cx);
+    expect(Math.min(...rows), 'India touches the top edge').toBeGreaterThan(2);
+    expect(Math.max(...rows), 'India touches the bottom edge').toBeLessThan(map.rows - 3);
+    expect(Math.min(...cols), 'India touches the left edge').toBeGreaterThan(2);
+    expect(Math.max(...cols), 'India touches the right edge').toBeLessThan(map.cols - 3);
+  });
+
+  it('leaves India whole when a square frame slices the window', () => {
+    /* On a phone the 16:9 window is sliced to roughly a square. India is
+       centred, so the crop must still contain it side to side. */
+    const cols = indiaDots.map((d) => d.cx);
+    const keep = map.rows;                       // a square crop keeps `rows` columns
+    const from = (map.cols - keep) / 2;
+    expect(Math.min(...cols)).toBeGreaterThanOrEqual(from);
+    expect(Math.max(...cols)).toBeLessThanOrEqual(from + keep);
   });
 });
