@@ -1,181 +1,194 @@
-/* =============================================== INTERACTIVE PORTFOLIO MAP ==
+/* ================================================ PORTFOLIO ATLAS ==========
    Loaded only with the lazy map chunk — never in the initial CSS bundle.
-   Class names are unique to this sheet; css-collisions.test.js enforces that. */
+   Class names are unique to this sheet; css-collisions.test.js enforces that.
 
-.vp-mapwrap{display:grid;gap:clamp(1.5rem,3vw,2.5rem);align-items:center;}
-@media (min-width:900px){
-  .vp-mapwrap{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(2rem,5vw,4rem);}
+   THE PANEL IS DARK IN BOTH THEMES, on purpose. It reads as an instrument set
+   into the page rather than as another band of content, it gives the dots a
+   ground to glow against, and it means the ramp is tuned once instead of twice.
+   The accent is the gold from the company's own emblem, not the site green:
+   green dots on a green-accented frame is exactly the flatness this replaced.
+   ========================================================================= */
+
+.vp-atlas{
+  --at-bg:#071A20;
+  --at-bg2:#0B2831;
+  --at-edge:#1B4650;
+  --at-gold:#E8A33D;
+  --at-world:#12292F;        /* land outside India, held well back */
+  --at-india:#3A6B74;        /* India, no capacity behind it */
+  /* Teal to gold, low capacity to high. A single-hue ramp reads as one
+     quantity; this one stays legible on the dark ground at every step. */
+  --at-b0:#2D6E6A;
+  --at-b1:#3E8F72;
+  --at-b2:#6BAA63;
+  --at-b3:#A8B94B;
+  --at-b4:#F0A73C;
+  --at-wt:#EAF3F0;
+  --at-wt-on:var(--at-gold);
+
+  display:flex;flex-direction:column;
+  border:1px solid var(--at-edge);
+  border-radius:var(--vp-radius-lg);
+  background:radial-gradient(120% 90% at 50% 0%, var(--at-bg2), var(--at-bg) 70%);
+  overflow:hidden;
+  box-shadow:0 30px 60px -40px rgb(4 22 27 / .6);
 }
-.vp-mapwrap__figure{min-width:0;}
-.vp-mapwrap__aside{display:flex;flex-direction:column;align-items:stretch;gap:1.1rem;min-width:0;}
 
-.vp-mapfig{position:relative;}
-.vp-map__pending{aspect-ratio:1000 / 1134;width:100%;}
-
-.vp-map{
+/* ---- stage --------------------------------------------------------------- */
+.vp-atlas__stage{position:relative;}
+.vp-atlas__pending{
+  aspect-ratio:107 / 101;width:100%;
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  background:var(--vp-bg-alt);
+}
+.vp-atlas__svg{
   display:block;width:100%;height:auto;
+  touch-action:none;                /* the component owns pinch and drag */
+  cursor:grab;
+}
+.vp-atlas__svg[data-grabbing]{cursor:grabbing;}
 
-  --vp-map-land:#EDF1F1;      /* India, no capacity */
-  --vp-map-edge:#FFFFFF;      /* state borders */
-  --vp-map-coast:#C9D4D5;     /* national boundary */
-  --vp-map-shadow:#8FA3A5;
-  /* Neighbouring land, held at a whisper: present enough that the country is
-     not floating in a void, faint enough that it never competes with the
-     data. */
-  --vp-map-ctx:#F2F5F5;
-  --vp-map-ctxEdge:#E7ECEC;
-  /* Five steps of the brand green, light to dark. */
-  --vp-band-0:#CFE6CF;
-  --vp-band-1:#A9D8A9;
-  --vp-band-2:#7CC17C;
-  --vp-band-3:#4C9F51;
-  --vp-band-4:#2A6B2F;
-}
-[data-bs-theme="dark"] .vp-map{
-  --vp-map-land:#1E3034;
-  --vp-map-edge:#0D1A1D;
-  --vp-map-coast:#31474B;
-  --vp-map-shadow:#000000;
-  --vp-map-ctx:#141F22;
-  --vp-map-ctxEdge:#18262A;
-  --vp-band-0:#2E5233;
-  --vp-band-1:#37703C;
-  --vp-band-2:#428B47;
-  --vp-band-3:#52A657;
-  --vp-band-4:#7FC67F;
-}
+/* ---- the dot field ------------------------------------------------------
+   Colour and transition sit on the GROUP. Nearly 7,000 circles carry no styles
+   and no handlers of their own, which is what keeps a field this dense cheap
+   to paint. */
+.vp-atlas__dots circle{fill:var(--at-world);}
+.vp-atlas__dots[data-kind="india"] circle{fill:var(--at-india);}
+.vp-atlas__dots[data-band="0"] circle{fill:var(--at-b0);}
+.vp-atlas__dots[data-band="1"] circle{fill:var(--at-b1);}
+.vp-atlas__dots[data-band="2"] circle{fill:var(--at-b2);}
+.vp-atlas__dots[data-band="3"] circle{fill:var(--at-b3);}
+.vp-atlas__dots[data-band="4"] circle{fill:var(--at-b4);}
+.vp-atlas__dots[data-band] circle{transition:fill var(--vp-dur) var(--vp-ease);}
+.vp-atlas__dots[data-on] circle{fill:var(--at-gold);}
 
-.vp-map__ctx path{
-  fill:var(--vp-map-ctx);stroke:var(--vp-map-ctxEdge);stroke-width:1;
-  vector-effect:non-scaling-stroke;pointer-events:none;
+/* ---- turbines ------------------------------------------------------------ */
+.vp-atlas__pin{cursor:pointer;}
+.vp-atlas__hit{fill:transparent;}
+.vp-atlas__pin:focus-visible{outline:none;}
+.vp-atlas__pin:focus-visible .vp-atlas__hit{
+  fill:rgb(232 163 61 / .16);stroke:var(--at-gold);stroke-width:2;
+  vector-effect:non-scaling-stroke;
 }
-.vp-map__state{
-  fill:var(--vp-map-land);
-  transition:fill var(--vp-dur) var(--vp-ease);
+.vp-wt__mast,.vp-wt__blade,.vp-wt__hub{
+  fill:var(--at-wt);transition:fill var(--vp-dur) var(--vp-ease);
 }
-.vp-map__state[data-band="0"]{fill:var(--vp-band-0);}
-.vp-map__state[data-band="1"]{fill:var(--vp-band-1);}
-.vp-map__state[data-band="2"]{fill:var(--vp-band-2);}
-.vp-map__state[data-band="3"]{fill:var(--vp-band-3);}
-.vp-map__state[data-band="4"]{fill:var(--vp-band-4);}
-.vp-map__state[data-band]{cursor:pointer;}
-.vp-map__state[data-on]{fill:var(--vp-accent);}
+.vp-wt__base{fill:var(--at-wt);opacity:.28;}
+.vp-atlas__pin[data-on] .vp-wt__mast,
+.vp-atlas__pin[data-on] .vp-wt__blade,
+.vp-atlas__pin[data-on] .vp-wt__hub{fill:var(--at-wt-on);}
 
-/* Borders come from the DISSOLVED outline. A stroke on the fill path would
-   draw all 760 district boundaries. non-scaling-stroke keeps the hairline one
-   pixel whether the map is 340px wide on a phone or 700px on a desktop. */
-.vp-map__edge{
-  fill:none;stroke:var(--vp-map-edge);stroke-width:1;
-  vector-effect:non-scaling-stroke;pointer-events:none;
-}
-.vp-map__coast{
-  fill:none;stroke:var(--vp-map-coast);stroke-width:1.4;
-  stroke-linejoin:round;vector-effect:non-scaling-stroke;pointer-events:none;
-}
+.vp-wt__rotor{animation:vp-wt-spin var(--spin,8s) linear infinite;}
+@keyframes vp-wt-spin{from{rotate:0deg;}to{rotate:360deg;}}
+.vp-atlas__pin:hover .vp-wt__rotor{animation-duration:2.2s;}
 
-/* ---- tooltip ------------------------------------------------------------ */
-.vp-maptip{
-  position:absolute;z-index:2;pointer-events:none;
-  transform:translate(-50%,calc(-100% - 14px));
-  display:flex;flex-direction:column;gap:.05rem;
-  padding:.5rem .7rem;border-radius:var(--vp-radius);
-  background:var(--vp-blue-950);color:#fff;
-  box-shadow:var(--vp-shadow);white-space:nowrap;
+/* ---- controls ------------------------------------------------------------ */
+.vp-atlas__zoom{
+  position:absolute;top:.85rem;right:.85rem;z-index:2;
+  display:flex;flex-direction:column;gap:.35rem;
 }
-.vp-maptip__state{font-family:var(--vp-font-serif);font-size:.9375rem;font-weight:600;line-height:1.2;}
-.vp-maptip__mw{font-family:var(--vp-font-mono);font-size:.8125rem;color:var(--vp-green-300);}
-.vp-maptip__n{font-size:.75rem;color:#9AAFB0;}
+.vp-atlas__zoom button{
+  min-width:38px;min-height:38px;padding:0 .5rem;
+  display:grid;place-items:center;
+  border:1px solid var(--at-edge);border-radius:var(--vp-radius);
+  background:rgb(7 26 32 / .82);color:#DCEBE8;
+  font-family:var(--vp-font-mono);font-size:1.0625rem;line-height:1;cursor:pointer;
+  backdrop-filter:blur(4px);
+  transition:background var(--vp-dur-fast) var(--vp-ease),
+             border-color var(--vp-dur-fast) var(--vp-ease),
+             color var(--vp-dur-fast) var(--vp-ease);
+}
+.vp-atlas__zoom button:hover{border-color:var(--at-gold);color:var(--at-gold);}
+.vp-atlas__reset{font-family:var(--vp-font-sans) !important;font-size:.75rem !important;}
 
-/* ---- aside: the ranked table ------------------------------------------- */
-.vp-maplede{
-  display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0;
-  padding-bottom:1rem;border-bottom:1px solid var(--vp-border);
-}
-.vp-maplede__n{
-  font-family:var(--vp-font-serif);font-size:var(--vp-fs-stat);font-weight:600;
-  line-height:1;letter-spacing:-.02em;color:var(--vp-text);
-  font-variant-numeric:tabular-nums;
-}
-.vp-maplede__u{font-family:var(--vp-font-mono);font-size:1rem;color:var(--vp-primary);}
-.vp-maplede__l{font-size:.875rem;color:var(--vp-text-muted);flex-basis:100%;margin-top:.3rem;}
-
-/* ---------------------------------------------------------------- ranking ---
-   A panel, not a loose list. Seven rows with hairline separators and a 4px
-   track underneath each read as unfinished text; boxing them and letting each
-   row's own width carry the value makes the aside read as the map's other half.
-   ------------------------------------------------------------------------- */
-.vp-mapbars{
-  list-style:none;margin:0;padding:0;
-  border:1px solid var(--vp-border);border-radius:var(--vp-radius);
-  background:var(--vp-surface);overflow:hidden;
-}
-.vp-mapbars li + li{border-top:1px solid var(--vp-border-soft);}
-
-.vp-mapbar{
-  position:relative;isolation:isolate;
-  display:grid;width:100%;text-align:left;
-  grid-template-columns:1.75rem minmax(0,1fr) auto;
-  gap:.15rem .7rem;align-items:baseline;
-  padding:.72rem .85rem .72rem .7rem;
-  background:transparent;border:0;color:inherit;font-family:inherit;cursor:pointer;
-  transition:background var(--vp-dur-fast) var(--vp-ease);
+.vp-atlas__hint{
+  position:absolute;left:.9rem;bottom:.75rem;margin:0;z-index:2;
+  font-size:.6875rem;letter-spacing:.02em;color:#6F8C8E;pointer-events:none;
 }
 
-/* The value, drawn as the row itself. Sits behind the text on its own layer,
-   fading out to the right so the row ends softly instead of as a hard block. */
-.vp-mapbar__fill{
-  position:absolute;inset:0 auto 0 0;z-index:-1;
-  width:var(--w);
-  background:linear-gradient(90deg,
-    color-mix(in srgb, var(--vp-primary) 15%, transparent),
-    color-mix(in srgb, var(--vp-primary) 7%, transparent));
-  border-right:1px solid color-mix(in srgb, var(--vp-primary) 38%, transparent);
-  transform-origin:left;
-  animation:vp-mapbar-grow 900ms var(--vp-ease) both;
-  animation-delay:calc(var(--i,0) * 70ms);
+/* ---- the state card ------------------------------------------------------
+   Sits inside the frame rather than floating over the page, so the map keeps
+   its own edges and nothing is clipped by the section above it. */
+.vp-atlas__card{
+  position:absolute;left:.9rem;top:.9rem;z-index:3;
+  min-width:min(15rem,calc(100% - 6rem));
+  padding:.9rem 1.05rem 1rem;
+  border:1px solid var(--at-edge);border-radius:var(--vp-radius);
+  background:rgb(7 26 32 / .93);backdrop-filter:blur(6px);
+  animation:vp-atlas-card 260ms var(--vp-ease) both;
 }
-@keyframes vp-mapbar-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-
-.vp-mapbar:hover .vp-mapbar__fill,
-.vp-mapbar[aria-pressed="true"] .vp-mapbar__fill{
-  background:linear-gradient(90deg,
-    color-mix(in srgb, var(--vp-primary) 26%, transparent),
-    color-mix(in srgb, var(--vp-primary) 12%, transparent));
-  border-right-color:var(--vp-primary);
+@keyframes vp-atlas-card{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+.vp-atlas__close{
+  position:absolute;top:.3rem;right:.4rem;
+  width:28px;height:28px;display:grid;place-items:center;
+  border:0;background:transparent;color:#6F8C8E;font-size:1.15rem;line-height:1;cursor:pointer;
 }
-/* A left accent on the active row, so the row picked on the map is findable
-   in the list without scanning the names. */
-.vp-mapbar[aria-pressed="true"]::before{
-  content:"";position:absolute;inset:0 auto 0 0;width:3px;
-  background:var(--vp-primary);
+.vp-atlas__close:hover{color:var(--at-gold);}
+.vp-atlas__cardEyebrow{
+  margin:0;font-family:var(--vp-font-mono);font-size:.625rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--at-gold);
 }
-
-.vp-mapbar__rank{
-  grid-row:1 / span 2;align-self:center;
-  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
-  font-variant-numeric:tabular-nums;
+.vp-atlas__cardState{
+  margin:.2rem 0 .1rem;font-family:var(--vp-font-serif);font-size:1.125rem;
+  font-weight:600;color:#EDF5F3;line-height:1.25;
 }
-.vp-mapbar__state{
-  font-size:.9375rem;font-weight:600;color:var(--vp-text);line-height:1.3;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+.vp-atlas__cardMw{
+  margin:0;font-family:var(--vp-font-mono);font-size:1.6rem;font-weight:600;
+  color:var(--at-gold);line-height:1.1;font-variant-numeric:tabular-nums;
 }
-.vp-mapbar__mw{
-  grid-column:3;grid-row:1;
-  font-family:var(--vp-font-mono);font-size:1rem;font-weight:600;color:var(--vp-text);
-  font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;
+.vp-atlas__cardMw span{font-size:.6875rem;margin-left:.3rem;color:#8FB0AE;}
+.vp-atlas__cardMeta{
+  display:flex;gap:1.25rem;margin:.7rem 0 0;
+  padding-top:.65rem;border-top:1px solid rgb(255 255 255 / .08);
 }
-.vp-mapbar__unit{font-size:.6875rem;font-weight:400;color:var(--vp-text-muted);margin-left:.22rem;}
-.vp-mapbar__count{grid-column:2;grid-row:2;font-size:.75rem;color:var(--vp-text-muted);}
-.vp-mapbar__share{
-  grid-column:3;grid-row:2;text-align:right;
-  font-family:var(--vp-font-mono);font-size:.75rem;color:var(--vp-text-muted);
-  font-variant-numeric:tabular-nums;
+.vp-atlas__cardMeta dt{font-size:.6875rem;color:#7E9C9C;margin:0;}
+.vp-atlas__cardMeta dd{
+  margin:.1rem 0 0;font-family:var(--vp-font-mono);font-size:.875rem;color:#DCEBE8;
 }
 
-.vp-mapnote{font-size:.8125rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
-.vp-mapnote strong{color:var(--vp-text-soft);font-weight:600;}
+/* ---- legend -------------------------------------------------------------- */
+.vp-atlas__legend{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .9rem;
+  padding:.7rem 1rem;
+  border-top:1px solid var(--at-edge);
+  background:rgb(4 16 20 / .55);
+}
+.vp-atlas__legendLabel{font-size:.75rem;color:#8FB0AE;}
+.vp-atlas__ramp{display:flex;gap:2px;}
+.vp-atlas__ramp i{width:26px;height:8px;border-radius:2px;display:block;}
+.vp-atlas__ramp i[data-band="0"]{background:var(--at-b0);}
+.vp-atlas__ramp i[data-band="1"]{background:var(--at-b1);}
+.vp-atlas__ramp i[data-band="2"]{background:var(--at-b2);}
+.vp-atlas__ramp i[data-band="3"]{background:var(--at-b3);}
+.vp-atlas__ramp i[data-band="4"]{background:var(--at-b4);}
+.vp-atlas__legendEnds{
+  display:flex;gap:.6rem;font-family:var(--vp-font-mono);font-size:.6875rem;color:#6F8C8E;
+}
+.vp-atlas__legendCount{
+  margin-left:auto;font-size:.75rem;color:#8FB0AE;
+}
+
+@media (max-width:575.98px){
+  .vp-atlas__hint{display:none;}
+  .vp-atlas__card{left:.6rem;right:.6rem;top:.6rem;min-width:0;}
+  .vp-atlas__legendCount{margin-left:0;width:100%;}
+  .vp-atlas__zoom{top:.6rem;right:.6rem;}
+}
 
 @media (prefers-reduced-motion:reduce){
-  .vp-mapbar__fill{animation:none !important;}
-  .vp-map__state,.vp-mapbar{transition:none !important;}
+  /* The blades stop. They are the one decorative motion on the home page, and
+     a visitor who has asked for stillness should not have seven things turning
+     in the corner of their eye. */
+  .vp-wt__rotor{animation:none !important;}
+  .vp-atlas__card{animation:none !important;}
+  .vp-atlas__dots circle,.vp-wt__mast,.vp-wt__blade,.vp-wt__hub{transition:none !important;}
 }
+
+/* ---- section furniture --------------------------------------------------- */
+.vp-atlaswrap{display:block;}
+.vp-atlasnotes{
+  display:grid;gap:.6rem;margin-top:1.1rem;
+  max-width:64ch;
+}
+.vp-mapnote{font-size:.8125rem;line-height:1.65;color:var(--vp-text-muted);margin:0;}
+.vp-mapnote strong{color:var(--vp-text-soft);font-weight:600;}

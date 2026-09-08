@@ -11,11 +11,11 @@
     "projects": "node scripts/build-projects.mjs",
     "projects:check": "node scripts/build-projects.mjs --check",
     "notify:test": "node scripts/notify-test.mjs",
-    "map": "node scripts/build-india-map.mjs",
-    "map:check": "node scripts/build-india-map.mjs --check",
     "seo": "node scripts/build-seo.mjs",
     "seo:check": "node scripts/build-seo.mjs --check",
-    "prerender": "node scripts/prerender.mjs"
+    "prerender": "node scripts/prerender.mjs",
+    "atlas": "node scripts/build-asia-dots.mjs",
+    "atlas:check": "node scripts/build-asia-dots.mjs --check"
   },
   "devDependencies": {
     "vitest": "^3.2.0",

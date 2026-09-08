@@ -46,16 +46,20 @@ describe('QCA portfolio', () => {
   });
 
   it('uses state names the map can actually match', () => {
-    /* "Tamilnadu" in the deck is "Tamil Nadu" in the map data; a mismatch here
-       silently drops a state from the choropleth rather than erroring. */
+    /* "Tamilnadu" in the deck is "Tamil Nadu" in the map data. The generator
+       exits when a name finds no geometry, so the guard here is that every
+       state actually SURVIVED into the shipped grid with dots of its own — a
+       state present in name but absent in dots is invisible on the map. */
     const map = JSON.parse(
       require('node:fs').readFileSync(
-        new URL('../public/maps/india-states.json', import.meta.url), 'utf8',
+        new URL('../public/maps/asia-dots.json', import.meta.url), 'utf8',
       ),
     );
-    const known = new Set(map.states.map((s) => s.name));
-    const unknown = portfolioByState.map((s) => s.state).filter((s) => !known.has(s));
-    expect(unknown).toEqual([]);
+    expect(map.states).toEqual(portfolioByState.map((s) => s.state));
+    const drawn = new Set();
+    for (let i = 2; i < map.dots.length; i += 3) if (map.dots[i] >= 0) drawn.add(map.dots[i]);
+    const missing = map.states.filter((_, i) => !drawn.has(i));
+    expect(missing).toEqual([]);
   });
 
   it('is ordered largest first, and maxStateMw is that leader', () => {
