@@ -86,10 +86,10 @@
 .vp-team{
   display:grid;gap:clamp(1rem,2vw,1.5rem);
   grid-template-columns:1fr;
-  max-width:22rem;
+  max-width:20rem;
 }
-@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:38rem;} }
-@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:54.5rem;} }
+@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:34rem;} }
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:50rem;} }
 
 .vp-tcard{
   position:relative;display:flex;flex-direction:column;
@@ -115,22 +115,24 @@
   box-shadow:0 26px 54px -28px rgb(0 0 0 / .7);
 }
 
-/* 4:3, not the square the portraits are supplied at. A square frame across a
-   3-up grid made a 397x587 card — more room than a name, a title and one line
-   of text can fill.
-   The crop is biased UP (28%, not the 50% centre) because these are tight
-   head-and-shoulders shots: centred, 4:3 would take equally from the top of the
-   head and the chest, and the head is the half that matters. */
+/* 1:1, MATCHING THE SOURCE, so the browser crops nothing.
+   This frame was 4:3 with the crop biased up to 28%, which cost a quarter of
+   the height. That is fine for a photograph with headroom and fatal for these:
+   measured on the deck's own team slide, each portrait is cropped to within
+   0-5px of the hairline, so removing any height at all cuts into the head —
+   which is exactly what it was doing to two of the three.
+   A square frame shows each portrait as composed. The cards get taller, so the
+   row is narrower to compensate. */
 .vp-tcard__photo{
-  position:relative;aspect-ratio:4 / 3;overflow:hidden;
+  position:relative;aspect-ratio:1 / 1;overflow:hidden;
   background:var(--vp-bg-sunken);
-  /* The portraits are studio cut-outs on white, and the card is white, so
+  /* The portraits are studio shots on near-white, and the card is white, so
      without this the top of the frame dissolves into the card and the photo
      reads as floating rather than seated in it. */
   border-bottom:1px solid var(--vp-border-soft);
 }
 .vp-tcard__photo img{
-  width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block;
+  width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;
   transition:transform 900ms var(--vp-ease);
 }
 .vp-tcard:hover .vp-tcard__photo img,

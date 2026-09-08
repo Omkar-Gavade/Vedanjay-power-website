@@ -95,8 +95,8 @@ export default function Team() {
                   <img
                     src={p.photo}
                     alt={`${p.name}, ${p.role} of Vedanjay Power`}
-                    sizes="(min-width: 1000px) 270px, (min-width: 640px) 45vw, 90vw"
-                    width="540" height="540" loading="lazy" decoding="async"
+                    sizes="(min-width: 1000px) 250px, (min-width: 640px) 42vw, 88vw"
+                    width="560" height="560" loading="lazy" decoding="async"
                   />
                   <p className="vp-tcard__role">{p.role}</p>
                 </div>
