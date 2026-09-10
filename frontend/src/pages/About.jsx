@@ -164,7 +164,7 @@ export default function About() {
   const hero = getMedia('footprint');
 
   return (
-    <>
+    <div className="vp-ov-page">
       <Seo route={ROUTES.about} />
 
       {/* ---- hero: the promise, and the four figures behind it ---- */}
@@ -317,6 +317,7 @@ export default function About() {
       <section className="vp-section" aria-labelledby="mo-h">
         <div className="vp-container">
           <SectionHead id="mo-h" eyebrow="Explore further"
+                       titleClass="vp-ov-more-h"
                        title="The people, the recognition and the record." />
           <div className="vp-ov-more">
             {MORE.map((c, i) => (
@@ -337,6 +338,6 @@ export default function About() {
       </section>
 
       <ClosingCTA />
-    </>
+    </div>
   );
 }
