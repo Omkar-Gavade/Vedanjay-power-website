@@ -1,15 +1,14 @@
 /* ============================================================================
-   NAVBAR — translucent architectural glass.
+   NAVBAR — transparent over the hero, solid everywhere else.
 
-   DESIGN NOTE. The bar is translucent and blurred, but it does NOT sit over the
-   hero photograph: the supplied logo is a full lockup with a dark wordmark and
-   an even darker tagline, and over imagery the tagline stops being readable.
-   Instead the hero begins beneath the header, and page content passes *under*
-   the glass as you scroll — which is where the blur actually reads.
+   Two states and nothing between them. Over a full-bleed hero the bar is fully
+   transparent and the photograph runs behind it; once the hero has scrolled out
+   from under it (useScrollState, `heroSelector`) the bar is an opaque band in
+   the page colour. On a page with no hero it is solid from the start.
 
-   Opacity is deliberately high (0.72 → 0.88 on scroll) rather than the 0.3-ish
-   values typical of decorative glassmorphism: the logo and the nav labels have
-   to stay legible over whatever is behind them.
+   It used to be translucent blurred glass at 0.72 → 0.88. Over content that
+   read as a grey band rather than a surface; the production brief is a bar
+   that is either clearly out of the way or clearly there.
    ========================================================================== */
 
 .vp-header{
@@ -19,25 +18,16 @@
 .vp-header__bar{
   background:var(--vp-header-bg);
   border-bottom:1px solid var(--vp-header-line);
-  backdrop-filter:blur(14px) saturate(160%);
-  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  /* No backdrop-filter: blurring what sits behind an opaque bar costs paint on
+     every scroll frame and shows nothing. */
   transition:background-color 420ms var(--vp-ease),
              border-color 420ms var(--vp-ease),
-             box-shadow 420ms var(--vp-ease),
-             backdrop-filter 420ms var(--vp-ease);
+             box-shadow 420ms var(--vp-ease);
 }
 .vp-header[data-scrolled="true"] .vp-header__bar{
   background:var(--vp-header-bg-scrolled);
   border-bottom-color:var(--vp-header-line-scrolled);
-  backdrop-filter:blur(20px) saturate(170%);
-  -webkit-backdrop-filter:blur(20px) saturate(170%);
   box-shadow:0 1px 0 rgb(4 34 42 / .04), 0 10px 30px -24px rgb(4 34 42 / .5);
-}
-/* No backdrop-filter support: fall back to an opaque bar rather than an
-   unreadable translucent one. */
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .vp-header__bar{background:var(--vp-bg);}
-  .vp-header[data-scrolled="true"] .vp-header__bar{background:var(--vp-bg);}
 }
 
 /* ---------------------------------------------------------------- overlay --
@@ -51,22 +41,15 @@
    `--nav-scrim` block in hero.css / contact.css / about.css), not from a plate
    behind the navbar.
 
-   This state applies only at the top of the page: Header.jsx sets
-   data-overlay={overlay && !solid}, so scrolling drops it and the themed glass
-   bar takes over. That revert matters — white labels on white glass would be
-   invisible in light theme.
+   This state holds only while the hero is behind the bar: Header.jsx sets
+   data-overlay={overlay && !solid}, and `solid` turns on once the hero's bottom
+   edge has passed under the header. That revert matters — white labels on a
+   white bar would be invisible in light theme.
    -------------------------------------------------------------------------- */
 .vp-header[data-overlay="true"] .vp-header__bar{
   background:transparent;
   border-bottom-color:transparent;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
   box-shadow:none;
-}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .vp-header[data-overlay="true"] .vp-header__bar{
-    background:transparent;
-  }
 }
 
 /* The brand rule reads as a hairline over photography rather than a band. */

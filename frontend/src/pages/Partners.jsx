@@ -88,7 +88,6 @@ export default function Partners() {
                 </div>
                 <p className="vp-tpartner__body">
                   {enercast?.body ?? 'Named on the company’s published record of achievements.'}
-                  {' '}No mark was supplied for this listing, so the name is set in type.
                 </p>
               </div>
             </Reveal>

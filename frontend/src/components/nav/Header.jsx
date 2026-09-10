@@ -11,6 +11,9 @@ import { Button } from '../ui/Button.jsx';
 const OPEN_DELAY = 120;
 const CLOSE_DELAY = 200;
 
+/* Every full-bleed hero on the site: home, the interior pages, and contact. */
+const HERO_SELECTOR = '.vp-hero, .vp-phero, .vp-chero';
+
 const Caret = () => (
   <svg className="vp-nav__caret" viewBox="0 0 12 12" fill="none" stroke="currentColor"
        strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -19,11 +22,19 @@ const Caret = () => (
 );
 
 export function Header({ overlay = false }) {
-  // Only the opacity/blur state is used. Hide-on-scroll was considered and
-  // dropped: it removes the Contact CTA mid-scroll and reads as a motion trick
-  // rather than a corporate navigation pattern. The glass bar stays put.
-  const { solid } = useScrollState();
   const { pathname } = useLocation();
+  // Only the solid state is used. Hide-on-scroll was considered and dropped: it
+  // removes the Contact CTA mid-scroll and reads as a motion trick rather than a
+  // corporate navigation pattern. The bar stays put.
+  //
+  // On a hero page the bar stays transparent for as long as the hero is behind
+  // it and turns solid once the hero has scrolled out from under it. It used to
+  // turn after the first 28px, which put a band over the photograph almost at
+  // once.
+  const { solid } = useScrollState({
+    heroSelector: overlay ? HERO_SELECTOR : null,
+    key: pathname,
+  });
 
   const [openId, setOpenId] = useState(null);
   const [drawer, setDrawer] = useState(false);

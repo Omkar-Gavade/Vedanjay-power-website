@@ -118,8 +118,10 @@
   --vp-shadow:0 6px 24px -8px rgb(7 21 24 / .14);
   --vp-shadow-lg:0 24px 60px -20px rgb(7 21 24 / .26);
 
-  --vp-header-bg:rgb(255 255 255 / .72);
-  --vp-header-bg-scrolled:rgb(255 255 255 / .88);
+  /* Opaque. The bar is either fully transparent over a hero or a solid band —
+     never the translucent glass it used to be. */
+  --vp-header-bg:var(--vp-bg);
+  --vp-header-bg-scrolled:var(--vp-bg);
   --vp-header-line:rgb(16 30 33 / .07);
   --vp-header-line-scrolled:rgb(16 30 33 / .12);
 }
@@ -164,8 +166,8 @@
   --vp-shadow:0 8px 30px -10px rgb(0 0 0 / .6);
   --vp-shadow-lg:0 30px 70px -24px rgb(0 0 0 / .75);
 
-  --vp-header-bg:rgb(7 21 24 / .74);
-  --vp-header-bg-scrolled:rgb(7 21 24 / .90);
+  --vp-header-bg:var(--vp-bg);
+  --vp-header-bg-scrolled:var(--vp-bg);
   --vp-header-line:rgb(234 242 240 / .09);
   --vp-header-line-scrolled:rgb(234 242 240 / .15);
 }
