@@ -1,7 +1,22 @@
-import { coreExpertise } from '../../data/capabilities.js';
+import { coreExpertise, technologies } from '../../data/capabilities.js';
+import { Media } from '../ui/Media.jsx';
 import { Reveal } from '../ui/Reveal.jsx';
 import { SectionHead } from '../ui/SectionHead.jsx';
-import { TechCarousel } from './TechCarousel.jsx';
+
+const MEDIA_FOR = { Solar: 'tech-solar', Wind: 'tech-wind', Hybrid: 'tech-hybrid' };
+
+/**
+ * Park the hover light under the pointer. Written straight onto the element
+ * rather than into React state, so moving the mouse never re-renders anything.
+ * Touch and pen skip it: there is no hover to light.
+ */
+const track = (e) => {
+  if (e.pointerType !== 'mouse') return;
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+  el.style.setProperty('--my', `${e.clientY - r.top}px`);
+};
 
 /** Renewable-energy and technical expertise. */
 export function Expertise() {
@@ -15,9 +30,32 @@ export function Expertise() {
           lead="Registered QCA operations with state load despatch centres in Maharashtra, Madhya Pradesh and Telangana, and with WRLDC for the Western Region."
         />
 
-        <Reveal className="mt-4 mt-lg-5">
-          <TechCarousel />
-        </Reveal>
+        {/* Three cards, all visible at once. This was a rotating coverflow;
+            with only three items it hid two of them to imitate a slideshow. */}
+        <div className="vp-xcards mt-4 mt-lg-5">
+          {technologies.map((t, i) => (
+            <Reveal key={t.name} delay={i * 110}>
+              <figure className="vp-xcard" onPointerMove={track}>
+                <Media
+                  slug={MEDIA_FOR[t.name]}
+                  ratio="4x3"
+                  className="vp-xcard__media"
+                  sizes="(max-width: 767px) 92vw, 32vw"
+                />
+                <figcaption className="vp-xcard__cap">
+                  <div className="vp-xcard__head">
+                    <h3 className="vp-xcard__name">{t.name}</h3>
+                    <span className="vp-xcard__num" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <span className="vp-xcard__rule" aria-hidden="true" />
+                  <p className="vp-xcard__body">{t.body}</p>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </div>
 
         <Reveal delay={140}>
           <div className="vp-expertise-strip mt-5">

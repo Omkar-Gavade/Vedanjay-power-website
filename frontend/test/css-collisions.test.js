@@ -104,9 +104,11 @@ describe('stylesheet layering', () => {
     /* .vp-cover is why this run mattered: the coverflow was first written as
        .vp-cover, which about.css already uses for the tinted section band on
        About and Careers. Two unrelated components, one name, and whichever
-       stylesheet loaded second would have won. */
+       stylesheet loaded second would have won. The coverflow has since become
+       three .vp-xcard cards; the About name must still not come back here. */
     expect(about.has('vp-cover')).toBe(true);
     expect(sections.has('vp-cover')).toBe(false);
-    expect(sections.has('vp-flow')).toBe(true);
+    expect(sections.has('vp-flow')).toBe(false);
+    expect(sections.has('vp-xcard')).toBe(true);
   });
 });

@@ -110,78 +110,79 @@
 .vp-index__caption .vp-mono{color:var(--vp-green-300);}
 
 /* ---------------------------------------------------------- expertise ------
-   Coverflow: the front card is full size, its two neighbours sit back, to the
-   side and turned away. --p is the signed distance from the front card (-1, 0,
-   1) and --d its magnitude, so one transform drives every position. */
-.vp-flow{--gap:58%;}
-.vp-flow__stage{
-  position:relative;display:grid;place-items:center;
-  perspective:1400px;touch-action:pan-y;
+   Three cards side by side. The hover carries the quality: a light that
+   follows the pointer round the border and across the face, a lift, a slow
+   push into the photograph, and the green tick under the name drawn out to a
+   full rule. --mx/--my come from pointermove; at rest they sit top centre. */
+.vp-xcards{display:grid;gap:clamp(1rem,2.2vw,1.75rem);}
+@media (min-width:768px){.vp-xcards{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.vp-xcard{
+  --mx:50%;--my:0%;
+  position:relative;isolation:isolate;height:100%;margin:0;
+  display:flex;flex-direction:column;
+  background:var(--vp-surface);border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);padding:.625rem;
+  box-shadow:var(--vp-shadow-sm);
+  transition:transform 560ms var(--vp-ease),box-shadow 560ms var(--vp-ease),
+             border-color 560ms var(--vp-ease);
 }
-.vp-flow__card{
-  grid-area:1 / 1;margin:0;width:min(100%,30rem);
-  /* A real card, not a bare photograph. The first version floated the image
-     and its caption on the page ground with nothing holding them together,
-     which read as unfinished — the caption looked like it belonged to the
-     section rather than to the picture. */
-  background:var(--vp-surface);
-  border:1px solid var(--vp-border);
-  border-radius:var(--vp-radius-lg);
-  padding:.75rem .75rem 1.25rem;
-  transform:
-    translateX(calc(var(--p) * var(--gap)))
-    scale(calc(1 - var(--d) * .22))
-    rotateY(calc(var(--p) * -16deg));
-  opacity:calc(1 - var(--d) * .45);
-  z-index:calc(10 - var(--d));
-  will-change:transform;
+/* One pointer light, twice: masked down to the 1px ring, and as a faint wash
+   behind the caption. */
+.vp-xcard::before,.vp-xcard::after{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;
+  pointer-events:none;opacity:0;transition:opacity 450ms var(--vp-ease);
 }
-/* A back card is a control, not content you can interact through. */
-.vp-flow__card:not([data-active]){cursor:pointer;}
-.vp-flow__card:not([data-active]) .vp-flow__cap{opacity:0;}
-.vp-flow__media{border-radius:var(--vp-radius);overflow:hidden;}
-/* The shadow belongs to the CARD now, and deepens as it comes forward. */
-.vp-flow__card{
-  box-shadow:0 8px 24px -18px rgb(4 34 42 / .45);
-  transition:transform 620ms var(--vp-ease),opacity 620ms var(--vp-ease),
-             box-shadow 620ms var(--vp-ease);
+.vp-xcard::before{
+  z-index:2;padding:1px;
+  background:radial-gradient(16rem circle at var(--mx) var(--my),var(--vp-primary),transparent 72%);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask-composite:exclude;
 }
-.vp-flow__card[data-active]{box-shadow:0 30px 64px -30px rgb(4 34 42 / .5);}
-.vp-flow__cap{padding:1rem .5rem 0;transition:opacity 400ms var(--vp-ease);}
-.vp-flow__name{
+.vp-xcard::after{
+  z-index:-1;
+  background:radial-gradient(22rem circle at var(--mx) var(--my),rgb(64 160 64 / .11),transparent 68%);
+}
+.vp-xcard__media img{transition:transform 1300ms var(--vp-ease);}
+.vp-xcard__media::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent 50%,rgb(4 22 27 / .42));
+  opacity:0;transition:opacity 560ms var(--vp-ease);
+}
+.vp-xcard__cap{padding:1.15rem .6rem .75rem;flex:1;}
+.vp-xcard__head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;}
+.vp-xcard__name{
   font-family:var(--vp-font-serif);font-size:var(--vp-fs-h4);font-weight:600;
-  margin:0 0 .25rem;color:var(--vp-text);
+  margin:0;color:var(--vp-text);
 }
-.vp-flow__body{font-size:var(--vp-fs-sm);line-height:1.6;color:var(--vp-text-muted);margin:0;}
+.vp-xcard__num{
+  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.08em;
+  color:var(--vp-text-muted);transition:color 450ms var(--vp-ease);
+}
+.vp-xcard__rule{
+  display:block;height:2px;margin:.8rem 0;background:var(--vp-primary);
+  transform:scaleX(.12);transform-origin:left;
+  transition:transform 760ms var(--vp-ease);
+}
+.vp-xcard__body{font-size:var(--vp-fs-sm);line-height:1.6;color:var(--vp-text-muted);margin:0;}
 
-.vp-flow__controls{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.25rem;}
-.vp-flow__arrow{
-  display:grid;place-items:center;width:40px;height:40px;flex:none;
-  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
-  background:var(--vp-surface);color:var(--vp-text-soft);cursor:pointer;
-  transition:background var(--vp-dur-fast) var(--vp-ease),
-             border-color var(--vp-dur-fast) var(--vp-ease),
-             color var(--vp-dur-fast) var(--vp-ease);
+@media (hover:hover) and (pointer:fine){
+  .vp-xcard:hover{
+    transform:translateY(-6px);
+    border-color:var(--vp-border-strong);box-shadow:var(--vp-shadow-lg);
+  }
+  .vp-xcard:hover::before,.vp-xcard:hover::after,
+  .vp-xcard:hover .vp-xcard__media::after{opacity:1;}
+  .vp-xcard:hover .vp-xcard__media img{transform:scale(1.06);}
+  .vp-xcard:hover .vp-xcard__rule{transform:scaleX(1);}
+  .vp-xcard:hover .vp-xcard__num{color:var(--vp-primary);}
 }
-.vp-flow__arrow:hover{
-  background:var(--vp-primary);border-color:var(--vp-primary);color:var(--vp-primary-contrast);
-}
-.vp-flow__dots{display:flex;align-items:center;gap:.4rem;}
-.vp-flow__dot{
-  width:34px;height:4px;padding:0;border:0;border-radius:999px;
-  background:var(--vp-border-strong);cursor:pointer;
-  transition:background var(--vp-dur-fast) var(--vp-ease),width var(--vp-dur) var(--vp-ease);
-}
-.vp-flow__dot[aria-pressed="true"]{background:var(--vp-primary);width:52px;}
-
-/* Phones: the neighbours only peek, so the front card keeps its width. */
+/* Phones: a wider frame so three stacked cards don't become three screens. */
 @media (max-width:767.98px){
-  .vp-flow{--gap:74%;}
-  .vp-flow__card{width:min(82%,24rem);}
+  .vp-xcard .vp-xcard__media{aspect-ratio:16/9;}
 }
-
+/* The light and the rule stay; nothing moves. */
 @media (prefers-reduced-motion:reduce){
-  .vp-flow__card{transition:none !important;}
+  .vp-xcard:hover,.vp-xcard:hover .vp-xcard__media img{transform:none;}
 }
 .vp-expertise-strip{
   border-top:1px solid var(--vp-border);padding-top:1.5rem;
