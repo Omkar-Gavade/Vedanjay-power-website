@@ -1,7 +1,6 @@
 import { company } from './company.js';
 import { capabilities } from './capabilities.js';
 import { industries } from './industries.js';
-import { PROJECT_TOTAL, voltageClasses } from './projects.js';
 import { PORTFOLIO_TOTAL_MW, PORTFOLIO_COUNT, portfolioByState } from './portfolio.js';
 import { awards, awardYears } from './awards.js';
 import { leadership } from './team.js';
@@ -142,10 +141,9 @@ export const routeSeo = [
   {
     path: ROUTES.projects,
     breadcrumb: 'Projects',
-    title: 'Projects — QCA Portfolio & Execution Register',
-    description: `A QCA forecasting portfolio of ${mw(PORTFOLIO_TOTAL_MW)} MW across `
-      + `${PORTFOLIO_COUNT} renewable projects in ${portfolioByState.length} states, plus a `
-      + `register of ${PROJECT_TOTAL} executed works up to ${voltageClasses[0]}.`,
+    title: 'Our Projects — Renewable-Energy Portfolio',
+    description: `Vedanjay Power's renewable-energy project portfolio — ${mw(PORTFOLIO_TOTAL_MW)} MW `
+      + `across ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} Indian states.`,
     og: `${OG_DIR}/projects.jpg`,
   },
   {

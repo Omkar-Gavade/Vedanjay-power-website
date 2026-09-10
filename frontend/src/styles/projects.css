@@ -1,0 +1,383 @@
+/* ============================================================================
+   PROJECTS — QCA / F&S PORTFOLIO PAGE
+
+   Loaded only by the lazy Projects route chunk, never by index.css. Every value
+   is an existing design token. The shared page-hero shell, filter/search
+   controls, result count and CTA band come from about.css; this file adds the
+   portfolio-specific treatment on top.
+   ========================================================================== */
+
+/* ============================================================ HERO ======== */
+/* Gradient + energy-line treatment. Kept dark so the transparent header (which
+   sits inside this hero and inverts its labels to white) stays legible — the
+   same contract the photographic heroes honour. */
+.vp-phero--portfolio{
+  min-height:clamp(22rem,42vh,28rem);
+  display:flex;align-items:flex-end;
+  overflow:hidden;
+  border-bottom:1px solid var(--vp-border);
+  background:
+    radial-gradient(120% 140% at 82% 8%, rgba(64,160,64,.18), transparent 55%),
+    linear-gradient(160deg, #0A2A30 0%, var(--vp-blue-950) 58%, #061014 100%);
+  color:#fff;
+}
+/* Trimmed from the shared 3.25rem cap so the headline sits calmer over the
+   photograph and stays in scale with the reduced section headings. */
+.vp-phero--portfolio .vp-phero__title{color:#fff;font-size:clamp(1.85rem,1.35rem + 2.1vw,2.85rem);}
+.vp-phero--portfolio .vp-phero__lead{color:#DCE8E8;}
+.vp-phero--portfolio .vp-eyebrow{color:#CDE9CD;}
+.vp-phero--portfolio .vp-eyebrow::before{background:var(--vp-green-400);}
+.vp-phero--portfolio .vp-phero__inner{padding-block:clamp(1rem,3vw,2rem);}
+
+.vp-pfhero__art{position:absolute;inset:0;z-index:-1;pointer-events:none;}
+/* Existing transmission-at-dusk photograph, blended into the navy gradient as
+   texture rather than shown as a literal photo — luminosity keeps it dark and
+   on-brand, so white type stays legible. */
+.vp-pfhero__photo{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;
+  opacity:.34;mix-blend-mode:luminosity;
+}
+/* Scrim: darker on the left where the type column sits. */
+.vp-pfhero__art::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, rgba(4,16,20,.62) 0%, rgba(4,16,20,.22) 55%, rgba(4,16,20,0) 100%);
+}
+.vp-pfhero__grid{position:relative;width:100%;height:100%;display:block;opacity:.7;}
+.vp-pfhero__mesh line{stroke:rgba(173,219,173,.10);stroke-width:1;}
+.vp-pfhero__pulse{
+  stroke-dasharray:120 1080;
+  animation:vp-pf-pulse 5.5s linear infinite;
+  animation-delay:var(--d,0s);
+}
+@keyframes vp-pf-pulse{
+  from{stroke-dashoffset:1200;}
+  to{stroke-dashoffset:-1200;}
+}
+/* ===================================================== SECTION HEADINGS === */
+/* Page-scoped: a touch smaller than the global .vp-h2 so the portfolio reads
+   as a calm sequence of sections rather than a stack of large titles. */
+.vp-pf-h2{font-size:clamp(1.375rem,1.15rem + 0.9vw,1.85rem);}
+
+/* =========================================================== STATISTICS === */
+.vp-pstats{
+  display:grid;gap:clamp(.75rem,1.4vw,1.1rem);
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+}
+.vp-pstat{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:flex;flex-direction:column;gap:.15rem;
+  padding:clamp(1.1rem,2vw,1.5rem);
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);
+  box-shadow:var(--vp-shadow-sm);
+  transition:border-color var(--vp-dur) var(--vp-ease), box-shadow var(--vp-dur) var(--vp-ease), transform var(--vp-dur) var(--vp-ease);
+}
+/* Left rail — grows to the full card height on hover. */
+.vp-pstat::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--vp-brand-green);
+  transform:scaleY(.62);transform-origin:center;
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+/* Soft green glow that blooms from the top corner on hover. */
+.vp-pstat::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;
+  background:radial-gradient(90% 120% at 100% 0%, rgba(64,160,64,.16), transparent 55%);
+  transition:opacity var(--vp-dur) var(--vp-ease);
+}
+.vp-pstat:hover{border-color:rgba(64,160,64,.45);box-shadow:var(--vp-shadow);transform:translateY(-4px);}
+.vp-pstat:hover::before{transform:scaleY(1);}
+.vp-pstat:hover::after{opacity:1;}
+.vp-pstat__num{
+  font-family:var(--vp-font-serif);
+  font-size:var(--vp-fs-stat);font-weight:600;line-height:1;
+  color:var(--vp-secondary);
+  font-variant-numeric:tabular-nums;
+  transition:color var(--vp-dur) var(--vp-ease);
+}
+.vp-pstat:hover .vp-pstat__num{color:var(--vp-primary);}
+.vp-pstat__label{margin-top:.35rem;font-weight:600;color:var(--vp-text);}
+.vp-pstat__note{font-size:var(--vp-fs-sm);color:var(--vp-text-muted);}
+
+/* The lead stat spans wider and carries the capacity figure. */
+.vp-pstat--lead{
+  grid-column:span 2;
+  background:
+    radial-gradient(120% 160% at 100% 0%, rgba(64,160,64,.10), transparent 60%),
+    var(--vp-surface);
+}
+.vp-pstat--lead:hover .vp-pfcap__num{color:var(--vp-primary);}
+@media (max-width:520px){ .vp-pstat--lead{grid-column:1 / -1;} }
+
+.vp-pfcap__num{
+  font-family:var(--vp-font-serif);
+  font-size:clamp(2rem,1.35rem + 2.9vw,3.1rem);
+  font-weight:600;line-height:1;letter-spacing:-.01em;margin:0;
+  color:var(--vp-secondary);
+  font-variant-numeric:tabular-nums;
+  transition:color var(--vp-dur) var(--vp-ease);
+}
+.vp-pfcap__unit{
+  font-family:var(--vp-font-sans);font-size:.42em;font-weight:600;
+  margin-left:.4rem;color:var(--vp-brand-green);letter-spacing:.02em;
+  vertical-align:.18em;
+}
+
+/* ============================================================= CARDS ====== */
+.vp-pfbar{
+  display:flex;flex-wrap:wrap;gap:.75rem 1rem;
+  align-items:center;justify-content:space-between;
+  margin-bottom:1.25rem;
+}
+.vp-pfbar__right{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;}
+
+/* Location select, styled to sit with the search field and filter pills. */
+.vp-pfselect{position:relative;display:inline-flex;}
+.vp-pfselect__input{
+  appearance:none;-webkit-appearance:none;
+  font:inherit;font-size:var(--vp-fs-sm);color:var(--vp-text);
+  padding:.5rem 2rem .5rem .85rem;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  cursor:pointer;transition:border-color var(--vp-dur) var(--vp-ease);
+}
+.vp-pfselect__input:hover{border-color:var(--vp-border-strong);}
+.vp-pfselect__input:focus-visible{outline:2px solid var(--vp-focus);outline-offset:2px;}
+.vp-pfselect::after{
+  content:"";position:absolute;right:.85rem;top:50%;pointer-events:none;
+  width:.5rem;height:.5rem;margin-top:-.35rem;
+  border-right:1.5px solid var(--vp-text-muted);border-bottom:1.5px solid var(--vp-text-muted);
+  transform:rotate(45deg);
+}
+
+.vp-pgrid{
+  display:grid;gap:clamp(.85rem,1.5vw,1.25rem);
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));
+}
+
+.vp-pcard{
+  position:relative;isolation:isolate;
+  display:flex;flex-direction:column;
+  padding:clamp(1.1rem,1.8vw,1.4rem);
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);
+  border-radius:var(--vp-radius-lg);
+  box-shadow:var(--vp-shadow-sm);
+  overflow:hidden;
+  transition:transform var(--vp-dur) var(--vp-ease), box-shadow var(--vp-dur) var(--vp-ease), border-color var(--vp-dur) var(--vp-ease);
+  animation:vp-pcard-in .5s var(--vp-ease) both;
+  animation-delay:calc(var(--i,0) * var(--stagger,34ms));
+}
+/* Top accent hairline, tinted by technology, revealed on hover. */
+.vp-pcard::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:3px;z-index:1;
+  background:var(--vp-brand-green);transform:scaleX(0);transform-origin:left;
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-pcard[data-tech="wind"]::before{background:var(--vp-blue-400);}
+/* Tech-tinted glow from the top corner, faded in on hover — green for solar,
+   petrol for wind, neutral for the untyped cards. */
+.vp-pcard::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;
+  background:radial-gradient(115% 115% at 100% 0%, rgba(64,160,64,.12), transparent 55%);
+  transition:opacity var(--vp-dur) var(--vp-ease);
+}
+.vp-pcard[data-tech="wind"]::after{background:radial-gradient(115% 115% at 100% 0%, rgba(61,136,148,.14), transparent 55%);}
+.vp-pcard:not([data-tech])::after{background:radial-gradient(115% 115% at 100% 0%, rgba(16,30,33,.06), transparent 55%);}
+.vp-pcard:hover{transform:translateY(-4px);box-shadow:var(--vp-shadow);border-color:var(--vp-border-strong);}
+.vp-pcard:hover::before{transform:scaleX(1);}
+.vp-pcard:hover::after{opacity:1;}
+
+@keyframes vp-pcard-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+.vp-pcard__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;}
+.vp-pcard__badge{
+  display:inline-flex;align-items:center;gap:.32rem;
+  font-size:.72rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:var(--vp-radius-pill);
+  color:var(--vp-green-700);background:var(--vp-green-50);
+  border:1px solid var(--vp-green-200);
+}
+.vp-pcard__badge svg{flex:none;}
+.vp-pcard__badge[data-tech="wind"]{
+  color:var(--vp-blue-600);background:var(--vp-blue-50);border-color:var(--vp-blue-200);
+}
+
+/* Divider that fills the empty middle: it takes the flexible space, so the
+   capacity/location block anchors to the card foot behind a clean hairline. */
+.vp-pcard__rule{
+  margin-top:auto;height:1px;margin-bottom:.9rem;
+  background:linear-gradient(90deg,var(--vp-border),transparent);
+}
+.vp-pcard__badge--muted{color:var(--vp-text-muted);background:var(--vp-bg-alt);border-color:var(--vp-border);}
+.vp-pcard__arrow{
+  color:var(--vp-text-muted);font-size:1rem;line-height:1;
+  opacity:0;transform:translateX(-4px);
+  transition:opacity var(--vp-dur) var(--vp-ease), transform var(--vp-dur) var(--vp-ease), color var(--vp-dur) var(--vp-ease);
+}
+.vp-pcard:hover .vp-pcard__arrow{opacity:1;transform:translateX(0);color:var(--vp-brand-green);}
+
+.vp-pcard__name{
+  font-family:var(--vp-font-serif);
+  font-size:var(--vp-fs-h4);font-weight:600;line-height:1.25;
+  color:var(--vp-text);margin:0 0 .9rem;
+}
+.vp-pcard__meta{display:flex;flex-direction:column;gap:.5rem;}
+.vp-pcard__cap{display:flex;align-items:baseline;gap:.3rem;}
+.vp-pcard__cap-num{
+  font-family:var(--vp-font-serif);font-size:1.6rem;font-weight:600;line-height:1;
+  color:var(--vp-secondary);font-variant-numeric:tabular-nums;
+  transition:color var(--vp-dur) var(--vp-ease);
+}
+.vp-pcard:hover .vp-pcard__cap-num{color:var(--vp-primary);}
+.vp-pcard__cap-unit{font-family:var(--vp-font-mono);font-size:.8rem;font-weight:500;color:var(--vp-brand-green);}
+.vp-pcard__loc{
+  display:flex;align-items:center;gap:.4rem;margin:0;
+  font-size:var(--vp-fs-sm);color:var(--vp-text-soft);
+}
+.vp-pcard__loc svg{flex:none;color:var(--vp-text-muted);}
+
+/* ================================================ GEOGRAPHIC PRESENCE ===== */
+.vp-pf-geo{background:var(--vp-bg-alt);}
+.vp-geo{
+  display:grid;gap:clamp(.75rem,1.4vw,1rem);
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));
+}
+.vp-geo__item{
+  position:relative;overflow:hidden;
+  padding:1.25rem 1.25rem 1.1rem;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  box-shadow:var(--vp-shadow-sm);
+  transition:transform var(--vp-dur) var(--vp-ease), box-shadow var(--vp-dur) var(--vp-ease), border-color var(--vp-dur) var(--vp-ease);
+}
+/* Left accent rail, grows on hover — gives each card an engineered edge. */
+.vp-geo__item::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--vp-brand-green);transform:scaleY(.001);transform-origin:top;
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-geo__item:hover{transform:translateY(-3px);box-shadow:var(--vp-shadow);border-color:var(--vp-border-strong);}
+.vp-geo__item:hover::before{transform:scaleY(1);}
+/* Ghosted rank in the corner, the register's own ordering by capacity. */
+.vp-geo__rank{
+  position:absolute;top:.5rem;right:.8rem;
+  font-family:var(--vp-font-serif);font-size:1.5rem;font-weight:600;line-height:1;
+  color:var(--vp-border-strong);opacity:.5;
+}
+.vp-geo__top{display:flex;flex-direction:column;gap:.15rem;margin-bottom:.7rem;padding-right:1.5rem;}
+.vp-geo__state{font-weight:600;color:var(--vp-text);font-size:1.0625rem;}
+.vp-geo__count{font-size:var(--vp-fs-sm);color:var(--vp-text-muted);}
+.vp-geo__mw{display:flex;align-items:baseline;gap:.3rem;margin:0 0 .7rem;}
+.vp-geo__mw-num{
+  font-family:var(--vp-font-serif);font-size:1.55rem;font-weight:600;line-height:1;
+  color:var(--vp-secondary);font-variant-numeric:tabular-nums;
+}
+.vp-geo__mw-unit{font-family:var(--vp-font-mono);font-size:.78rem;font-weight:500;color:var(--vp-brand-green);}
+.vp-geo__track{height:6px;border-radius:3px;background:var(--vp-bg-sunken);overflow:hidden;}
+.vp-geo__bar{
+  display:block;height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--vp-green-500),var(--vp-green-600));
+  width:var(--w,0%);transform-origin:left;
+  animation:vp-geo-grow .9s var(--vp-ease) both;
+  animation-delay:calc(var(--i,0) * 60ms + 120ms);
+}
+@keyframes vp-geo-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+.vp-geo__item--multi{border-style:dashed;}
+.vp-geo__item--multi .vp-geo__rank{color:var(--vp-brand-green);opacity:.6;}
+.vp-geo__note{font-size:var(--vp-fs-sm);color:var(--vp-text-soft);margin:0;}
+
+/* ============================================= PORTFOLIO INSIGHT ========== */
+/* Two balanced columns: prose on the left, a facts panel on the right so the
+   right half no longer reads as empty. */
+.vp-pf-insight{
+  display:grid;gap:clamp(1.5rem,4vw,3rem);align-items:center;
+  grid-template-columns:1fr;
+}
+@media (min-width:860px){ .vp-pf-insight{grid-template-columns:1.15fr .85fr;} }
+.vp-pf-insight__text{max-width:56ch;}
+
+.vp-pf-insight__panel{
+  padding:clamp(1.25rem,2.5vw,1.75rem);
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  box-shadow:var(--vp-shadow-sm);
+}
+.vp-pf-facts{margin:0;display:flex;flex-direction:column;}
+.vp-pf-fact{
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+  padding:.85rem 0;border-bottom:1px solid var(--vp-border-soft);
+}
+.vp-pf-fact:last-child{padding-bottom:0;border-bottom:0;}
+.vp-pf-fact:first-child{padding-top:0;}
+.vp-pf-fact dt{font-size:var(--vp-fs-sm);color:var(--vp-text-muted);}
+.vp-pf-fact dd{
+  margin:0;text-align:right;font-weight:600;color:var(--vp-secondary);
+  font-size:1.0625rem;font-variant-numeric:tabular-nums;
+}
+.vp-pf-fact__u{margin-left:.5rem;font-family:var(--vp-font-sans);font-size:.8rem;font-weight:600;color:var(--vp-text-muted);}
+
+/* ============================================= TOTAL CAPACITY BANNER ====== */
+/* Renamed from .vp-cap — that class already exists in about.css (a capability
+   card whose :hover swaps to a light background), and reusing it made this dark
+   banner wash out to white-on-white on hover. Own namespace, own hover. */
+.vp-pfcap{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:clamp(1.75rem,3.5vw,2.75rem) clamp(1.5rem,4vw,3rem);
+  border-radius:var(--vp-radius-lg);
+  border:1px solid rgba(173,219,173,.12);
+  background:
+    radial-gradient(100% 160% at 88% 0%, rgba(64,160,64,.22), transparent 60%),
+    linear-gradient(150deg,#0B2A30,var(--vp-blue-950));
+  color:#fff;text-align:center;
+  transition:transform var(--vp-dur) var(--vp-ease), box-shadow var(--vp-dur) var(--vp-ease), border-color var(--vp-dur) var(--vp-ease);
+}
+.vp-pfcap:hover{
+  transform:translateY(-2px);
+  border-color:rgba(64,160,64,.4);
+  box-shadow:0 24px 60px -28px rgba(64,160,64,.45);
+}
+/* Existing solar-field photograph, blended into the gradient as texture. Sits
+   behind the grid pattern; luminosity keeps the banner dark and legible. */
+.vp-pfcap__photo{
+  position:absolute;inset:0;z-index:-2;width:100%;height:100%;
+  object-fit:cover;object-position:center 55%;
+  opacity:.22;mix-blend-mode:luminosity;
+}
+.vp-pfcap__pattern{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(173,219,173,.08) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(173,219,173,.08) 1px,transparent 1px);
+  background-size:clamp(38px,4vw,54px) clamp(38px,4vw,54px);
+  -webkit-mask-image:radial-gradient(80% 100% at 50% 40%,#000,transparent 78%);
+          mask-image:radial-gradient(80% 100% at 50% 40%,#000,transparent 78%);
+}
+.vp-pfcap__inner{display:flex;flex-direction:column;align-items:center;gap:.3rem;}
+.vp-pfcap__eyebrow{color:#CDE9CD;}
+.vp-pfcap__eyebrow::before{background:var(--vp-green-400);}
+.vp-pfcap .vp-pfcap__num{
+  color:#fff;font-size:clamp(2.25rem,1.5rem + 3.4vw,3.75rem);
+  transition:transform var(--vp-dur) var(--vp-ease);
+}
+.vp-pfcap:hover .vp-pfcap__num{transform:scale(1.03);}
+.vp-pfcap .vp-pfcap__unit{color:var(--vp-green-300);}
+.vp-pfcap__sub{color:#DCE8E8;max-width:36ch;}
+
+/* ==================================================== CTA BAND =========== */
+.vp-pf-cta{margin-top:0;}
+
+/* ==================================================== RESPONSIVE ========== */
+@media (max-width:640px){
+  .vp-pfbar{flex-direction:column;align-items:stretch;}
+  .vp-pfbar__right{width:100%;}
+  .vp-pfselect,.vp-pfselect__input,.vp-pfbar__right .vp-search{flex:1 1 auto;width:100%;}
+}
+
+/* ==================================================== REDUCED MOTION ====== */
+@media (prefers-reduced-motion:reduce){
+  .vp-pfhero__pulse,
+  .vp-pcard,.vp-geo__bar{animation:none;}
+  .vp-pcard{opacity:1;transform:none;}
+  .vp-geo__bar{transform:scaleX(1);}
+}
