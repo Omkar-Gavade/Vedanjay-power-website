@@ -1,50 +1,174 @@
 import { Link } from 'react-router-dom';
 import { company } from '../data/company.js';
-import { journey, strengths, technologies, capabilities } from '../data/capabilities.js';
+import { journey, capabilities } from '../data/capabilities.js';
 import { proofPoints } from '../data/stats.js';
-import { leadershipNames, leadershipRoles } from '../data/team.js';
-import { vision, mission, values, milestones, achievements } from '../data/about.js';
+import { leadership, leadershipNames, leadershipRoles } from '../data/team.js';
+import { vision, mission, values } from '../data/about.js';
 import { PROJECT_TOTAL } from '../data/projects.js';
-import { PORTFOLIO_COUNT, portfolioByState } from '../data/portfolio.js';
 import { awards, awardYears } from '../data/awards.js';
+import { shots } from '../data/gallery.js';
 import { getMedia, smallSrc } from '../data/media.js';
-import { Figure } from '../components/ui/Figure.jsx';
-import { Button } from '../components/ui/Button.jsx';
+import { useCountUp } from '../hooks/useCountUp.js';
+import { useScrollProgress } from '../hooks/useScrollProgress.js';
+import { trackPointer } from '../utils/pointerLight.js';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
-import { MilestoneStrip } from '../components/about/MilestoneStrip.jsx';
-import { ServiceExplorer } from '../components/about/ServiceExplorer.jsx';
-import { ForecastFlow } from '../components/about/ForecastFlow.jsx';
+import { SectionHead } from '../components/ui/SectionHead.jsx';
+import { ScrollWords } from '../components/about/ScrollWords.jsx';
+import { RevealWords } from '../components/about/RevealWords.jsx';
+import { Journey } from '../components/about/Journey.jsx';
+import { ClosingCTA } from '../components/home/ClosingCTA.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
 import { Seo } from '../components/seo/Seo.jsx';
 
 /**
- * Company Overview.
+ * Company Overview — rebuilt 10 Sep 2026.
  *
- * Every fact traces to a verified source: company.js and capabilities.js are
- * IRD-derived, stats.js carries only published proof points, PROJECT_TOTAL is
- * asserted against the project register, and the award figures come from
- * certificate-verified entries. Nothing on this page is asserted here for the
- * first time.
+ * WHAT THE PAGE IS FOR. The overview answers four questions — who the company
+ * is, how it got here, what it stands for, and what it does — and then hands
+ * the reader on. The previous page answered those and then kept going: a
+ * service explorer and a QCA diagram that belong to Services, a technologies
+ * grid that belongs to the homepage, eleven key strengths and eight
+ * achievements that restated the figures and the coverage in list form. Those
+ * are gone; the facts they carried are still here, once each.
  *
- * CONTENT CORRECTION. stats.js publishes six "proof points", but two of them —
- * "WRLDC" and "Solar · Wind · Hybrid" — are not quantities. Rendering them in a
- * figure grid was both a category error and a duplication: WRLDC registration
- * is already stated under coverage, and the three technologies already have
- * their own block. Only the genuinely numeric points appear as figures now.
+ * NOTHING IS ASSERTED HERE FOR THE FIRST TIME. Figures come from stats.js,
+ * prose from capabilities.js and about.js (IRD wording), coverage from
+ * company.js, and the onward cards derive their counts from the registers
+ * they link to. The headings are editorial; the facts under them are not.
  */
-const NUMERIC = new Set(['established', 'experience', 'portfolio', 'sldc']);
+
+const pad = (n) => String(n).padStart(2, '0');
+
+/** The four figures that are genuinely quantities, in the order they read. */
+const FACTS = ['established', 'experience', 'portfolio', 'sldc']
+  .map((id) => proofPoints.find((p) => p.id === id))
+  .filter(Boolean);
+
+const intro = getMedia('grid-transmission');
+const crewBay = shots.find((s) => s.id === 'crew-transformer-bay');
+const crewAtHeight = shots.find((s) => s.id === 'linesmen-switching-structure');
+
+/* Three certificates, centre card last so it paints on top. */
+const FAN = [
+  { award: awards[1], k: -1 },
+  { award: awards[2], k: 1 },
+  { award: awards[0], k: 0 },
+].filter((f) => f.award?.image);
+
+const Arrow = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6"
+          strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/**
+ * One hero figure. It counts up on first view — except the founding year,
+ * which is a date and would be absurd counted from zero. The true value is in
+ * the DOM for assistive technology whatever the animation is doing.
+ */
+function Fact({ value, unit, label, counts, k }) {
+  const parts = /^([\d,]+)(.*)$/.exec(value);
+  const animate = counts && parts;
+  const [shown, ref] = useCountUp(animate ? Number(parts[1].replace(/,/g, '')) : 0, { duration: 1500 });
+  const text = animate
+    ? `${parts[1].includes(',') ? shown.toLocaleString('en-IN') : shown}${parts[2]}`
+    : value;
+
+  return (
+    <div className="vp-ov-fact" ref={ref} style={{ '--k': k }}>
+      <dt className="vp-ov-fact__label">{label}</dt>
+      <dd className="vp-ov-fact__value">
+        <span className="visually-hidden">{unit ? `${value} ${unit}` : value}</span>
+        <span aria-hidden="true">{text}</span>
+        {unit && <span className="vp-ov-fact__unit" aria-hidden="true">{unit}</span>}
+      </dd>
+    </div>
+  );
+}
+
+/** The wide photograph drifts against the scroll; a site photo sits over it. */
+function IntroArt() {
+  const drift = useScrollProgress({ from: 1, to: 0 });
+
+  return (
+    <div className="vp-ov-intro__art">
+      <Reveal className="vp-ov-intro__main vp-img-reveal">
+        <div className="vp-ov-parallax" ref={drift}>
+          {intro && (
+            <img src={intro.src} srcSet={`${smallSrc(intro.src)} 1000w, ${intro.src} 1800w`}
+                 sizes="(max-width: 992px) 100vw, 52vw" alt={intro.alt}
+                 width="1800" height="1200" loading="lazy" decoding="async"
+                 style={{ objectPosition: intro.focal }} />
+          )}
+        </div>
+      </Reveal>
+      {crewBay && (
+        <Reveal as="figure" delay={260} className="vp-ov-intro__inset">
+          <img src={crewBay.src} alt={crewBay.alt} width="800" height="600"
+               loading="lazy" decoding="async" />
+          <figcaption>{crewBay.caption}</figcaption>
+        </Reveal>
+      )}
+    </div>
+  );
+}
+
+const MORE = [
+  {
+    to: ROUTES.team, kind: 'team', kicker: 'Leadership', title: 'Meet our team',
+    text: `${leadershipRoles} — ${leadershipNames}.`, cta: 'View the team',
+  },
+  {
+    to: ROUTES.awards, kind: 'awards', kicker: 'Recognition', title: 'Awards',
+    text: `${awards.length} industry awards and listings from ${awardYears.at(-1)} to ${awardYears[0]}, each shown with its certificate.`,
+    cta: 'View the awards',
+  },
+  {
+    to: ROUTES.projects, kind: 'projects', kicker: 'Track record', title: 'Projects',
+    text: `${PROJECT_TOTAL} works executed for utilities, developers, producers and industrial consumers.`,
+    cta: 'View the register',
+  },
+];
+
+function CardMedia({ kind }) {
+  if (kind === 'team') {
+    return (
+      <div className="vp-ov-card__media vp-ov-card__media--team" aria-hidden="true">
+        {leadership.filter((l) => l.photo).map((l) => (
+          <img key={l.id} src={l.photo} alt="" width="560" height="560" loading="lazy" decoding="async" />
+        ))}
+      </div>
+    );
+  }
+  if (kind === 'awards') {
+    return (
+      <div className="vp-ov-card__media vp-ov-card__media--awards" aria-hidden="true">
+        {FAN.map(({ award, k }) => (
+          <img key={award.id} src={award.image} alt="" loading="lazy" decoding="async" style={{ '--k': k }} />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="vp-ov-card__media" aria-hidden="true">
+      {crewAtHeight && (
+        <img src={crewAtHeight.src} alt="" width="800" height="600" loading="lazy" decoding="async" />
+      )}
+    </div>
+  );
+}
 
 export default function About() {
   const hero = getMedia('footprint');
-  const story = getMedia('grid-transmission');
-  const figures = proofPoints.filter((p) => NUMERIC.has(p.id));
 
   return (
     <>
       <Seo route={ROUTES.about} />
 
-      <section className="vp-phero vp-phero--photo" aria-labelledby="ab-h">
+      {/* ---- hero: the promise, and the four figures behind it ---- */}
+      <section className="vp-phero vp-phero--photo vp-ov-hero" aria-labelledby="ab-h">
         <div className="vp-phero__media" aria-hidden="true">
           {hero && (
             <img src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
@@ -53,311 +177,166 @@ export default function About() {
           )}
         </div>
         <div className="vp-phero__inner vp-container">
-          <Reveal><span className="vp-eyebrow vp-label mb-3">About us · Company overview</span></Reveal>
+          <Reveal><span className="vp-eyebrow vp-label mb-3">Company overview</span></Reveal>
           <h1 id="ab-h" className="vp-phero__title">
             <RevealLines lines={['Connecting to a more', 'sustainable future.']} />
           </h1>
-          <Reveal delay={140}>
+          <Reveal delay={160}>
             <p className="vp-lead vp-phero__lead mb-0">{company.overview}</p>
           </Reveal>
-        </div>
-      </section>
-
-      {/* ---- figures ---- */}
-      <section className="vp-section vp-stats" aria-labelledby="pp-h">
-        <div className="vp-container">
-          <h2 id="pp-h" className="visually-hidden">Vedanjay Power at a glance</h2>
-          <Reveal>
-            <div className="vp-figures">
-              {figures.map((p) => (
-                <Figure key={p.id} value={p.value} unit={p.unit} label={p.label} />
+          <Reveal delay={280}>
+            <dl className="vp-ov-facts">
+              {FACTS.map((f, i) => (
+                <Fact key={f.id} {...f} counts={f.id !== 'established'} k={i} />
               ))}
-              <Figure
-                value={String(PROJECT_TOTAL)}
-                label="Works executed"
-                note="Recorded in the project register"
-              />
-              {/* From the deck's own project table, whose rows are asserted
-                  against the 5,509.18 MW total it prints — see data/portfolio.js.
-                  It also squares the grid: five figures across two columns left
-                  a hole, and this is a real sixth rather than a filler. */}
-              <Figure
-                value={String(PORTFOLIO_COUNT)}
-                label="Renewable projects"
-                note={`Forecast and scheduled across ${portfolioByState.length} states`}
-              />
-            </div>
+            </dl>
           </Reveal>
         </div>
       </section>
 
-      {/* ---- story ---- */}
-      <section className="vp-section vp-section--flush-top" aria-labelledby="st-h">
+      {/* ---- who we are ---- */}
+      <section className="vp-section vp-section--lg" aria-labelledby="who-h">
         <div className="vp-container">
-          <div className="vp-story">
-            <div className="vp-story__aside">
-              <Reveal>
-                <span className="vp-eyebrow vp-label mb-3">Our story</span>
-                <h2 id="st-h" className="vp-h2 vp-measure-tight mb-0">
-                  <RevealLines lines={['From one objective', `to six service lines.`]} />
-                </h2>
-              </Reveal>
-              <Reveal delay={110} className="vp-story__figure vp-img-reveal vp-zoom">
-                {story && (
-                  <img src={story.src} srcSet={`${smallSrc(story.src)} 1000w, ${story.src} 1800w`}
-                       sizes="(max-width: 992px) 100vw, 38vw"
-                       alt={story.alt} loading="lazy" decoding="async"
-                       style={{ objectPosition: story.focal }} />
-                )}
-              </Reveal>
-            </div>
+          <h2 id="who-h" className="vp-eyebrow vp-label mb-4">Who we are</h2>
+          <ScrollWords className="vp-ov-statement" text={journey[0]} />
 
-            <div className="vp-story__body">
-              {/* Verbatim from the company document. Each paragraph carries its
-                  own index so they rise in sequence rather than as one block. */}
-              {journey.map((para, i) => (
-                <Reveal key={para.slice(0, 40)} delay={60 + i * 90}>
-                  <p className="vp-story__p" style={{ '--i': i }}>{para}</p>
+          <div className="vp-ov-intro__grid">
+            <IntroArt />
+            <div className="vp-ov-intro__body">
+              {journey.slice(1).map((para, i) => (
+                <Reveal as="p" key={para.slice(0, 32)} delay={i * 120}>{para}</Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---- how we got here ---- */}
+      <section className="vp-section vp-bg-alt" aria-labelledby="jr-h">
+        <div className="vp-container">
+          <Journey id="jr-h" />
+        </div>
+      </section>
+
+      {/* ---- vision & mission ---- */}
+      <section className="vp-section vp-section--lg vp-bg-deep vp-on-dark-ground vp-ov-purpose"
+               aria-labelledby="vi-h">
+        <div className="vp-container">
+          <h2 id="vi-h" className="vp-eyebrow vp-label mb-4">Our vision</h2>
+          <RevealWords className="vp-ov-vision__text" text={vision} />
+
+          <div className="vp-ov-mission">
+            <h2 className="vp-eyebrow vp-label mb-0">Our mission</h2>
+            <ol className="vp-ov-mission__list mt-4">
+              {mission.map((m, i) => (
+                <Reveal as="li" key={m} delay={i * 90} className="vp-ov-mission__item">
+                  <span className="vp-ov-mission__n" aria-hidden="true">{pad(i + 1)}</span>
+                  <p className="vp-ov-mission__t">{m}</p>
                 </Reveal>
               ))}
-            </div>
+            </ol>
           </div>
         </div>
       </section>
 
-      {/* ---- what we do ---- */}
-      {/* ---- vision, mission, values ---- */}
-      <section className="vp-section vp-section--flush-top vp-cover" aria-labelledby="vm-h">
+      {/* ---- core values ---- */}
+      <section className="vp-section" aria-labelledby="val-h">
         <div className="vp-container">
-          <div className="vp-vm">
-            <div>
-              <Reveal>
-                <span className="vp-eyebrow vp-label mb-3">Vision</span>
-                <h2 id="vm-h" className="vp-vm__vision">{vision}</h2>
-              </Reveal>
-            </div>
-            <div>
-              <Reveal delay={80}>
-                <span className="vp-eyebrow vp-label mb-3">Mission</span>
-                <ol className="vp-mission list-unstyled mb-0">
-                  {mission.map((m, i) => (
-                    <li key={m} style={{ '--i': i }}>
-                      <span className="vp-mission__n" aria-hidden="true">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <span className="vp-mission__t">{m}</span>
-                    </li>
-                  ))}
-                </ol>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="vp-section vp-section--flush-top" aria-labelledby="cval-h">
-        <div className="vp-container">
-          <Reveal>
-            <span className="vp-eyebrow vp-label mb-3">What we hold to</span>
-            <h2 id="cval-h" className="vp-h2 vp-measure-tight mb-4">Core values.</h2>
-          </Reveal>
-          <Reveal delay={60}>
-            <ul className="vp-values list-unstyled mb-0">
-              {values.map((v, i) => (
-                <li className="vp-value" key={v.name} style={{ '--i': i }}>
-                  <span className="vp-value__rule" aria-hidden="true" />
-                  <h3 className="vp-value__name">{v.name}</h3>
-                  <p className="vp-value__body">{v.body}</p>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="vp-section vp-section--flush-top" aria-labelledby="wd-h">
-        <div className="vp-container">
-          <Reveal>
-            <span className="vp-eyebrow vp-label mb-3">What we do</span>
-            <h2 id="wd-h" className="vp-h2 vp-measure-tight mb-4">Six service lines.</h2>
-          </Reveal>
-
-          <ServiceExplorer />
-
-          <Reveal delay={120}>
-            <Button to={ROUTES.services} variant="link" size="sm" arrow>All services</Button>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---- how the core line actually works ---- */}
-      <section className="vp-section vp-section--flush-top" aria-labelledby="qca-h">
-        <div className="vp-container">
-          <Reveal>
-            <span className="vp-eyebrow vp-label mb-3">How the core line works</span>
-            <h2 id="qca-h" className="vp-h2 vp-measure-tight mb-2">
-              Forecasting and scheduling, end to end.
-            </h2>
-            <p className="vp-lead vp-measure-lead mb-4">
-              The first of the six lines is the one most people have to ask about. It runs
-              as a loop, every day, for every plant under coordination.
-            </p>
-          </Reveal>
-          <ForecastFlow />
-        </div>
-      </section>
-
-      {/* ---- coverage + technologies ---- */}
-      <section className="vp-section vp-section--flush-top vp-cover" aria-labelledby="cv-h">
-        <div className="vp-container">
-          <div className="row g-4 g-lg-5">
-            <div className="col-12 col-lg-7">
-              <Reveal>
-                <span className="vp-eyebrow vp-label mb-3">Coverage</span>
-                <h2 id="cv-h" className="vp-h2 vp-measure-tight mb-2">Registered where it counts.</h2>
-                <p className="vp-sourcenote mt-0 mb-4">
-                  Registrations, not marketing reach.
-                </p>
-              </Reveal>
-              <Reveal delay={80}>
-                <ul className="vp-areas list-unstyled mb-0">
-                  {company.operatingAreas.map((a, i) => (
-                    <li key={a.name} style={{ '--i': i }}>
-                      <span className="vp-areas__name">{a.name}</span>
-                      <span className="vp-areas__basis">{a.basis}</span>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            </div>
-
-            <div className="col-12 col-lg-5">
-              <Reveal delay={60}>
-                <h2 className="vp-h2 vp-measure-tight mb-4">Technologies</h2>
-                <div className="vp-techgrid">
-                  {technologies.map((t, i) => (
-                    <div className="vp-techgrid__item" key={t.name} style={{ '--i': i }}>
-                      <h3 className="vp-techgrid__name">{t.name}</h3>
-                      <p className="vp-techgrid__body">{t.body}</p>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ---- strengths ---- */}
-      <section className="vp-section vp-section--flush-top" aria-labelledby="ks-h">
-        <div className="vp-container">
-          <Reveal>
-            <span className="vp-eyebrow vp-label mb-3">Key strengths</span>
-            <h2 id="ks-h" className="vp-h2 vp-measure-tight mb-4">
-              What clients rely on us for.
-            </h2>
-          </Reveal>
-          <Reveal delay={60}>
-            <div className="vp-keystr">
-              {strengths.map((s, i) => (
-                <div className="vp-keystr__item" key={s.name} style={{ '--i': i }}>
-                  <h3 className="vp-keystr__name">{s.name}</h3>
-                  <p className="vp-keystr__body">{s.body}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---- onward ---- */}
-      {/* ---- milestones ---- */}
-      <section className="vp-section vp-section--flush-top" aria-labelledby="ms-h">
-        <div className="vp-container">
-          <Reveal>
-            <span className="vp-eyebrow vp-label mb-3">How we got here</span>
-            <h2 id="ms-h" className="vp-h2 vp-measure-tight mb-2">Milestones.</h2>
-            <p className="vp-sourcenote mt-0 mb-4">
-              The company dates its founding and orders everything after it as a
-              sequence of capability. Only the first carries a year in the record, so
-              only the first carries one here. Drag the strip, or use the arrows.
-            </p>
-          </Reveal>
-          <Reveal delay={60}>
-            <MilestoneStrip />
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ---- achievements ---- */}
-      <section className="vp-section vp-section--flush-top vp-cover" aria-labelledby="ac-h">
-        <div className="vp-container">
-          <Reveal>
-            <span className="vp-eyebrow vp-label mb-3">On the record</span>
-            <h2 id="ac-h" className="vp-h2 vp-measure-tight mb-4">Achievements.</h2>
-          </Reveal>
-          <Reveal delay={60}>
-            <ul className="vp-keystr list-unstyled mb-0">
-              {achievements.map((a, i) => (
-                <li className="vp-keystr__item" key={a.name} style={{ '--i': i }}>
-                  <h3 className="vp-keystr__name">{a.name}</h3>
-                  <p className="vp-keystr__body">{a.body}</p>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="vp-section vp-section--flush-top" aria-labelledby="mo-h">
-        <div className="vp-container">
-          <Reveal>
-            <h2 id="mo-h" className="vp-h2 vp-measure-tight mb-4">More about the company</h2>
-          </Reveal>
-
-          <div className="vp-onward">
-            {[
-              {
-                title: 'Leadership',
-                body: `${leadershipRoles} — ${leadershipNames}.`,
-                to: ROUTES.team, cta: 'Meet our team',
-              },
-              {
-                title: 'Recognition',
-                body: `${awards.length} industry awards and listings between ${awardYears.at(-1)} and ${awardYears[0]}, each shown with its certificate.`,
-                to: ROUTES.awards, cta: 'Awards',
-              },
-              {
-                title: 'Project record',
-                body: `${PROJECT_TOTAL} works executed for utilities, developers, producers and industrial consumers.`,
-                to: ROUTES.projects, cta: 'Projects',
-              },
-            ].map((card, i) => (
-              <Reveal key={card.title} delay={i * 70} className="h-100">
-                <article className="vp-onward__card">
-                  <h3 className="vp-onward__t">{card.title}</h3>
-                  <p className="vp-onward__b">{card.body}</p>
-                  <Button to={card.to} variant="link" size="sm" arrow>{card.cta}</Button>
+          <div className="vp-ov-values">
+            <Reveal className="vp-ov-values__head">
+              <span className="vp-eyebrow vp-label mb-3">Core values</span>
+              <h2 id="val-h" className="vp-h2 mb-3">What we hold to.</h2>
+              <p className="vp-text-soft mb-0">Seven principles, in the company’s own words.</p>
+            </Reveal>
+            {values.map((v, i) => (
+              <Reveal key={v.name} delay={((i + 1) % 4) * 90}>
+                <article className="vp-ov-value" onPointerMove={trackPointer}>
+                  <span className="vp-ov-value__n" aria-hidden="true">{pad(i + 1)}</span>
+                  <span className="vp-ov-value__rule" aria-hidden="true" />
+                  <h3 className="vp-ov-value__name">{v.name}</h3>
+                  <p className="vp-ov-value__body">{v.body}</p>
                 </article>
               </Reveal>
             ))}
           </div>
-
-          <Reveal delay={90}>
-            <div className="vp-band mt-5">
-              <div>
-                <h3 className="vp-band__title">Work with us</h3>
-                <p className="vp-band__body">
-                  Tell us about your project and the right team will respond. If you are
-                  looking to join us instead, we publish what the work involves in{' '}
-                  <Link className="vp-link" to={ROUTES.careers}>careers</Link>.
-                </p>
-              </div>
-              <Button to={ROUTES.contact} variant="primary" size="sm" arrow>Contact us</Button>
-            </div>
-          </Reveal>
         </div>
       </section>
+
+      {/* ---- what we do, and where ---- */}
+      <section className="vp-section vp-bg-alt" aria-labelledby="wd-h">
+        <div className="vp-container">
+          <div className="vp-ov-work">
+            <div>
+              <Reveal>
+                <span className="vp-eyebrow vp-label mb-3">What we do</span>
+                <h2 id="wd-h" className="vp-h2 vp-measure-tight mb-3">
+                  Six service lines across the power value chain.
+                </h2>
+                <p className="vp-lead vp-measure-lead mb-0">
+                  Delivered individually or combined into a single engagement.
+                </p>
+              </Reveal>
+              <ol className="vp-ov-lines">
+                {capabilities.map((c, i) => (
+                  <Reveal as="li" key={c.id} delay={i * 60}>
+                    <Link className="vp-ov-line" to={ROUTES.services}>
+                      <span className="vp-ov-line__n" aria-hidden="true">{c.index}</span>
+                      <span className="vp-ov-line__name">{c.name}</span>
+                      <span className="vp-ov-line__go" aria-hidden="true"><Arrow /></span>
+                    </Link>
+                  </Reveal>
+                ))}
+              </ol>
+            </div>
+
+            <Reveal delay={120}>
+              <div className="vp-ov-reach vp-on-dark-ground">
+                <span className="vp-eyebrow vp-label mb-3">Where we operate</span>
+                <h3 className="vp-ov-reach__title">
+                  Registered with three state load despatch centres, and with WRLDC.
+                </h3>
+                <ul className="vp-ov-reach__list">
+                  {company.operatingAreas.map((a, i) => (
+                    <li key={a.name}>
+                      <span className="vp-ov-reach__dot" style={{ '--k': i }} aria-hidden="true" />
+                      <span className="vp-ov-reach__name">{a.name}</span>
+                      <span className="vp-ov-reach__basis">{a.basis}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="vp-ov-reach__foot">
+                  Forecasting and scheduling for solar, wind and hybrid generation.
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ---- where to go next ---- */}
+      <section className="vp-section" aria-labelledby="mo-h">
+        <div className="vp-container">
+          <SectionHead id="mo-h" eyebrow="Explore further"
+                       title="The people, the recognition and the record." />
+          <div className="vp-ov-more">
+            {MORE.map((c, i) => (
+              <Reveal key={c.to} delay={i * 110}>
+                <Link to={c.to} className="vp-ov-card">
+                  <CardMedia kind={c.kind} />
+                  <div className="vp-ov-card__body">
+                    <p className="vp-ov-card__kicker">{c.kicker}</p>
+                    <h3 className="vp-ov-card__title">{c.title}</h3>
+                    <p className="vp-ov-card__text">{c.text}</p>
+                    <span className="vp-ov-card__go">{c.cta}<Arrow /></span>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <ClosingCTA />
     </>
   );
 }

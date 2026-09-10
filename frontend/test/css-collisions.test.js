@@ -87,9 +87,10 @@ describe('stylesheet layering', () => {
 
     // the About-page versions were renamed away from them
     expect(about.has('vp-stat'), '.vp-stat must not be redefined in about.css').toBe(false);
-    expect(about.has('vp-keystr')).toBe(true);
-    expect(about.has('vp-techgrid')).toBe(true);
     expect(about.has('vp-figure')).toBe(true);
+    /* The overview rebuild of 10 Sep 2026 retired .vp-keystr and .vp-techgrid
+       with the sections that used them; its own classes all carry vp-ov-. */
+    expect(about.has('vp-ov-value')).toBe(true);
 
     /* .vp-strengths and .vp-tech were the original offenders and are now
        defined nowhere: the homepage sections that owned them were replaced by
@@ -106,7 +107,6 @@ describe('stylesheet layering', () => {
        About and Careers. Two unrelated components, one name, and whichever
        stylesheet loaded second would have won. The coverflow has since become
        three .vp-xcard cards; the About name must still not come back here. */
-    expect(about.has('vp-cover')).toBe(true);
     expect(sections.has('vp-cover')).toBe(false);
     expect(sections.has('vp-flow')).toBe(false);
     expect(sections.has('vp-xcard')).toBe(true);

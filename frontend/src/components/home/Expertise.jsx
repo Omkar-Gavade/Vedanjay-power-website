@@ -1,22 +1,10 @@
 import { coreExpertise, technologies } from '../../data/capabilities.js';
+import { trackPointer } from '../../utils/pointerLight.js';
 import { Media } from '../ui/Media.jsx';
 import { Reveal } from '../ui/Reveal.jsx';
 import { SectionHead } from '../ui/SectionHead.jsx';
 
 const MEDIA_FOR = { Solar: 'tech-solar', Wind: 'tech-wind', Hybrid: 'tech-hybrid' };
-
-/**
- * Park the hover light under the pointer. Written straight onto the element
- * rather than into React state, so moving the mouse never re-renders anything.
- * Touch and pen skip it: there is no hover to light.
- */
-const track = (e) => {
-  if (e.pointerType !== 'mouse') return;
-  const el = e.currentTarget;
-  const r = el.getBoundingClientRect();
-  el.style.setProperty('--mx', `${e.clientX - r.left}px`);
-  el.style.setProperty('--my', `${e.clientY - r.top}px`);
-};
 
 /** Renewable-energy and technical expertise. */
 export function Expertise() {
@@ -35,7 +23,7 @@ export function Expertise() {
         <div className="vp-xcards mt-4 mt-lg-5">
           {technologies.map((t, i) => (
             <Reveal key={t.name} delay={i * 110}>
-              <figure className="vp-xcard" onPointerMove={track}>
+              <figure className="vp-xcard" onPointerMove={trackPointer}>
                 <Media
                   slug={MEDIA_FOR[t.name]}
                   ratio="4x3"
