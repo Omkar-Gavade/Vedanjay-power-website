@@ -30,17 +30,20 @@
 .vp-phero--portfolio .vp-phero__inner{padding-block:clamp(1rem,3vw,2rem);}
 
 .vp-pfhero__art{position:absolute;inset:0;z-index:-1;pointer-events:none;}
-/* Existing transmission-at-dusk photograph, blended into the navy gradient as
-   texture rather than shown as a literal photo — luminosity keeps it dark and
-   on-brand, so white type stays legible. */
+/* Solar-farm photograph shown mostly as itself — full colour, only lightly
+   muted — with the scrim below carrying the legibility instead of dimming the
+   whole image. */
 .vp-pfhero__photo{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;
-  opacity:.34;mix-blend-mode:luminosity;
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;
+  opacity:1;
 }
-/* Scrim: darker on the left where the type column sits. */
+/* Light scrim only where the type sits — left column and the very bottom — so
+   the photograph stays bright and open everywhere else. */
 .vp-pfhero__art::after{
   content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg, rgba(4,16,20,.62) 0%, rgba(4,16,20,.22) 55%, rgba(4,16,20,0) 100%);
+  background:
+    linear-gradient(90deg, rgba(4,16,20,.56) 0%, rgba(4,16,20,.22) 50%, rgba(4,16,20,0) 100%),
+    linear-gradient(0deg, rgba(4,16,20,.4) 0%, rgba(4,16,20,0) 45%);
 }
 .vp-pfhero__grid{position:relative;width:100%;height:100%;display:block;opacity:.7;}
 .vp-pfhero__mesh line{stroke:rgba(173,219,173,.10);stroke-width:1;}
@@ -124,16 +127,18 @@
   vertical-align:.18em;
 }
 
-/* ============================================================= CARDS ====== */
+/* ======================================================== FILTER BAR ====== */
+/* One horizontal row: technology pills, then the location select, then the
+   search field which grows to fill the rest. Wraps on narrow screens. */
 .vp-pfbar{
-  display:flex;flex-wrap:wrap;gap:.75rem 1rem;
-  align-items:center;justify-content:space-between;
-  margin-bottom:1.25rem;
+  display:flex;flex-wrap:wrap;align-items:center;
+  gap:.55rem .7rem;margin-bottom:1.25rem;
 }
-.vp-pfbar__right{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;}
+.vp-filters{display:inline-flex;flex-wrap:wrap;gap:.4rem;flex:0 0 auto;}
+.vp-pfbar .vp-search{flex:1 1 240px;min-width:200px;}
 
 /* Location select, styled to sit with the search field and filter pills. */
-.vp-pfselect{position:relative;display:inline-flex;}
+.vp-pfselect{position:relative;display:inline-flex;flex:0 0 auto;}
 .vp-pfselect__input{
   appearance:none;-webkit-appearance:none;
   font:inherit;font-size:var(--vp-fs-sm);color:var(--vp-text);
@@ -151,92 +156,89 @@
   transform:rotate(45deg);
 }
 
-.vp-pgrid{
-  display:grid;gap:clamp(.85rem,1.5vw,1.25rem);
-  grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));
-}
-
-.vp-pcard{
-  position:relative;isolation:isolate;
-  display:flex;flex-direction:column;
-  padding:clamp(1.1rem,1.8vw,1.4rem);
-  background:var(--vp-surface);
-  border:1px solid var(--vp-border);
-  border-radius:var(--vp-radius-lg);
-  box-shadow:var(--vp-shadow-sm);
-  overflow:hidden;
-  transition:transform var(--vp-dur) var(--vp-ease), box-shadow var(--vp-dur) var(--vp-ease), border-color var(--vp-dur) var(--vp-ease);
-  animation:vp-pcard-in .5s var(--vp-ease) both;
-  animation-delay:calc(var(--i,0) * var(--stagger,34ms));
-}
-/* Top accent hairline, tinted by technology, revealed on hover. */
-.vp-pcard::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:3px;z-index:1;
-  background:var(--vp-brand-green);transform:scaleX(0);transform-origin:left;
-  transition:transform var(--vp-dur) var(--vp-ease);
-}
-.vp-pcard[data-tech="wind"]::before{background:var(--vp-blue-400);}
-/* Tech-tinted glow from the top corner, faded in on hover — green for solar,
-   petrol for wind, neutral for the untyped cards. */
-.vp-pcard::after{
-  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;
-  background:radial-gradient(115% 115% at 100% 0%, rgba(64,160,64,.12), transparent 55%);
-  transition:opacity var(--vp-dur) var(--vp-ease);
-}
-.vp-pcard[data-tech="wind"]::after{background:radial-gradient(115% 115% at 100% 0%, rgba(61,136,148,.14), transparent 55%);}
-.vp-pcard:not([data-tech])::after{background:radial-gradient(115% 115% at 100% 0%, rgba(16,30,33,.06), transparent 55%);}
-.vp-pcard:hover{transform:translateY(-4px);box-shadow:var(--vp-shadow);border-color:var(--vp-border-strong);}
-.vp-pcard:hover::before{transform:scaleX(1);}
-.vp-pcard:hover::after{opacity:1;}
-
-@keyframes vp-pcard-in{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-
-.vp-pcard__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;}
+/* Technology badge — shared by the table's Technology column. */
 .vp-pcard__badge{
   display:inline-flex;align-items:center;gap:.32rem;
   font-size:.72rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
   padding:.2rem .55rem;border-radius:var(--vp-radius-pill);
   color:var(--vp-green-700);background:var(--vp-green-50);
-  border:1px solid var(--vp-green-200);
+  border:1px solid var(--vp-green-200);white-space:nowrap;
 }
 .vp-pcard__badge svg{flex:none;}
 .vp-pcard__badge[data-tech="wind"]{
   color:var(--vp-blue-600);background:var(--vp-blue-50);border-color:var(--vp-blue-200);
 }
-
-/* Divider that fills the empty middle: it takes the flexible space, so the
-   capacity/location block anchors to the card foot behind a clean hairline. */
-.vp-pcard__rule{
-  margin-top:auto;height:1px;margin-bottom:.9rem;
-  background:linear-gradient(90deg,var(--vp-border),transparent);
-}
 .vp-pcard__badge--muted{color:var(--vp-text-muted);background:var(--vp-bg-alt);border-color:var(--vp-border);}
-.vp-pcard__arrow{
-  color:var(--vp-text-muted);font-size:1rem;line-height:1;
-  opacity:0;transform:translateX(-4px);
-  transition:opacity var(--vp-dur) var(--vp-ease), transform var(--vp-dur) var(--vp-ease), color var(--vp-dur) var(--vp-ease);
-}
-.vp-pcard:hover .vp-pcard__arrow{opacity:1;transform:translateX(0);color:var(--vp-brand-green);}
 
-.vp-pcard__name{
-  font-family:var(--vp-font-serif);
-  font-size:var(--vp-fs-h4);font-weight:600;line-height:1.25;
-  color:var(--vp-text);margin:0 0 .9rem;
+@keyframes vp-pcard-in{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============================================================ TABLE ======= */
+/* The portfolio as a project table. The wrapper is the horizontal scroll
+   boundary, so the table can keep a comfortable min-width on narrow screens
+   without the page ever scrolling sideways. */
+.vp-ptable-wrap{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  background:var(--vp-surface);
+  border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
+  box-shadow:var(--vp-shadow-sm);
 }
-.vp-pcard__meta{display:flex;flex-direction:column;gap:.5rem;}
-.vp-pcard__cap{display:flex;align-items:baseline;gap:.3rem;}
-.vp-pcard__cap-num{
-  font-family:var(--vp-font-serif);font-size:1.6rem;font-weight:600;line-height:1;
+.vp-ptable{
+  width:100%;min-width:660px;border-collapse:collapse;
+  font-size:var(--vp-fs-body);
+}
+/* Every column is centre-aligned so the name reads in line with capacity,
+   technology and location. */
+.vp-ptable thead th{
+  text-align:center;font-family:var(--vp-font-sans);
+  font-size:var(--vp-fs-sm);font-weight:600;letter-spacing:.02em;
+  color:var(--vp-text-soft);background:var(--vp-bg-alt);
+  padding:.8rem 1.1rem;white-space:nowrap;
+  border-bottom:1px solid var(--vp-border);
+}
+
+.vp-ptr{
+  animation:vp-pcard-in .45s var(--vp-ease) both;
+  animation-delay:calc(var(--i,0) * var(--stagger,34ms));
+  transition:background var(--vp-dur) var(--vp-ease), box-shadow var(--vp-dur) var(--vp-ease);
+}
+.vp-ptr td,.vp-ptr th{
+  padding:.75rem 1.1rem;vertical-align:middle;text-align:center;
+  border-bottom:1px solid var(--vp-border-soft);
+  background:transparent;
+}
+.vp-ptr:last-child td,.vp-ptr:last-child th{border-bottom:0;}
+/* Green-tinted zebra for readability, and a stronger wash plus an inset accent
+   line on hover — the row's one animated moment. */
+.vp-ptr:nth-child(even){background:color-mix(in srgb,var(--vp-brand-green) 4%,transparent);}
+.vp-ptr:hover{
+  background:color-mix(in srgb,var(--vp-brand-green) 10%,transparent);
+  box-shadow:inset 3px 0 0 var(--vp-brand-green);
+}
+.vp-ptr[data-tech="wind"]:hover{box-shadow:inset 3px 0 0 var(--vp-blue-400);}
+
+/* Project name — smaller, centred, with an underline that grows from the middle
+   on hover. */
+.vp-ptd-name{
+  position:relative;font-family:var(--vp-font-serif);font-weight:600;
+  font-size:.9375rem;color:var(--vp-text);white-space:nowrap;
+}
+.vp-ptd-name::after{
+  content:"";position:absolute;left:50%;right:50%;bottom:.15rem;height:2px;border-radius:2px;
+  background:var(--vp-brand-green);
+  transition:left var(--vp-dur) var(--vp-ease), right var(--vp-dur) var(--vp-ease);
+}
+.vp-ptr[data-tech="wind"] .vp-ptd-name::after{background:var(--vp-blue-400);}
+.vp-ptr:hover .vp-ptd-name::after{left:1.1rem;right:1.1rem;}
+
+.vp-ptd-cap{white-space:nowrap;}
+.vp-ptd-cap__num{
+  font-family:var(--vp-font-serif);font-weight:600;font-size:1.1875rem;
   color:var(--vp-secondary);font-variant-numeric:tabular-nums;
   transition:color var(--vp-dur) var(--vp-ease);
 }
-.vp-pcard:hover .vp-pcard__cap-num{color:var(--vp-primary);}
-.vp-pcard__cap-unit{font-family:var(--vp-font-mono);font-size:.8rem;font-weight:500;color:var(--vp-brand-green);}
-.vp-pcard__loc{
-  display:flex;align-items:center;gap:.4rem;margin:0;
-  font-size:var(--vp-fs-sm);color:var(--vp-text-soft);
-}
-.vp-pcard__loc svg{flex:none;color:var(--vp-text-muted);}
+.vp-ptr:hover .vp-ptd-cap__num{color:var(--vp-primary);}
+.vp-ptd-cap__unit{margin-left:.3rem;font-family:var(--vp-font-mono);font-size:.72rem;font-weight:500;color:var(--vp-brand-green);}
+.vp-ptd-loc{white-space:nowrap;color:var(--vp-text-soft);font-size:var(--vp-fs-sm);}
 
 /* ================================================ GEOGRAPHIC PRESENCE ===== */
 .vp-pf-geo{background:var(--vp-bg-alt);}
@@ -273,17 +275,38 @@
 .vp-geo__mw-num{
   font-family:var(--vp-font-serif);font-size:1.55rem;font-weight:600;line-height:1;
   color:var(--vp-secondary);font-variant-numeric:tabular-nums;
+  transition:color var(--vp-dur) var(--vp-ease);
 }
 .vp-geo__mw-unit{font-family:var(--vp-font-mono);font-size:.78rem;font-weight:500;color:var(--vp-brand-green);}
-.vp-geo__track{height:6px;border-radius:3px;background:var(--vp-bg-sunken);overflow:hidden;}
+.vp-geo__track{
+  height:6px;border-radius:4px;background:var(--vp-bg-sunken);overflow:hidden;
+  transition:height var(--vp-dur) var(--vp-ease), background var(--vp-dur) var(--vp-ease);
+}
 .vp-geo__bar{
-  display:block;height:100%;border-radius:3px;
+  position:relative;overflow:hidden;
+  display:block;height:100%;border-radius:4px;
   background:linear-gradient(90deg,var(--vp-green-500),var(--vp-green-600));
   width:var(--w,0%);transform-origin:left;
   animation:vp-geo-grow .9s var(--vp-ease) both;
   animation-delay:calc(var(--i,0) * 60ms + 120ms);
+  transition:background var(--vp-dur) var(--vp-ease), filter var(--vp-dur) var(--vp-ease);
 }
 @keyframes vp-geo-grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+/* Hover: the dark-green line lights up — brighter gradient, a taller track and
+   a single sheen that sweeps across it, and the figure takes the accent. */
+.vp-geo__bar::after{
+  content:"";position:absolute;inset:0;transform:translateX(-120%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+}
+.vp-geo__item:hover .vp-geo__track{height:9px;background:var(--vp-green-50);}
+.vp-geo__item:hover .vp-geo__bar{
+  background:linear-gradient(90deg,var(--vp-green-400),var(--vp-green-600));
+  filter:saturate(1.2) brightness(1.05);
+}
+.vp-geo__item:hover .vp-geo__bar::after{animation:vp-geo-sheen 1.15s var(--vp-ease) infinite;}
+.vp-geo__item:hover .vp-geo__mw-num{color:var(--vp-primary);}
+@keyframes vp-geo-sheen{from{transform:translateX(-120%);}to{transform:translateX(120%);}}
 .vp-geo__item--multi{border-style:dashed;}
 .vp-geo__item--multi .vp-geo__rank{color:var(--vp-brand-green);opacity:.6;}
 .vp-geo__note{font-size:var(--vp-fs-sm);color:var(--vp-text-soft);margin:0;}
@@ -370,14 +393,14 @@
 /* ==================================================== RESPONSIVE ========== */
 @media (max-width:640px){
   .vp-pfbar{flex-direction:column;align-items:stretch;}
-  .vp-pfbar__right{width:100%;}
-  .vp-pfselect,.vp-pfselect__input,.vp-pfbar__right .vp-search{flex:1 1 auto;width:100%;}
+  .vp-filters{width:100%;}
+  .vp-pfselect,.vp-pfselect__input,.vp-pfbar .vp-search{flex:1 1 auto;width:100%;}
 }
 
 /* ==================================================== REDUCED MOTION ====== */
 @media (prefers-reduced-motion:reduce){
   .vp-pfhero__pulse,
-  .vp-pcard,.vp-geo__bar{animation:none;}
-  .vp-pcard{opacity:1;transform:none;}
+  .vp-ptr,.vp-geo__bar,.vp-geo__bar::after{animation:none;}
+  .vp-ptr{opacity:1;transform:none;}
   .vp-geo__bar{transform:scaleX(1);}
 }

@@ -87,82 +87,6 @@ function ClearIcon() {
     </svg>
   );
 }
-function PinIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M8 1.75c-2.35 0-4.25 1.85-4.25 4.13 0 3.1 4.25 8.37 4.25 8.37s4.25-5.27 4.25-8.37C12.25 3.6 10.35 1.75 8 1.75Z"
-        stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-      <circle cx="8" cy="5.9" r="1.5" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-         strokeWidth="1.3" strokeLinecap="round" aria-hidden="true">
-      <circle cx="8" cy="8" r="2.6" />
-      {Array.from({ length: 8 }, (_, i) => {
-        const a = (i * Math.PI) / 4;
-        return (
-          <line key={i}
-            x1={8 + Math.cos(a) * 4.6} y1={8 + Math.sin(a) * 4.6}
-            x2={8 + Math.cos(a) * 6.4} y2={8 + Math.sin(a) * 6.4} />
-        );
-      })}
-    </svg>
-  );
-}
-function WindIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-         strokeWidth="1.3" strokeLinecap="round" aria-hidden="true">
-      <path d="M2 5.5h7a2 2 0 1 0-2-2" />
-      <path d="M2 8.5h9.5a2 2 0 1 1-2 2" />
-      <path d="M2 11.5h5" />
-    </svg>
-  );
-}
-
-/** A single premium information card. Non-navigational — there is no project
- *  detail record in the data, so the card links nowhere. */
-function ProjectCard({ p, i }) {
-  return (
-    <li
-      className="vp-pcard"
-      data-tech={p.tech ?? undefined}
-      style={{ '--i': Math.min(i, STAGGER_CAP), '--stagger': `${STAGGER_MS}ms` }}
-    >
-      <div className="vp-pcard__head">
-        {p.tech ? (
-          <span className="vp-pcard__badge" data-tech={p.tech}>
-            {p.tech === 'solar' ? <SunIcon /> : <WindIcon />}
-            {p.tech === 'solar' ? 'Solar' : 'Wind'}
-          </span>
-        ) : (
-          <span className="vp-pcard__badge vp-pcard__badge--muted">Renewable</span>
-        )}
-        <span className="vp-pcard__arrow" aria-hidden="true">&rarr;</span>
-      </div>
-
-      <h3 className="vp-pcard__name">{p.name}</h3>
-
-      <span className="vp-pcard__rule" aria-hidden="true" />
-
-      <div className="vp-pcard__meta">
-        <div className="vp-pcard__cap">
-          <span className="vp-pcard__cap-num">{fmtMw(p.mw)}</span>
-          <span className="vp-pcard__cap-unit">MW</span>
-        </div>
-        <p className="vp-pcard__loc">
-          <PinIcon />
-          <span>{p.region}</span>
-        </p>
-      </div>
-    </li>
-  );
-}
-
 /** The headline capacity figure, counted up in hundredths so the decimals are
  *  exact and it lands on 5,509.18 rather than a rounded integer. */
 function TotalCapacity() {
@@ -228,8 +152,7 @@ export default function Projects() {
               texture behind the type rather than a full-bleed stock hero. */}
           <img
             className="vp-pfhero__photo"
-            src="/images/grid-transmission-dusk.jpg"
-            srcSet="/images/sm/grid-transmission-dusk.jpg 1000w, /images/grid-transmission-dusk.jpg 1800w"
+            src="/images/sm/proj-hero-solar.jpg"
             sizes="100vw" alt="" fetchPriority="high" decoding="async"
           />
           <svg className="vp-pfhero__grid" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice">
@@ -330,44 +253,42 @@ export default function Projects() {
                 ))}
               </div>
 
-              <div className="vp-pfbar__right">
-                <div className="vp-pfselect">
-                  <label htmlFor={locId} className="visually-hidden">Filter by location</label>
-                  <select
-                    id={locId}
-                    className="vp-pfselect__input"
-                    value={loc}
-                    onChange={(e) => setLoc(e.target.value)}
-                  >
-                    <option value="all">All locations</option>
-                    {LOCATIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
+              <div className="vp-pfselect">
+                <label htmlFor={locId} className="visually-hidden">Filter by location</label>
+                <select
+                  id={locId}
+                  className="vp-pfselect__input"
+                  value={loc}
+                  onChange={(e) => setLoc(e.target.value)}
+                >
+                  <option value="all">All locations</option>
+                  {LOCATIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
 
-                <div className="vp-search">
-                  <label htmlFor={searchId} className="visually-hidden">Search projects by name</label>
-                  <span className="vp-search__icon" aria-hidden="true"><SearchIcon /></span>
-                  <input
-                    id={searchId}
-                    ref={searchRef}
-                    type="search"
-                    className="vp-search__input"
-                    placeholder="Search projects…"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    autoComplete="off"
-                  />
-                  {query !== '' && (
-                    <button
-                      type="button"
-                      className="vp-search__clear"
-                      onClick={() => { setQuery(''); searchRef.current?.focus(); }}
-                      aria-label="Clear search"
-                    >
-                      <ClearIcon />
-                    </button>
-                  )}
-                </div>
+              <div className="vp-search">
+                <label htmlFor={searchId} className="visually-hidden">Search projects by name</label>
+                <span className="vp-search__icon" aria-hidden="true"><SearchIcon /></span>
+                <input
+                  id={searchId}
+                  ref={searchRef}
+                  type="search"
+                  className="vp-search__input"
+                  placeholder="Search projects…"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  autoComplete="off"
+                />
+                {query !== '' && (
+                  <button
+                    type="button"
+                    className="vp-search__clear"
+                    onClick={() => { setQuery(''); searchRef.current?.focus(); }}
+                    aria-label="Clear search"
+                  >
+                    <ClearIcon />
+                  </button>
+                )}
               </div>
             </div>
           </Reveal>
@@ -389,9 +310,47 @@ export default function Projects() {
               <p className="mb-0">Try a different technology, location or search term.</p>
             </div>
           ) : (
-            <ul className="vp-pgrid list-unstyled mb-0" key={listKey}>
-              {rows.map((p, i) => <ProjectCard key={p.id} p={p} i={i} />)}
-            </ul>
+            <div className="vp-ptable-wrap">
+              <table className="vp-ptable" key={listKey}>
+                <caption className="visually-hidden">
+                  Renewable-energy project portfolio, {rows.length} of {PORTFOLIO_COUNT} projects
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col" className="vp-ptable__hname">Project</th>
+                    <th scope="col">Technology</th>
+                    <th scope="col" className="vp-ptable__hcap">Capacity</th>
+                    <th scope="col">Location</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((p, i) => (
+                    <tr
+                      className="vp-ptr"
+                      key={p.id}
+                      data-tech={p.tech ?? undefined}
+                      style={{ '--i': Math.min(i, STAGGER_CAP), '--stagger': `${STAGGER_MS}ms` }}
+                    >
+                      <th scope="row" className="vp-ptd-name">{p.name}</th>
+                      <td>
+                        {p.tech ? (
+                          <span className="vp-pcard__badge" data-tech={p.tech}>
+                            {p.tech === 'solar' ? 'Solar' : 'Wind'}
+                          </span>
+                        ) : (
+                          <span className="vp-pcard__badge vp-pcard__badge--muted">Renewable</span>
+                        )}
+                      </td>
+                      <td className="vp-ptd-cap">
+                        <span className="vp-ptd-cap__num">{fmtMw(p.mw)}</span>
+                        <span className="vp-ptd-cap__unit">MW</span>
+                      </td>
+                      <td className="vp-ptd-loc">{p.region}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </section>
