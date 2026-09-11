@@ -30,8 +30,11 @@
   --vp-n-950:#0A1517;
 
   /* ---- Type ---- */
-  --vp-font-sans:'Source Sans 3',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  --vp-font-serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  /* One typeface across the whole site — Poppins, with a broad system fallback.
+     `--vp-font-serif` is retained as a token name only; it now resolves to the
+     same Poppins stack so headings match the body. */
+  --vp-font-sans:'Poppins',Helvetica,Arial,'Lucida Sans',sans-serif;
+  --vp-font-serif:'Poppins',Helvetica,Arial,'Lucida Sans',sans-serif;
   --vp-font-mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
 
   --vp-fs-display:clamp(2rem,1.5rem + 2.1vw,2.875rem);

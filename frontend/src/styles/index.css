@@ -3,13 +3,12 @@
 @import 'bootstrap/dist/css/bootstrap-grid.min.css';
 @import 'bootstrap/dist/css/bootstrap-utilities.min.css';
 
-/* Source Sans 3 / Source Serif 4 — a superfamily drawn together, used across
-   corporate and editorial publishing. Restrained, humanist, not a startup face.
-   IBM Plex Mono is kept ONLY for technical readouts (capacities, voltages). */
-@import '@fontsource/source-sans-3/latin-400.css';
-@import '@fontsource/source-sans-3/latin-600.css';
-@import '@fontsource/source-serif-4/latin-500.css';
-@import '@fontsource/source-serif-4/latin-600.css';
+/* Poppins is the single site typeface — one geometric humanist sans for body
+   and headings alike, so the whole site reads consistently. IBM Plex Mono is
+   kept ONLY for technical readouts (capacities, voltages). */
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-500.css';
+@import '@fontsource/poppins/latin-600.css';
 @import '@fontsource/ibm-plex-mono/latin-500.css';
 
 @import './tokens.css';

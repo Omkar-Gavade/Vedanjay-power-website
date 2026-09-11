@@ -187,25 +187,32 @@
 .vp-expertise-strip{
   border-top:1px solid var(--vp-border);padding-top:1.5rem;
 }
-.vp-taglist{display:flex;flex-wrap:wrap;gap:.5rem;}
+.vp-taglist{display:flex;flex-wrap:wrap;gap:.55rem;}
 .vp-taglist li{
-  padding:.4rem .85rem;border:1px solid var(--vp-border);
-  font-size:.875rem;color:var(--vp-text-soft);background:var(--vp-surface);
+  position:relative;
+  padding:.5rem 1.05rem;border:1px solid var(--vp-border);border-radius:var(--vp-radius-pill);
+  font-size:.875rem;font-weight:500;color:var(--vp-text-soft);background:var(--vp-surface);
+  cursor:default;
   transition:border-color var(--vp-dur) var(--vp-ease),
              color var(--vp-dur) var(--vp-ease),
-             background var(--vp-dur) var(--vp-ease);
+             background var(--vp-dur) var(--vp-ease),
+             transform var(--vp-dur) var(--vp-ease),
+             box-shadow var(--vp-dur) var(--vp-ease);
 }
-/* Hover fills with the brand green rather than only tinting the border. This
-   is the same move the document archive's Save control already makes, and it
-   is now the shared language for every static chip on the site — see
-   .vp-expertise and .vp-pending__list. Stateful chips (.vp-filter) are
-   deliberately excluded: green already means "selected" there, so filling on
-   hover would make a hovered filter look chosen. */
+/* Hover fills with the brand green and lifts the pill on a soft green shadow —
+   the same green-fill language as the site's other static chips, now with an
+   elevation to make the strip feel interactive. Stateful chips (.vp-filter) are
+   deliberately excluded: green already means "selected" there. */
 @media (hover:hover) and (pointer:fine){
   .vp-taglist li:hover{
     background:var(--vp-primary);border-color:var(--vp-primary);
     color:var(--vp-primary-contrast);
+    transform:translateY(-3px);
+    box-shadow:0 8px 18px -8px rgb(53 133 58 / .5);
   }
+}
+@media (prefers-reduced-motion:reduce){
+  .vp-taglist li:hover{transform:none;}
 }
 
 /* --------------------------------------------------------------- CTA ------- */
