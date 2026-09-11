@@ -1525,8 +1525,10 @@
 @media (min-width:992px){
   .vp-ov-intro__grid{
     grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);
-    gap:clamp(3rem,6vw,6.5rem);align-items:center;
+    gap:clamp(3rem,6vw,6.5rem);align-items:start;
   }
+  /* Optically seat the prose against the top of the photograph. */
+  .vp-ov-intro__body{padding-top:.25rem;}
 }
 .vp-ov-intro__art{position:relative;padding-bottom:clamp(3.25rem,8vw,5rem);}
 .vp-ov-intro__main{
@@ -1551,7 +1553,7 @@
   font-size:.75rem;line-height:1.45;color:var(--vp-text-muted);margin:.55rem .2rem 0;
 }
 .vp-ov-intro__body p{
-  font-size:clamp(1rem,.96rem + .22vw,1.125rem);line-height:1.8;
+  font-size:clamp(1.0625rem,1rem + .3vw,1.1875rem);line-height:1.8;
   color:var(--vp-text-soft);margin:0 0 1.35rem;max-width:58ch;
 }
 .vp-ov-intro__body p:last-child{margin-bottom:0;}
@@ -1668,7 +1670,7 @@
   display:block;font-family:var(--vp-font-mono);font-size:.75rem;
   letter-spacing:.08em;color:var(--vp-green-300);margin-bottom:.65rem;
 }
-.vp-ov-mission__t{font-size:var(--vp-fs-body);line-height:1.65;color:var(--vp-text-soft);margin:0;max-width:40ch;}
+.vp-ov-mission__t{font-size:1.0625rem;line-height:1.65;color:var(--vp-text-soft);margin:0;max-width:40ch;}
 
 /* ---- values -------------------------------------------------------------- */
 .vp-ov-values{display:grid;gap:clamp(.875rem,1.6vw,1.25rem);}
@@ -1713,7 +1715,7 @@
   font-family:var(--vp-font-serif);font-size:1.1875rem;font-weight:600;
   line-height:1.3;margin:0 0 .45rem;color:var(--vp-text);
 }
-.vp-ov-value__body{font-size:.9375rem;line-height:1.6;color:var(--vp-text-soft);margin:0;}
+.vp-ov-value__body{font-size:1rem;line-height:1.6;color:var(--vp-text-soft);margin:0;}
 @media (hover:hover) and (pointer:fine){
   .vp-ov-value:hover{
     transform:translateY(-5px);border-color:var(--vp-border-strong);box-shadow:var(--vp-shadow-lg);
@@ -1793,11 +1795,59 @@
 @keyframes vp-ov-ping{0%{transform:scale(1);opacity:.55;}80%,100%{transform:scale(3.2);opacity:0;}}
 .vp-ov-reach__name{font-weight:600;color:#fff;}
 .vp-ov-reach__basis{font-size:.8125rem;color:var(--vp-text-muted);text-align:right;}
-.vp-ov-reach__foot{margin:1.25rem 0 0;font-size:.875rem;color:var(--vp-text-soft);}
+.vp-ov-reach__foot{margin:1.25rem 0 0;font-size:.9375rem;color:var(--vp-text-soft);}
+
+/* In dark mode both panels FLIP to a light card — the opposite of the dark
+   page — so they read as bright, distinct panels instead of blending into the
+   ground. Light mode is untouched: the dark banner over a white page is the
+   intended contrast there.
+
+   Because both carry .vp-on-dark-ground (which points the text tokens at light
+   values for a dark ground), the flip re-points those same tokens back to
+   dark-ink-on-light, then fixes the few hardcoded whites and the light-ink
+   overlays. */
+[data-bs-theme="dark"] .vp-ov-purpose,
+[data-bs-theme="dark"] .vp-ov-reach{
+  --vp-text:#12201F;
+  --vp-text-soft:#41514F;
+  --vp-text-muted:#5E6E6C;
+  --vp-border:rgb(16 30 33 / .12);
+  --vp-border-soft:rgb(16 30 33 / .07);
+  --vp-border-strong:rgb(16 30 33 / .22);
+  --vp-primary:var(--vp-green-600);
+  color:var(--vp-text);
+}
+[data-bs-theme="dark"] .vp-ov-purpose{
+  background:linear-gradient(162deg,#FFFFFF 0%,#EAF3F1 100%);
+  border-bottom:1px solid rgb(16 30 33 / .1);
+}
+[data-bs-theme="dark"] .vp-ov-reach{
+  background:linear-gradient(162deg,#FFFFFF,#EAF3F1);
+  border:1px solid rgb(16 30 33 / .12);
+}
+/* Hardcoded whites → dark ink on the light panels. */
+[data-bs-theme="dark"] .vp-ov-purpose .vp-ov-vision__text,
+[data-bs-theme="dark"] .vp-ov-reach__title,
+[data-bs-theme="dark"] .vp-ov-reach__name{color:var(--vp-blue-900);}
+[data-bs-theme="dark"] .vp-ov-purpose .vp-eyebrow{color:var(--vp-text-soft);}
+[data-bs-theme="dark"] .vp-ov-purpose .vp-ov-mission__n{color:var(--vp-green-600);}
+/* Dotted / grid overlays were drawn in light ink for a dark ground — invert
+   them to a faint dark so they stay subtle on the light panels. */
+[data-bs-theme="dark"] .vp-ov-reach::before{
+  background-image:radial-gradient(rgb(16 30 33 / .13) 1px,transparent 1.6px);
+}
+[data-bs-theme="dark"] .vp-ov-purpose::after{
+  background-image:
+    linear-gradient(rgb(16 30 33 / .05) 1px,transparent 1px),
+    linear-gradient(90deg,rgb(16 30 33 / .05) 1px,transparent 1px);
+}
 
 /* ---- explore further ----------------------------------------------------- */
 .vp-ov-more{display:grid;gap:clamp(1rem,2vw,1.5rem);margin-top:clamp(2rem,4vw,3rem);}
-@media (min-width:768px){.vp-ov-more{grid-template-columns:repeat(3,minmax(0,1fr));}}
+/* Cards size to their own content (the team card's photo strip is shorter than
+   the 16/10 media on the others), so the CTA sits a professional distance below
+   the copy rather than being pushed to a forced equal-height foot. */
+@media (min-width:768px){.vp-ov-more{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;}}
 .vp-ov-card{
   display:flex;flex-direction:column;height:100%;overflow:hidden;
   background:var(--vp-surface);border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
@@ -1861,7 +1911,7 @@
   font-family:var(--vp-font-serif);font-size:1.1875rem;font-weight:600;
   line-height:1.25;margin:0 0 .5rem;color:var(--vp-text);
 }
-.vp-ov-card__text{font-size:.9375rem;line-height:1.6;color:var(--vp-text-soft);margin:0 0 1.25rem;flex:1;}
+.vp-ov-card__text{font-size:1rem;line-height:1.6;color:var(--vp-text-soft);margin:0 0 1.15rem;}
 .vp-ov-card__go{display:inline-flex;align-items:center;gap:.5rem;font-size:.9375rem;font-weight:600;color:var(--vp-primary);}
 .vp-ov-card__go svg{transition:transform 480ms var(--vp-ease);}
 @media (hover:hover) and (pointer:fine){
