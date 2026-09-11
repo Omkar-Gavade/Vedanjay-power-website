@@ -60,8 +60,10 @@
 
 .vp-chero__title{
   font-family:var(--vp-font-serif);
-  font-size:clamp(2.25rem,1.6rem + 3.1vw,4rem);
-  font-weight:600;line-height:1.08;letter-spacing:-.015em;
+  /* Matched to the interior page heroes (.vp-phero__title, max 3.25rem) so the
+     contact hero no longer reads a size larger than every other page. */
+  font-size:clamp(2rem,1.5rem + 2.6vw,3.25rem);
+  font-weight:600;line-height:1.12;letter-spacing:-.014em;
   color:#fff;margin:0;
 }
 .vp-chero__lead{color:#C6D6D6;max-width:44ch;}
@@ -149,7 +151,7 @@
      `width:fit-content` keeps the hit area to the text, not the whole column. */
   display:flex;width:fit-content;max-width:100%;
   align-items:center;min-height:44px;margin-block:-.35rem;
-  font-family:var(--vp-font-mono);font-size:1rem;font-weight:500;
+  font-family:var(--vp-font-sans);font-size:1.0625rem;font-weight:600;
   color:var(--vp-text);text-decoration:none;overflow-wrap:anywhere;
   transition:color var(--vp-dur-fast) var(--vp-ease);
 }
