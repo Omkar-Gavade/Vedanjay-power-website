@@ -93,7 +93,7 @@
 }
 @media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:40rem;} }
 /* Three columns at a professional card size, centred in the container. */
-@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:52rem;} }
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:44rem;} }
 
 .vp-tcard{
   position:relative;display:flex;flex-direction:column;
