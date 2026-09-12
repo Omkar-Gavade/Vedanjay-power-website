@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { company } from '../../data/company.js';
 import { proofPoints } from '../../data/stats.js';
 import { getMedia, smallSrc, heroSlides } from '../../data/media.js';
@@ -49,6 +49,33 @@ export function Hero() {
     if (i === index) return 'in';
     return i === leaving ? 'out' : 'idle';
   };
+
+  /**
+   * The headline block is as tall as the headline ON SCREEN.
+   *
+   * All four are stacked in one grid cell, which otherwise sizes to the tallest
+   * — and then the shortest of them (the strapline) sat above a hole where the
+   * longest one would have been. The height is measured rather than guessed,
+   * because the same words wrap differently at every width, and it eases
+   * between the two so a change of frame reads as movement, not a jump.
+   */
+  const headsRef = useRef(null);
+  const [headsH, setHeadsH] = useState(0);
+  useLayoutEffect(() => {
+    const box = headsRef.current;
+    if (!box) return undefined;
+    const measure = () => {
+      const active = box.querySelector('[data-state="in"]') ?? box.firstElementChild;
+      if (active) setHeadsH(active.getBoundingClientRect().height);
+    };
+    measure();
+    /* A narrower column rewraps the lines; a webfont arriving changes their
+       height without the column moving at all. */
+    const ro = new ResizeObserver(measure);
+    ro.observe(box.closest('.vp-hero__body') ?? box);
+    document.fonts?.ready?.then(measure).catch(() => {});
+    return () => ro.disconnect();
+  }, [index, ready]);
 
   /**
    * Scrolls to whatever section follows the hero.
@@ -106,7 +133,12 @@ export function Hero() {
               {/* The accessible name is whichever headline is on screen, once —
                   the stack behind it is decoration and is not read out. */}
               <span className="visually-hidden">{heroSlides[index].lines.join(' ')}</span>
-              <span className="vp-hero__heads" aria-hidden="true">
+              <span
+                className="vp-hero__heads"
+                aria-hidden="true"
+                ref={headsRef}
+                style={headsH ? { height: `${headsH}px` } : undefined}
+              >
                 {heroSlides.map((slide, i) => (
                   <span key={slide.slug} className="vp-hero__head" data-state={stateOf(i)}>
                     {slide.lines.map((line, l) => (

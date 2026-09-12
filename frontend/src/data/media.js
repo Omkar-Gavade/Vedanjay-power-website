@@ -133,9 +133,12 @@ export const getMedia = (slug) => media[slug] ?? null;
  *
  * The first is the company's own strapline, set exactly as the company writes
  * it. The other three are facts already published elsewhere on this site — the
- * technologies covered, the registrations held, and the QCA portfolio figure
- * from data/stats.js. Nothing here is claimed for the first time, and the
- * breaks are chosen by hand so no line ever ends on a preposition.
+ * round-the-clock desk, the registrations held, and the QCA portfolio figure
+ * from data/stats.js. Nothing here is claimed for the first time.
+ *
+ * LINES ARE SHORT ON PURPOSE. Each one has to fit a 375px phone without
+ * wrapping, or a headline becomes three or four lines while its neighbours are
+ * two — which is what left a hole under the shortest of them.
  */
 export const heroSlides = [
   {
@@ -144,15 +147,15 @@ export const heroSlides = [
   },
   {
     slug: 'cap-projects', pan: 'in-right',
-    lines: ['Forecasting and scheduling', 'for solar, wind and hybrid.'],
+    lines: ['Forecasting and', 'scheduling, 24×7'],
   },
   {
     slug: 'grid-transmission', pan: 'in-up',
-    lines: ['Registered QCA operations', 'in three states and WRLDC.'],
+    lines: ['Registered QCA in', 'three states'],
   },
   {
     slug: 'tech-wind', pan: 'in-down',
-    lines: ['5,000+ MW under forecasting', 'and scheduling.'],
+    lines: ['5,000+ MW under', 'QCA and forecasting'],
   },
 ];
 

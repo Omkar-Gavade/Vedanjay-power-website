@@ -268,8 +268,13 @@
    upward, together and faster, so the two never look like one queue.
    `idle` carries no transition: a headline returning to the bench must not
    animate its way there. */
-.vp-hero__heads{display:grid;}
-.vp-hero__head{grid-area:1 / 1;}
+/* Height comes from JS, measured off whichever headline is up: sized to the
+   tallest instead, the short ones left a gap between the headline and the lead
+   below it. It eases between the two, and clips whatever is on its way out. */
+.vp-hero__heads{display:grid;overflow:hidden;transition:height 560ms var(--vp-ease);}
+/* start, not stretch — a stretched head reports the row's height, not its own,
+   and the measurement would always come back as the tallest. */
+.vp-hero__head{grid-area:1 / 1;align-self:start;}
 .vp-hero__head .vp-line-inner{transform:translateY(112%);opacity:0;}
 .vp-hero__head[data-state="in"] .vp-line-inner{
   transform:none;opacity:1;
