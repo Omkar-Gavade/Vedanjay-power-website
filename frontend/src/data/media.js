@@ -115,11 +115,34 @@ export const getMedia = (slug) => media[slug] ?? null;
  * Each frame declares its own Ken Burns direction so the movement never repeats
  * identically between slides.
  */
+/**
+ * EVERY FRAME CARRIES ITS OWN HEADLINE, and the two change together: the line
+ * should say something about the picture behind it rather than float over four
+ * unrelated photographs.
+ *
+ * The first is the company's own strapline, set exactly as the company writes
+ * it. The other three are facts already published elsewhere on this site — the
+ * technologies covered, the registrations held, and the QCA portfolio figure
+ * from data/stats.js. Nothing here is claimed for the first time, and the
+ * breaks are chosen by hand so no line ever ends on a preposition.
+ */
 export const heroSlides = [
-  { slug: 'hero-primary',   pan: 'in-left' },
-  { slug: 'cap-projects',   pan: 'in-right' },
-  { slug: 'grid-transmission', pan: 'in-up' },
-  { slug: 'tech-wind',      pan: 'in-down' },
+  {
+    slug: 'hero-primary', pan: 'in-left',
+    lines: ['Connecting to a More', 'Sustainable Future'],
+  },
+  {
+    slug: 'cap-projects', pan: 'in-right',
+    lines: ['Forecasting and scheduling', 'for solar, wind and hybrid.'],
+  },
+  {
+    slug: 'grid-transmission', pan: 'in-up',
+    lines: ['Registered QCA operations', 'in three states and WRLDC.'],
+  },
+  {
+    slug: 'tech-wind', pan: 'in-down',
+    lines: ['5,000+ MW under forecasting', 'and scheduling.'],
+  },
 ];
 
 /** Small-variant path for the srcset. Files live in /images/sm/. */

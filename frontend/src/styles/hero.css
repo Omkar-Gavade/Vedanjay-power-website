@@ -260,3 +260,23 @@
   .vp-hero__dot-fill{animation:none !important;transform:scaleX(1);}
   .vp-hero__scroll-line::after{animation:none !important;transform:none;height:100%;opacity:.5;}
 }
+
+/* ---- rotating headline -----------------------------------------------------
+   One headline per frame, stacked in a single grid cell so the block is as tall
+   as the tallest of them and a swap never moves the page. Lines rise out of
+   their own mask on the way in, staggered; the one being replaced leaves
+   upward, together and faster, so the two never look like one queue.
+   `idle` carries no transition: a headline returning to the bench must not
+   animate its way there. */
+.vp-hero__heads{display:grid;}
+.vp-hero__head{grid-area:1 / 1;}
+.vp-hero__head .vp-line-inner{transform:translateY(112%);opacity:0;}
+.vp-hero__head[data-state="in"] .vp-line-inner{
+  transform:none;opacity:1;
+  transition:transform 900ms var(--vp-ease-emph) calc(var(--l) * 110ms),
+             opacity 560ms linear calc(var(--l) * 110ms);
+}
+.vp-hero__head[data-state="out"] .vp-line-inner{
+  transform:translateY(-112%);
+  transition:transform 620ms var(--vp-ease-inout),opacity 380ms linear;
+}

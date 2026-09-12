@@ -1,20 +1,54 @@
+import { useEffect, useRef, useState } from 'react';
 import { company } from '../../data/company.js';
 import { proofPoints } from '../../data/stats.js';
 import { getMedia, smallSrc, heroSlides } from '../../data/media.js';
 import { ROUTES } from '../../constants/routes.js';
 import { useHeroSlideshow } from '../../hooks/useHeroSlideshow.js';
 import { Button } from '../ui/Button.jsx';
-import { RevealLines } from '../ui/Reveal.jsx';
+
+/** How long a departing headline stays mounted — its exit, plus a little. */
+const EXIT = 700;
 
 /**
- * Hero with a cross-dissolving slideshow.
+ * Hero with a cross-dissolving slideshow and a headline per frame.
  *
  * Only the first frame is fetched eagerly; the rest are lazy, so the slideshow
  * costs one image on first paint and the others arrive during the first dwell.
  * All movement is transform/opacity only — no layout property animates.
+ *
+ * THE HEADLINES ARE STACKED, NOT SWAPPED. All four render in one grid cell, so
+ * the block is as tall as the tallest and changing frame never moves the page.
+ * Which one is up is a data attribute; CSS owns the movement.
  */
 export function Hero() {
   const { index, go, reduced } = useHeroSlideshow(heroSlides.length);
+
+  /* The headline being replaced keeps rendering for the length of its exit, so
+     the old lines can travel up while the new ones come in. */
+  const [leaving, setLeaving] = useState(null);
+  const onScreen = useRef(index);
+
+  /* First paint holds every headline off-stage, so the opening one animates in
+     on load rather than simply being there. */
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    if (onScreen.current === index) return undefined;
+    setLeaving(onScreen.current);
+    onScreen.current = index;
+    const t = setTimeout(() => setLeaving(null), EXIT);
+    return () => clearTimeout(t);
+  }, [index]);
+
+  const stateOf = (i) => {
+    if (!ready) return 'idle';
+    if (i === index) return 'in';
+    return i === leaving ? 'out' : 'idle';
+  };
 
   /**
    * Scrolls to whatever section follows the hero.
@@ -69,7 +103,20 @@ export function Hero() {
             </p>
 
             <h1 id="hero-h" className="vp-h1 vp-hero__title mb-0">
-              <RevealLines lines={['Connecting to a More', 'Sustainable Future']} delay={90} />
+              {/* The accessible name is whichever headline is on screen, once —
+                  the stack behind it is decoration and is not read out. */}
+              <span className="visually-hidden">{heroSlides[index].lines.join(' ')}</span>
+              <span className="vp-hero__heads" aria-hidden="true">
+                {heroSlides.map((slide, i) => (
+                  <span key={slide.slug} className="vp-hero__head" data-state={stateOf(i)}>
+                    {slide.lines.map((line, l) => (
+                      <span className="vp-line-mask" key={line}>
+                        <span className="vp-line-inner" style={{ '--l': l }}>{line}</span>
+                      </span>
+                    ))}
+                  </span>
+                ))}
+              </span>
             </h1>
 
             <p className="vp-lead vp-hero__lead mt-4 mb-0 vp-enter" style={{ '--enter': '360ms' }}>

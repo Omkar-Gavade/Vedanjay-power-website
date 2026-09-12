@@ -73,56 +73,6 @@
 }
 .vp-scrim--even::after{background:rgb(4 34 42 / .55);}
 
-/* Fine engineering grid overlay — a quiet nod to drawing sheets, at 4% */
-.vp-grid-overlay::before{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-  background-image:
-    linear-gradient(rgb(255 255 255 / .05) 1px,transparent 1px),
-    linear-gradient(90deg,rgb(255 255 255 / .05) 1px,transparent 1px);
-  background-size:64px 64px;
-}
-
-/* ----------------------------------------------------------------- cards -- */
-.vp-card{
-  position:relative;display:flex;flex-direction:column;height:100%;
-  background:var(--vp-surface);border:1px solid var(--vp-border);
-  border-radius:var(--vp-radius);overflow:hidden;
-  transition:border-color var(--vp-dur) var(--vp-ease),
-             box-shadow var(--vp-dur) var(--vp-ease),
-             transform var(--vp-dur) var(--vp-ease);
-}
-.vp-card:hover,.vp-card:focus-within{
-  border-color:var(--vp-primary);box-shadow:var(--vp-shadow);transform:translateY(-3px);
-}
-
-/* ------------------------------------------------------------------ stat -- */
-.vp-stat-value{color:var(--vp-text);}
-.vp-stat-unit{color:var(--vp-accent-text);}
-.vp-bg-deep .vp-stat-unit{color:var(--vp-amber-400);}
-
-/* ------------------------------------------------------------- separators - */
-.vp-hr{height:1px;background:var(--vp-border);border:0;}
-.vp-bg-deep .vp-hr{background:rgb(234 242 240 / .14);}
-
-/* --------------------------------------------------------------- chips ---- */
-.vp-chip{
-  display:inline-flex;align-items:center;gap:.4rem;
-  padding:.35rem .75rem;border:1px solid var(--vp-border);
-  border-radius:var(--vp-radius-pill);
-  font-family:var(--vp-font-mono);font-size:.75rem;letter-spacing:.06em;
-  color:var(--vp-text-soft);
-}
-.vp-bg-deep .vp-chip{border-color:rgb(234 242 240 / .2);color:#9AAFB0;}
-
-/* --------------------------------------------------------------- badge ---- */
-.vp-verify-badge{
-  position:fixed;left:1rem;bottom:1rem;z-index:1200;opacity:.85;
-  font-family:var(--vp-font-mono);font-size:.6875rem;letter-spacing:.1em;
-  background:var(--vp-blue-950);color:var(--vp-amber-400);
-  border:1px solid var(--vp-amber-600);border-radius:var(--vp-radius-sm);
-  padding:.5rem .75rem;
-}
-
 /* Placeholder when a media slug has no asset yet — never a broken-image icon. */
 .vp-media__placeholder{
   position:absolute;inset:0;

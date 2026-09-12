@@ -1,5 +1,6 @@
 import { Hero } from '../components/home/Hero.jsx';
 import { WhoWeAre } from '../components/home/WhoWeAre.jsx';
+import { ClientStrip } from '../components/home/ClientStrip.jsx';
 import { Capabilities } from '../components/home/Capabilities.jsx';
 import { Expertise } from '../components/home/Expertise.jsx';
 import { PortfolioMap } from '../components/home/PortfolioMap.jsx';
@@ -14,6 +15,7 @@ export default function Home() {
 
       <Hero />
       <WhoWeAre />
+      <ClientStrip />
       <Capabilities />
       <Expertise />
       <PortfolioMap />
