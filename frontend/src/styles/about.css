@@ -87,11 +87,13 @@
   display:grid;gap:clamp(1rem,2vw,1.5rem);
   grid-template-columns:1fr;
   max-width:20rem;
+  /* Centred so the leftover space is shared evenly on both sides rather than
+     leaving the cards clumped against one edge. */
+  margin-inline:auto;
 }
-@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:44rem;} }
-/* Full container width at desktop: three equal columns spread across the row so
-   the cards fill it evenly instead of clumping to one side. */
-@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:none;} }
+@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:40rem;} }
+/* Three columns at a professional card size, centred in the container. */
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:60rem;} }
 
 .vp-tcard{
   position:relative;display:flex;flex-direction:column;
