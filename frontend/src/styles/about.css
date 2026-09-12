@@ -1844,10 +1844,7 @@
 
 /* ---- explore further ----------------------------------------------------- */
 .vp-ov-more{display:grid;gap:clamp(1rem,2vw,1.5rem);margin-top:clamp(2rem,4vw,3rem);}
-/* Cards size to their own content (the team card's photo strip is shorter than
-   the 16/10 media on the others), so the CTA sits a professional distance below
-   the copy rather than being pushed to a forced equal-height foot. */
-@media (min-width:768px){.vp-ov-more{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;}}
+@media (min-width:768px){.vp-ov-more{grid-template-columns:repeat(3,minmax(0,1fr));}}
 .vp-ov-card{
   display:flex;flex-direction:column;height:100%;overflow:hidden;
   background:var(--vp-surface);border:1px solid var(--vp-border);border-radius:var(--vp-radius-lg);
@@ -1867,9 +1864,12 @@
    and fill edge-to-edge — each source file is square, so the WHOLE photo shows
    with no crop and no empty margins. The card equalises height with its
    neighbours through its body, not the photo strip. */
+/* Same 16/10 frame as the other cards' media, so all three cards are identical
+   in size. The three whole square portraits are centred inside that frame. */
 .vp-ov-card__media--team{
-  aspect-ratio:auto;
+  aspect-ratio:16/10;
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:center;
   gap:clamp(8px,1.4vw,12px);
   padding:clamp(10px,1.6vw,14px);
   background:var(--vp-surface);
@@ -1911,7 +1911,7 @@
   font-family:var(--vp-font-serif);font-size:1.1875rem;font-weight:600;
   line-height:1.25;margin:0 0 .5rem;color:var(--vp-text);
 }
-.vp-ov-card__text{font-size:1rem;line-height:1.6;color:var(--vp-text-soft);margin:0 0 1.15rem;}
+.vp-ov-card__text{font-size:1rem;line-height:1.6;color:var(--vp-text-soft);margin:0 0 1.15rem;flex:1;}
 .vp-ov-card__go{display:inline-flex;align-items:center;gap:.5rem;font-size:.9375rem;font-weight:600;color:var(--vp-primary);}
 .vp-ov-card__go svg{transition:transform 480ms var(--vp-ease);}
 @media (hover:hover) and (pointer:fine){
