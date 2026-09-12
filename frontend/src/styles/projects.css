@@ -394,6 +394,23 @@
 .vp-pfcap .vp-pfcap__unit{color:var(--vp-green-300);}
 .vp-pfcap__sub{color:#DCE8E8;max-width:36ch;}
 
+/* Dark mode: flip the capacity banner to a light card, matching the About
+   panels — so no flat dark banner blends into the dark page. Light mode keeps
+   the dark showcase treatment. */
+[data-bs-theme="dark"] .vp-pfcap{
+  background:linear-gradient(150deg,#FFFFFF,#EAF3F1);
+  border-color:rgb(16 30 33 / .12);color:var(--vp-blue-900);
+}
+[data-bs-theme="dark"] .vp-pfcap__photo{opacity:0;}
+[data-bs-theme="dark"] .vp-pfcap__pattern{
+  background-image:linear-gradient(rgb(16 30 33 / .06) 1px,transparent 1px),
+                   linear-gradient(90deg,rgb(16 30 33 / .06) 1px,transparent 1px);
+}
+[data-bs-theme="dark"] .vp-pfcap__eyebrow{color:var(--vp-green-700);}
+[data-bs-theme="dark"] .vp-pfcap .vp-pfcap__num{color:var(--vp-blue-900);}
+[data-bs-theme="dark"] .vp-pfcap .vp-pfcap__unit{color:var(--vp-green-600);}
+[data-bs-theme="dark"] .vp-pfcap__sub{color:#41514F;}
+
 /* ==================================================== CTA BAND =========== */
 .vp-pf-cta{margin-top:0;}
 
