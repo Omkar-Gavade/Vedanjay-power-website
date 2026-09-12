@@ -88,8 +88,10 @@
   grid-template-columns:1fr;
   max-width:20rem;
 }
-@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:34rem;} }
-@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:50rem;} }
+@media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:44rem;} }
+/* Full container width at desktop: three equal columns spread across the row so
+   the cards fill it evenly instead of clumping to one side. */
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:none;} }
 
 .vp-tcard{
   position:relative;display:flex;flex-direction:column;
