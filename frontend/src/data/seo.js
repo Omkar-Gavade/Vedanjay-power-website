@@ -143,7 +143,8 @@ export const routeSeo = [
     breadcrumb: 'Projects',
     title: 'Our Projects — Renewable-Energy Portfolio',
     description: `Vedanjay Power's renewable-energy project portfolio — ${mw(PORTFOLIO_TOTAL_MW)} MW `
-      + `across ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} Indian states.`,
+      + `across ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} Indian states, `
+      + 'forecast and scheduled under QCA.',
     og: `${OG_DIR}/projects.jpg`,
   },
   {

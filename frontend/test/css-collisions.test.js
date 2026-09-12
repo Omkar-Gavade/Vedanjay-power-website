@@ -29,7 +29,7 @@ const read = (f) => readFileSync(
 /** Loaded on every page, in the initial CSS bundle. */
 const GLOBAL = ['base.css', 'sections.css', 'components.css', 'hero.css', 'navbar.css', 'motion.css', 'tokens.css'];
 /** Imported by lazy page/panel chunks — injected on first visit and never removed. */
-const LAZY = ['about.css', 'contact.css', 'chat.css', 'map.css'];
+const LAZY = ['about.css', 'contact.css', 'chat.css', 'map.css', 'clients.css'];
 
 /**
  * Deliberate extensions: a lazy sheet adding context-specific rules to a
@@ -40,6 +40,7 @@ const ALLOWED = new Set([
   'vp-btn', 'vp-btn--outline',   // contact/chat restyle the shared button in place
   'vp-arrow',                    // motion.css owns the animation; contact.css positions it
   'vp-eyebrow',                  // spacing tweaks per page context
+  'vp-h2',                       // about.css scopes the heading size to .vp-ov-page
   'vp-gal__item', 'vp-gal__frame', 'vp-gal__zoom', // motion.css only releases these under reduced motion
 ]);
 
