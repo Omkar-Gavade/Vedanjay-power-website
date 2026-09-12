@@ -3,6 +3,7 @@ import {
   portfolio, PORTFOLIO_TOTAL_MW, PORTFOLIO_COUNT,
   portfolioByState, unallocated, maxStateMw,
 } from '../data/portfolio.js';
+import { getMedia, smallSrc } from '../data/media.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { useCountUp } from '../hooks/useCountUp.js';
@@ -13,6 +14,8 @@ import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
 import '../styles/projects.css';
 import { Seo } from '../components/seo/Seo.jsx';
+
+const projectsHero = getMedia('projects-hero');
 
 /**
  * Projects — the QCA / Forecasting & Scheduling PORTFOLIO, presented as cards.
@@ -148,13 +151,21 @@ export default function Projects() {
           gradient + energy-line treatment. */}
       <section className="vp-phero vp-phero--portfolio" aria-labelledby="pj-h">
         <div className="vp-pfhero__art" aria-hidden="true">
-          {/* Existing site photograph, dimmed under the gradient so it reads as
-              texture behind the type rather than a full-bleed stock hero. */}
-          <img
-            className="vp-pfhero__photo"
-            src="/images/sm/proj-hero-solar.jpg"
-            sizes="100vw" alt="" fetchPriority="high" decoding="async"
-          />
+          {/* Site photograph, dimmed under the gradient so it reads as texture
+              behind the type rather than a full-bleed stock hero. It is served
+              from the media registry at full width: the hero used to point
+              straight at a 600x400 thumbnail, which a 1440px header stretched
+              to nearly three times its size. */}
+          {projectsHero && (
+            <img
+              className="vp-pfhero__photo"
+              src={projectsHero.src}
+              srcSet={`${smallSrc(projectsHero.src)} 1000w, ${projectsHero.src} 1800w`}
+              sizes="100vw" alt="" width="1800" height="1198"
+              style={{ objectPosition: projectsHero.focal }}
+              fetchPriority="high" decoding="async"
+            />
+          )}
           <svg className="vp-pfhero__grid" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice">
             <defs>
               <linearGradient id="pf-line" x1="0" y1="0" x2="1" y2="0">

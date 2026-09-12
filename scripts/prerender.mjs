@@ -31,7 +31,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import {
-  routeSeo, absolute, ORIGIN, OG_SIZE, OG_DEFAULT, ROUTE_HERO,
+  routeSeo, absolute, ORIGIN, OG_SIZE, OG_DEFAULT, ROUTE_HERO, SITE_TITLE,
 } from '../frontend/src/data/seo.js';
 import { getMedia, smallSrc } from '../frontend/src/data/media.js';
 import { graphFor } from '../frontend/src/data/schema.js';
@@ -91,7 +91,10 @@ function headFor(meta) {
   });
 
   const D = 'data-seo="static"';
-  const title = `    <title ${D}>${attr(meta.title)}</title>\n`;
+  /* One title for every document — the tab reads the company name site-wide.
+     meta.title is still what og:title, twitter:title and the structured data
+     carry, so each page describes itself everywhere that matters to search. */
+  const title = `    <title ${D}>${attr(SITE_TITLE)}</title>\n`;
 
   /* LCP PRELOAD. The hero is the largest element on every page, and in a
      client-rendered SPA the browser cannot discover it until the bundle has

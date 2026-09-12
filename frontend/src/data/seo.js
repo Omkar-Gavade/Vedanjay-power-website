@@ -38,6 +38,17 @@ import { ROUTES, BUILT_ROUTES } from '../constants/routes.js';
  * they are not truncated in results, descriptions 120–170.
  */
 
+/**
+ * THE BROWSER TAB READS THE SAME ON EVERY PAGE, by the owner's decision of
+ * 12 Sep 2026: the company's registered name, nothing appended.
+ *
+ * Each route keeps its own `title` below, and that is what still goes to
+ * Google, to a shared link's card and to the structured data — so a search
+ * result for the projects page still says what the projects page is. Only the
+ * <title> element, which is what the tab shows, is fixed.
+ */
+export const SITE_TITLE = company.legalName;
+
 /** Production origin, without a trailing slash. The one place it is derived. */
 export const ORIGIN = company.website.replace(/\/+$/, '');
 

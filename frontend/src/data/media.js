@@ -82,6 +82,17 @@ export const media = {
     focal: '50% 45%',
   },
 
+  /* The projects hero. Same photograph as 'tech-solar' — a utility-scale array
+     is what that page is about, and the hero shows it wide and dimmed under a
+     scrim rather than as a card, so the two never appear together. It carries
+     its own entry so the hero can be re-pointed without touching the
+     homepage. */
+  'projects-hero': {
+    src: `${base}proj-solar-field.jpg`,
+    alt: 'Rows of photovoltaic modules across a utility-scale solar plant under an open sky',
+    focal: '50% 52%',
+  },
+
   // ---- Contact -------------------------------------------------------------
   'contact-hero': {
     src: `${base}contact-transmission.jpg`,

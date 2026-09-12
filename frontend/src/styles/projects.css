@@ -45,6 +45,13 @@
     linear-gradient(90deg, rgba(4,16,20,.56) 0%, rgba(4,16,20,.22) 50%, rgba(4,16,20,0) 100%),
     linear-gradient(0deg, rgba(4,16,20,.4) 0%, rgba(4,16,20,0) 45%);
 }
+/* Phones: the type column is the full width, so a scrim weighted to the left
+   cannot carry it — the floor does the work instead. */
+@media (max-width:767.98px){
+  .vp-pfhero__art::after{
+    background:linear-gradient(0deg,rgba(4,16,20,.84) 0%,rgba(4,16,20,.5) 58%,rgba(4,16,20,.2) 100%);
+  }
+}
 .vp-pfhero__grid{position:relative;width:100%;height:100%;display:block;opacity:.7;}
 .vp-pfhero__mesh line{stroke:rgba(173,219,173,.10);stroke-width:1;}
 .vp-pfhero__pulse{

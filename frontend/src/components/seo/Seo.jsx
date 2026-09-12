@@ -1,6 +1,6 @@
 import { company } from '../../data/company.js';
 import {
-  absolute, seoFor, OG_DEFAULT, OG_SIZE,
+  absolute, seoFor, OG_DEFAULT, OG_SIZE, SITE_TITLE,
 } from '../../data/seo.js';
 import { graphFor } from '../../data/schema.js';
 
@@ -26,6 +26,7 @@ export function Seo({ route, extraSchema = [], noindex = false }) {
   if (!meta) {
     return (
       <>
+        <title>{SITE_TITLE}</title>
         <meta name="robots" content="noindex, follow" />
       </>
     );
@@ -42,7 +43,9 @@ export function Seo({ route, extraSchema = [], noindex = false }) {
 
   return (
     <>
-      <title>{meta.title}</title>
+      {/* The tab shows the company name on every page; meta.title is the
+          page's own title and still goes to search and to social cards. */}
+      <title>{SITE_TITLE}</title>
       <meta name="description" content={meta.description} />
       <link rel="canonical" href={url} />
       {noindex

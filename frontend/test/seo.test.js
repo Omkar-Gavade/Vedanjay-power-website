@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
-  routeSeo, seoByPath, indexableRoutes, ORIGIN, absolute, trailFor, OG_SIZE,
+  routeSeo, seoByPath, indexableRoutes, ORIGIN, absolute, trailFor, OG_SIZE, SITE_TITLE,
 } from '../src/data/seo.js';
 import {
   organizationSchema, websiteSchema, breadcrumbSchema, graphFor, ORG_ID,
@@ -30,6 +30,14 @@ describe('page metadata', () => {
   it('no route declares metadata for a page that does not exist', () => {
     const orphans = routeSeo.filter((r) => !BUILT_ROUTES.includes(r.path)).map((r) => r.path);
     expect(orphans).toEqual([]);
+  });
+
+  it('every page shows the company name in the browser tab', () => {
+    /* The owner's decision of 12 Sep 2026: one tab title site-wide. The
+       per-route titles below are still unique, because those are what search
+       results and shared cards show. */
+    expect(SITE_TITLE).toBe(company.legalName);
+    expect(SITE_TITLE).toBe('Vedanjay Power Pvt. Ltd.');
   });
 
   it('every title is unique', () => {
