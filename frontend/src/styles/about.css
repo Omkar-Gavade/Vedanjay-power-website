@@ -84,7 +84,7 @@
    Capping the row at 900px puts the photo at ~270 CSS px — 540 device pixels
    at 2x, exactly the source. Nothing is invented and nothing is stretched. */
 .vp-team{
-  display:grid;gap:clamp(1.5rem,2.4vw,2.25rem);
+  display:grid;gap:clamp(2rem,3.5vw,3rem);
   grid-template-columns:1fr;
   max-width:20rem;
   /* Centred so the leftover space is shared evenly on both sides rather than
@@ -93,7 +93,7 @@
 }
 @media (min-width:640px){ .vp-team{grid-template-columns:repeat(2,1fr);max-width:40rem;} }
 /* Three columns at a professional card size, centred in the container. */
-@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:44rem;} }
+@media (min-width:1000px){ .vp-team{grid-template-columns:repeat(3,1fr);max-width:50rem;} }
 
 .vp-tcard{
   position:relative;display:flex;flex-direction:column;
