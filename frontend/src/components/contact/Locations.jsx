@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { company } from '../../data/company.js';
+import { joinList } from '../../utils/list.js';
 import { Reveal } from '../ui/Reveal.jsx';
 import { PinIcon, ExternalIcon } from './icons.jsx';
 
@@ -23,12 +24,23 @@ import { PinIcon, ExternalIcon } from './icons.jsx';
  * The full address string does NOT work: passing "4/F/S3, Nai Sadak, Scheme
  * No. 78, …" makes Google fall back to an unmarked area view, which is exactly
  * the "map centred vaguely near the city" outcome to avoid. The trimmed query
- * returns a real marker for both offices. No coordinates are invented —
+ * returns a real marker for each office. No coordinates are invented —
  * geocoding both addresses via Nominatim returned nothing usable for Indore and
  * a postcode-mismatched result for Pune, so asserting a lat/long would have
  * been a guess.
  */
 const toQuery = (office) => office.mapQuery ?? office.lines.join(', ');
+
+/* The heading and lead are derived from the office list, so adding an office
+   is a data change: both used to say "two" and name Indore and Pune. */
+const COUNT = ['One', 'Two', 'Three', 'Four', 'Five', 'Six'];
+const corporate = company.offices.filter((o) => o.role === 'Corporate Office').map((o) => o.city);
+const branches = company.offices.filter((o) => o.role === 'Branch Office').map((o) => o.city);
+const heading = `${COUNT[company.offices.length - 1] ?? company.offices.length} offices, one team.`;
+const summary = [
+  corporate.length && `Corporate office in ${joinList(corporate)}`,
+  branches.length && `branch office${branches.length > 1 ? 's' : ''} in ${joinList(branches)}`,
+].filter(Boolean).join(', ');
 
 const embedUrl = (office) =>
   `https://www.google.com/maps?q=${encodeURIComponent(toQuery(office))}&hl=en&z=15&output=embed`;
@@ -48,10 +60,10 @@ export function Locations() {
             <Reveal>
               <span className="vp-eyebrow vp-label mb-3">Our locations</span>
               <h2 id="loc-h" className="vp-h2 vp-measure-tight mb-0">
-                Two offices, one team.
+                {heading}
               </h2>
               <p className="vp-lead vp-measure-lead mt-3 mb-0">
-                Corporate office in Indore, branch office in Pune.
+                {summary}.
               </p>
             </Reveal>
 

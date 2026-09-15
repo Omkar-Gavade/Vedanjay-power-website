@@ -5,6 +5,7 @@ import { getMedia, smallSrc } from '../data/media.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
+import { joinList } from '../utils/list.js';
 import '../styles/about.css';
 import { Seo } from '../components/seo/Seo.jsx';
 
@@ -163,7 +164,7 @@ export default function Careers() {
               <div className="vp-onward__card">
                 <h3 className="vp-onward__t">Where we operate</h3>
                 <p className="vp-onward__b">
-                  {company.offices.map((o) => o.city).join(' and ')} offices, with registered
+                  {joinList(company.offices.map((o) => o.city))} offices, with registered
                   operations in {STATE_AREAS.length} states{REGIONAL_AREAS.length > 0
                     && ` and the ${REGIONAL_AREAS.map((a) => a.name).join(', ')}`}.
                 </p>

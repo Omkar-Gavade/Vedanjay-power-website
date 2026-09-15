@@ -554,6 +554,7 @@ export const topics = [
     label: 'Our Locations',
     match: ['location', 'locations', 'office', 'offices', 'where are you',
       'where are you based', 'address', 'addresses', 'based', 'indore', 'pune',
+      'karad', 'satara', 'vanvadi',
       'headquarters', 'head office', 'branch', 'visit', 'directions'],
     answer: () => company.offices
       .map((o) => `${o.city} — ${o.role}\n${o.lines.join(', ')}`)

@@ -301,6 +301,8 @@
 .vp-offices{display:grid;gap:.75rem;}
 @media (min-width:576px) and (max-width:991.98px){
   .vp-offices{grid-template-columns:1fr 1fr;}
+  /* An odd office out takes the full row instead of leaving a hole beside it. */
+  .vp-office:last-child:nth-child(odd){grid-column:1 / -1;}
 }
 .vp-office{
   width:100%;text-align:left;display:block;

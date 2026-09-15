@@ -8,6 +8,7 @@ import { allResources } from './downloads.js';
 import { partners } from './partners.js';
 import { shots } from './gallery.js';
 import { ROUTES, BUILT_ROUTES } from '../constants/routes.js';
+import { joinList } from '../utils/list.js';
 
 /**
  * SEO METADATA — one entry per indexable route, and the only place any of it
@@ -178,10 +179,10 @@ export const routeSeo = [
   {
     path: ROUTES.contact,
     breadcrumb: 'Contact',
-    title: 'Contact Vedanjay Power — Indore & Pune Offices',
-    description: `Corporate office in ${company.offices[0].city}, branch office in `
-      + `${company.offices[1].city}. Call ${company.phone.display} or email `
-      + `${company.emails.general} for forecasting, QCA and open-access enquiries.`,
+    title: 'Contact Vedanjay Power — Indore, Pune & Karad',
+    description: `Corporate office in ${company.offices[0].city}, branch offices in `
+      + `${joinList(company.offices.slice(1).map((o) => o.city))}. Call ${company.phone.display} `
+      + `or email ${company.emails.general} for forecasting, QCA and open-access enquiries.`,
     og: `${OG_DIR}/contact.jpg`,
   },
 ];

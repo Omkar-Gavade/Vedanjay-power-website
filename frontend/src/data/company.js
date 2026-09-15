@@ -73,6 +73,41 @@ export const company = {
        */
       mapQuery: 'Grand Horizon, Sinhagad Road, Pune, Maharashtra, India',
     },
+    {
+      /**
+       * Added 15 Sep 2026 from the owner's Google Maps link and Street View
+       * photograph. The office is the ground floor of the house beside Ambika
+       * Super Market — the landmark Google pins, so it is given as "Near".
+       *
+       * SOURCES, not inference: Google resolves the link to "856Q+MM2 Ambika
+       * Super Market, Vanvadi, Maharashtra 415124". India Post lists every
+       * post office under PIN 415124 in Karad block, Satara district, which is
+       * where "Karad" and "Satara" below come from. No house or plot number was
+       * supplied, so none is printed.
+       */
+      id: 'karad',
+      role: 'Branch Office',
+      city: 'Karad',
+      lines: [
+        'Ground Floor, Near Ambika Super Market',
+        'Vanvadi, Karad – 415124',
+        'Satara, Maharashtra, India',
+      ],
+      /** As above — the same address in PostalAddress fields. */
+      postal: {
+        street: 'Ground Floor, Near Ambika Super Market',
+        locality: 'Karad',
+        region: 'Maharashtra',
+        postalCode: '415124',
+        country: 'IN',
+      },
+      /**
+       * The plus code from the owner's own link, so the marker lands on the
+       * building rather than on a best guess at a locality with no street
+       * name. Not a coordinate typed in: it is the location Google returned.
+       */
+      mapQuery: '856Q+MM2 Vanvadi, Maharashtra 415124',
+    },
   ],
 
   phone: { display: '7666901814', href: 'tel:+917666901814' },
