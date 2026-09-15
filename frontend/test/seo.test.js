@@ -159,6 +159,16 @@ describe('robots.txt', () => {
 describe('sitemap.xml', () => {
   const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 
+  it('dates every page with a real lastmod that is not in the future', () => {
+    const dates = [...sitemap.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map((m) => m[1]);
+    expect(dates).toHaveLength(locs.length);
+    const today = new Date().toISOString().slice(0, 10);
+    for (const d of dates) {
+      expect(d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(d <= today, `lastmod ${d} is in the future`).toBe(true);
+    }
+  });
+
   it('is well-formed and declares the sitemap namespace', () => {
     expect(sitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>')).toBe(true);
     expect(sitemap).toContain('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"');

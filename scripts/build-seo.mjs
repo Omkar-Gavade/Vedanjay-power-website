@@ -14,7 +14,8 @@
  * committed, and CI checks it has not drifted.
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import sharp from 'sharp';
 import {
   indexableRoutes, seoByPath, ORIGIN, absolute, OG_SIZE, ROUTE_HERO,
@@ -66,11 +67,73 @@ Sitemap: ${ORIGIN}/sitemap.xml
 /* ----------------------------------------------------------------- sitemap */
 
 /**
- * Priority and changefreq are advisory and widely ignored, but lastmod is not,
- * so it is the one that has to be honest: it is the date this file was last
- * generated, which is the last time the route table actually changed.
+ * Priority and changefreq are advisory and widely ignored, but lastmod is not —
+ * and Google stops trusting it for a whole site once it catches it being wrong.
+ *
+ * It used to be one hardcoded date for every page, which was already stale the
+ * first time the About page was rebuilt. Now each page is dated by the last
+ * commit that changed its CONTENT: the page component, and every component and
+ * data module it imports, followed through the import graph.
+ *
+ * Deliberately NOT followed: stylesheets (a restyle is not new content) and
+ * the SEO layer (components/seo, data/seo.js, data/schema.js), which imports
+ * every data module and would otherwise make any fact changing anywhere
+ * re-date all twelve pages.
+ *
+ * A page with uncommitted changes is dated today, so regenerating and
+ * committing in the same session agree with `--check`. With no git history at
+ * all it falls back to FALLBACK_LASTMOD rather than failing the build.
  */
-const LASTMOD = '2026-09-06';
+const FALLBACK_LASTMOD = '2026-09-06';
+const SRC = resolve('frontend/src');
+
+const PAGE_FOR = {
+  '/': 'pages/Home.jsx',
+  '/about/': 'pages/About.jsx',
+  '/about/team/': 'pages/Team.jsx',
+  '/about/awards/': 'pages/Awards.jsx',
+  '/about/downloads/': 'pages/Downloads.jsx',
+  '/about/partners/': 'pages/Partners.jsx',
+  '/services/': 'pages/Services.jsx',
+  '/industries/': 'pages/Industries.jsx',
+  '/projects/': 'pages/Projects.jsx',
+  '/projects/gallery/': 'pages/Gallery.jsx',
+  '/careers/': 'pages/Careers.jsx',
+  '/contact/': 'pages/Contact.jsx',
+};
+
+const NOT_CONTENT = [/\/components\/seo\//, /\/data\/seo\.js$/, /\/data\/schema\.js$/];
+
+/** Every local .js/.jsx module a page reaches, the page included. */
+function contentGraph(entry) {
+  const seen = new Set();
+  const visit = (file) => {
+    if (seen.has(file) || NOT_CONTENT.some((re) => re.test(file)) || !existsSync(file)) return;
+    seen.add(file);
+    const code = readFileSync(file, 'utf8');
+    for (const [, spec] of code.matchAll(/(?:import|export)[^'"]*?from\s*['"](\.[^'"]+)['"]|import\(\s*['"](\.[^'"]+)['"]\s*\)/g)) {
+      if (spec && /\.(jsx?|mjs)$/.test(spec)) visit(resolve(dirname(file), spec));
+    }
+    for (const [, spec] of code.matchAll(/import\(\s*['"](\.[^'"]+\.jsx?)['"]\s*\)/g)) {
+      visit(resolve(dirname(file), spec));
+    }
+  };
+  visit(resolve(SRC, entry));
+  return [...seen];
+}
+
+const git = (args) => {
+  try { return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
+  catch { return ''; }
+};
+
+function lastmodFor(path) {
+  const page = PAGE_FOR[path];
+  if (!page) { problems.push(`no page file mapped for ${path} — add it to PAGE_FOR`); return FALLBACK_LASTMOD; }
+  const files = contentGraph(page);
+  if (git(['status', '--porcelain', '--', ...files])) return new Date().toISOString().slice(0, 10);
+  return git(['log', '-1', '--format=%cs', '--', ...files]) || FALLBACK_LASTMOD;
+}
 
 const priorityFor = (path) => {
   if (path === '/') return '1.0';
@@ -79,7 +142,7 @@ const priorityFor = (path) => {
 
 const urls = indexableRoutes.map((path) => `  <url>
     <loc>${absolute(path)}</loc>
-    <lastmod>${LASTMOD}</lastmod>
+    <lastmod>${lastmodFor(path)}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>${priorityFor(path)}</priority>
   </url>`).join('\n');

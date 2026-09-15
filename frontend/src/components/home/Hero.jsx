@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { company } from '../../data/company.js';
 import { proofPoints } from '../../data/stats.js';
 import { getMedia, smallSrc, heroSlides } from '../../data/media.js';
@@ -133,20 +133,30 @@ export function Hero() {
               {/* The accessible name is whichever headline is on screen, once —
                   the stack behind it is decoration and is not read out. */}
               <span className="visually-hidden">{heroSlides[index].lines.join(' ')}</span>
+              {' '}
               <span
                 className="vp-hero__heads"
                 aria-hidden="true"
                 ref={headsRef}
                 style={headsH ? { height: `${headsH}px` } : undefined}
               >
+                {/* Spaces between lines and between headlines: invisible here
+                    (blocks and grid items), but crawlers read this text and
+                    would otherwise see "MoreSustainable FutureForecasting". */}
                 {heroSlides.map((slide, i) => (
-                  <span key={slide.slug} className="vp-hero__head" data-state={stateOf(i)}>
-                    {slide.lines.map((line, l) => (
-                      <span className="vp-line-mask" key={line}>
-                        <span className="vp-line-inner" style={{ '--l': l }}>{line}</span>
-                      </span>
-                    ))}
-                  </span>
+                  <Fragment key={slide.slug}>
+                    {i > 0 && ' '}
+                    <span className="vp-hero__head" data-state={stateOf(i)}>
+                      {slide.lines.map((line, l) => (
+                        <Fragment key={line}>
+                          {l > 0 && ' '}
+                          <span className="vp-line-mask">
+                            <span className="vp-line-inner" style={{ '--l': l }}>{line}</span>
+                          </span>
+                        </Fragment>
+                      ))}
+                    </span>
+                  </Fragment>
                 ))}
               </span>
             </h1>

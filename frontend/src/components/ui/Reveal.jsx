@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { useReveal } from '../../hooks/useReveal.js';
 import { cn } from '../../utils/cn.js';
 
@@ -11,17 +12,24 @@ export function Reveal({ as: Tag = 'div', delay = 0, type = 'rise', className, c
  * Line-by-line text reveal: each line rises out of its own mask.
  * Pass an array of strings — one per visual line — so the break points are a
  * deliberate typographic choice rather than whatever the browser does.
+ *
+ * A SPACE SITS BETWEEN THE LINES. The masks are blocks, so it never renders —
+ * but without it the heading's text was "The people behindthe operation.",
+ * which is exactly what a search engine indexed and a screen reader read out.
  */
 export function RevealLines({ lines, as: Tag = 'span', delay = 0, step = 90, className }) {
   const ref = useReveal({ delay, type: 'lines' });
   return (
     <Tag ref={ref} className={cn('vp-lines', className)}>
       {lines.map((line, i) => (
-        <span className="vp-line-mask" key={line + i}>
-          <span className="vp-line-inner" style={{ '--line-d': `${i * step}ms` }}>
-            {line}
+        <Fragment key={line + i}>
+          {i > 0 && ' '}
+          <span className="vp-line-mask">
+            <span className="vp-line-inner" style={{ '--line-d': `${i * step}ms` }}>
+              {line}
+            </span>
           </span>
-        </span>
+        </Fragment>
       ))}
     </Tag>
   );

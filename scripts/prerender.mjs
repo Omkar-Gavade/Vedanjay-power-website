@@ -160,6 +160,28 @@ for (const meta of routeSeo) {
   written += 1;
 }
 
+/**
+ * A REAL 404.
+ *
+ * Every route the site has is a document above, so an address that matches
+ * none of them is genuinely missing. Serving the app shell for it with a 200 —
+ * which is what single-page fallback does — is a "soft 404": search engines
+ * index junk addresses as duplicates of the home page. This document boots the
+ * same app, which renders the not-found page, but the host serves it with a
+ * 404 status (Cloudflare's "404-page" mode, and Vercel by default).
+ */
+const notFoundPath = join(DIST, '404.html');
+const notFound = shell.replace('</head>',
+  `    <title data-seo="static">${attr(SITE_TITLE)}</title>\n`
+  + '    <meta data-seo="static" name="robots" content="noindex, follow" />\n  </head>');
+if (CHECK) {
+  if (!existsSync(notFoundPath) || readFileSync(notFoundPath, 'utf8') !== notFound) {
+    problems.push(`${notFoundPath} is missing or out of date`);
+  }
+} else {
+  writeFileSync(notFoundPath, notFound);
+}
+
 if (problems.length) {
   console.error('Prerender FAILED:');
   for (const p of problems) console.error(`  - ${p}`);

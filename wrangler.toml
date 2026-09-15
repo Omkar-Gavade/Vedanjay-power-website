@@ -9,9 +9,14 @@ binding = "ASSETS"
 # from the asset store — no invocation, no added latency for a site that is 99%
 # static. Widening this would make every image and JS chunk a billable call.
 run_worker_first = ["/api/*"]
-# Client-side routes (e.g. /contact/) have no matching asset. Without this a
-# deep link or refresh returns 404 from the asset store and the SPA never boots.
-not_found_handling = "single-page-application"
+# Every route is prerendered to its own document (dist/contact/index.html and
+# so on), so a deep link or refresh always finds a real file. An address that
+# matches nothing is served dist/404.html WITH a 404 status. The previous
+# "single-page-application" mode answered every unknown address with the home
+# shell and a 200 — soft 404s, which search engines index as duplicates.
+# /contact (no slash) still works: the default html_handling redirects it to
+# /contact/.
+not_found_handling = "404-page"
 
 # `period` accepts ONLY 10 or 60 seconds, so the plan's "3 per 10 minutes" is
 # expressed as 3/60s plus the client's single-submit guard.
