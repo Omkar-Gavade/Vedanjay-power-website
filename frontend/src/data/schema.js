@@ -27,6 +27,22 @@ import { ROUTES } from '../constants/routes.js';
 
 const id = (fragment) => `${ORIGIN}/#${fragment}`;
 
+/**
+ * Search terms per service line, used as schema.org alternateName. Each is a
+ * phrase from that service's own description or feature list in the company
+ * information document (IRD §10), worded the way people type it.
+ */
+const SERVICE_SEARCH_TERMS = {
+  qca: ['QCA services', 'Qualified Coordinating Agency services', 'Forecasting and scheduling services',
+    'Renewable energy forecasting and scheduling', 'DSM management'],
+  'open-access': ['Open access power', 'Renewable power sale and purchase', 'Open access power purchase'],
+  metering: ['ABT metering', 'ABT meter supply and installation', 'Telemetry systems for renewable energy'],
+  infrastructure: ['EHV feeder bay works', 'Substation works', 'Transmission line installation and stringing',
+    'Electrical testing and commissioning'],
+  'grid-studies': ['Grid connectivity studies', 'Grid integration consultancy', 'Electrical system assessment'],
+  'project-support': ['Renewable energy project consultancy', 'Solar, wind and hybrid project support'],
+};
+
 export const ORG_ID = id('organization');
 export const SITE_ID = id('website');
 
@@ -75,6 +91,21 @@ export const organizationSchema = {
     '@type': 'AdministrativeArea',
     name: a.name,
   })),
+  /* What the company is expert in, as a search engine would phrase it. From
+     the core-expertise list and service descriptions in the company's own
+     information document — no discipline it does not practise. */
+  knowsAbout: [
+    'Forecasting and scheduling',
+    'Qualified Coordinating Agency (QCA)',
+    'Deviation Settlement Mechanism (DSM)',
+    'SLDC and RLDC coordination',
+    'Renewable energy forecasting',
+    'Solar, wind and hybrid power plants',
+    'Open access power',
+    'ABT metering and telemetry',
+    'EHV electrical infrastructure and transmission',
+    'Grid connectivity studies',
+  ],
   contactPoint: [
     {
       '@type': 'ContactPoint',
@@ -101,6 +132,8 @@ export const organizationSchema = {
       itemOffered: {
         '@type': 'Service',
         name: c.name,
+        /* The other names buyers search for the same service under. */
+        ...(SERVICE_SEARCH_TERMS[c.id] ? { alternateName: SERVICE_SEARCH_TERMS[c.id] } : {}),
         description: c.summary,
         serviceType: c.name,
         provider: { '@id': ORG_ID },
@@ -138,12 +171,13 @@ export function breadcrumbSchema(path) {
 }
 
 /** The page itself, tied to the site and the organisation. */
-export const webPageSchema = ({ path, title, description }) => ({
+export const webPageSchema = ({ path, title, description, keywords = [] }) => ({
   '@type': 'WebPage',
   '@id': `${absolute(path)}#webpage`,
   url: absolute(path),
   name: title,
   description,
+  ...(keywords.length ? { keywords: keywords.join(', ') } : {}),
   isPartOf: { '@id': SITE_ID },
   about: { '@id': ORG_ID },
   inLanguage: 'en-IN',
@@ -154,8 +188,8 @@ export const webPageSchema = ({ path, title, description }) => ({
  * which is what lets the nodes reference each other by @id instead of each
  * repeating the organisation.
  */
-export function graphFor({ path, title, description, extra = [] }) {
-  const nodes = [webPageSchema({ path, title, description })];
+export function graphFor({ path, title, description, keywords = [], extra = [] }) {
+  const nodes = [webPageSchema({ path, title, description, keywords })];
   const crumbs = breadcrumbSchema(path);
   if (crumbs) nodes.push(crumbs);
   /* The organisation and the site are declared once, on the home page. Every

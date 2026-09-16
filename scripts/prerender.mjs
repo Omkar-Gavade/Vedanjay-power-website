@@ -87,14 +87,13 @@ function headFor(meta) {
   const url = absolute(meta.path);
   const image = `${ORIGIN}${meta.og ?? OG_DEFAULT}`;
   const graph = graphFor({
-    path: meta.path, title: meta.title, description: meta.description,
+    path: meta.path, title: meta.title, description: meta.description, keywords: meta.keywords,
   });
 
   const D = 'data-seo="static"';
-  /* One title for every document — the tab reads the company name site-wide.
-     meta.title is still what og:title, twitter:title and the structured data
-     carry, so each page describes itself everywhere that matters to search. */
-  const title = `    <title ${D}>${attr(SITE_TITLE)}</title>\n`;
+  /* Company name first, then the page's keywords — the same title the React
+     tree renders, so the static head and the hydrated page agree. */
+  const title = `    <title ${D}>${attr(meta.title)}</title>\n`;
 
   /* LCP PRELOAD. The hero is the largest element on every page, and in a
      client-rendered SPA the browser cannot discover it until the bundle has

@@ -33,11 +33,51 @@ describe('page metadata', () => {
   });
 
   it('every page shows the company name in the browser tab', () => {
-    /* The owner's decision of 12 Sep 2026: one tab title site-wide. The
-       per-route titles below are still unique, because those are what search
-       results and shared cards show. */
-    expect(SITE_TITLE).toBe(company.legalName);
+    /* The owner's rule since 12 Sep 2026: the registered name leads every tab.
+       Since 16 Sep 2026 each title continues with that page's keywords. */
     expect(SITE_TITLE).toBe('Vedanjay Power Pvt. Ltd.');
+    const bare = routeSeo.filter((r) => !r.title.startsWith(`${company.legalName} | `)
+      || r.title.length <= company.legalName.length + 3).map((r) => r.path);
+    expect(bare, 'every title is the company name followed by keywords').toEqual([]);
+  });
+
+  it('every page targets its own primary keyword', () => {
+    /* Two pages chasing the same search split its ranking between them. */
+    for (const r of routeSeo) {
+      expect(r.keywords?.length ?? 0, `${r.path} keywords`).toBeGreaterThanOrEqual(3);
+      expect(r.keywords.length, `${r.path} keywords`).toBeLessThanOrEqual(8);
+    }
+    const primaries = routeSeo.map((r) => r.keywords[0].toLowerCase());
+    expect(new Set(primaries).size, 'no two pages share a primary keyword').toBe(primaries.length);
+  });
+
+  it('each primary keyword is actually in that page’s title or description', () => {
+    /* Declaring a keyword the page never says earns nothing. Every meaningful
+       word of the primary term has to appear in the title or description. */
+    const norm = (t) => t.toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9+,]+/g, ' ');
+    const STOP = new Set(['and', 'the', 'for', 'of', 'in', 'a']);
+    for (const r of routeSeo) {
+      const text = norm(`${r.title} ${r.description}`);
+      const missing = norm(r.keywords[0]).split(/[\s,]+/).filter((w) => w.length > 2 && !STOP.has(w))
+        .filter((w) => !text.includes(w));
+      expect(missing, `${r.path} primary "${r.keywords[0]}"`).toEqual([]);
+    }
+  });
+
+  it('the live page passes keywords on, not only the pre-rendered head', () => {
+    /* Caught 16 Sep 2026: prerender passed keywords to graphFor but <Seo> did
+       not, so once React replaced the static head the keywords were gone. */
+    const seo = readFileSync(fileURLToPath(new URL('../src/components/seo/Seo.jsx', import.meta.url)), 'utf8');
+    const pre = readFileSync(fileURLToPath(new URL('../../scripts/prerender.mjs', import.meta.url)), 'utf8');
+    expect(seo).toMatch(/keywords:\s*meta\.keywords/);
+    expect(pre).toMatch(/keywords:\s*meta\.keywords/);
+  });
+
+  it('keywords reach the structured data on every page', () => {
+    for (const r of routeSeo) {
+      const page = graphFor(r)['@graph'].find((n) => n['@type'] === 'WebPage');
+      expect(page.keywords, r.path).toBe(r.keywords.join(', '));
+    }
   });
 
   it('every title is unique', () => {

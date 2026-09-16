@@ -38,14 +38,16 @@ export function Seo({ route, extraSchema = [], noindex = false }) {
     path: meta.path,
     title: meta.title,
     description: meta.description,
+    /* Without this the hydrated page — which is what Google renders and keeps —
+       dropped the keywords the pre-rendered head carried. */
+    keywords: meta.keywords,
     extra: extraSchema,
   });
 
   return (
     <>
-      {/* The tab shows the company name on every page; meta.title is the
-          page's own title and still goes to search and to social cards. */}
-      <title>{SITE_TITLE}</title>
+      {/* Company name first, then the page's keywords — see data/seo.js. */}
+      <title>{meta.title}</title>
       <meta name="description" content={meta.description} />
       <link rel="canonical" href={url} />
       {noindex

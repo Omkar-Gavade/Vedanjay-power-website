@@ -40,13 +40,10 @@ import { joinList } from '../utils/list.js';
  */
 
 /**
- * THE BROWSER TAB READS THE SAME ON EVERY PAGE, by the owner's decision of
- * 12 Sep 2026: the company's registered name, nothing appended.
- *
- * Each route keeps its own `title` below, and that is what still goes to
- * Google, to a shared link's card and to the structured data — so a search
- * result for the projects page still says what the projects page is. Only the
- * <title> element, which is what the tab shows, is fixed.
+ * The company's registered name. Every route title below STARTS with it — the
+ * owner's rule since 12 Sep 2026 that the name shows in every browser tab —
+ * and, since 16 Sep 2026, continues with that page's search keywords. On its
+ * own it is the title of the not-found page and the pre-render shell.
  */
 export const SITE_TITLE = company.legalName;
 
@@ -68,8 +65,27 @@ export const OG_DEFAULT = `${OG_DIR}/vedanjay-power.jpg`;
 export const OG_SIZE = { width: 1200, height: 630 };
 
 /**
- * @typedef {{path:string, title:string, description:string, og?:string,
- *            breadcrumb:string, parent?:string}} RouteSeo
+ * @typedef {{path:string, title:string, description:string, keywords:string[],
+ *            og?:string, breadcrumb:string, parent?:string}} RouteSeo
+ */
+
+/**
+ * KEYWORD TITLES, 16 Sep 2026. Every title leads with the registered company
+ * name — the owner wanted the name in every browser tab — and then carries the
+ * words people search for on that page. The title is the strongest on-page
+ * ranking signal there is, so a tab that said only the company name told
+ * Google nothing about forecasting, QCA or open access.
+ */
+const brand = (words) => `${company.legalName} | ${words}`;
+
+/**
+ * KEYWORDS, one set per page. The FIRST is the page's primary term, and no two
+ * pages share one: two pages chasing the same search split its ranking between
+ * them. Every term is something the page substantiates, taken from the
+ * company's own service descriptions (IRD §9–§10) and the regulations it works
+ * under — nothing here promises work the company does not do. They feed the
+ * WebPage structured data; there is deliberately no <meta name="keywords">,
+ * which Google ignores and some engines treat as a spam signal.
  */
 
 /** @type {RouteSeo[]} */
@@ -77,112 +93,127 @@ export const routeSeo = [
   {
     path: ROUTES.home,
     breadcrumb: 'Home',
-    title: 'Vedanjay Power — Renewable Energy Forecasting & QCA',
-    description: `Power-sector solutions across renewable forecasting and scheduling (QCA), `
-      + `open-access power, ABT metering, transmission and grid studies. `
-      + `Established ${company.established}.`,
+    title: brand('Forecasting & Scheduling / QCA'),
+    description: `Forecasting & Scheduling / QCA services for solar, wind and hybrid plants in `
+      + `Maharashtra, Madhya Pradesh and Telangana, plus open access, ABT metering and grid studies.`,
+    keywords: ['Forecasting & Scheduling / QCA', 'QCA services', 'Qualified Coordinating Agency',
+      'renewable energy forecasting and scheduling', 'solar and wind forecasting', 'DSM management',
+      'open access power'],
     og: `${OG_DIR}/home.jpg`,
   },
   {
     path: ROUTES.about,
     breadcrumb: 'About',
-    title: 'About Vedanjay Power — Power-Sector Solutions Since 2011',
-    description: `Established ${company.established}, Vedanjay Power is a diversified `
-      + `power-sector solutions company supporting India's renewable-energy sector. `
-      + `Our vision, mission, values and journey.`,
+    title: brand(`Power-Sector Solutions Since ${company.established}`),
+    description: `Established ${company.established}, Vedanjay Power is a power-sector solutions `
+      + `company for India's renewable energy: QCA, open access, metering, transmission and grid consultancy.`,
+    keywords: ['power-sector solutions company', 'renewable energy consultancy India',
+      'Vedanjay Power', 'QCA company India'],
     og: `${OG_DIR}/about.jpg`,
   },
   {
     path: ROUTES.team,
     parent: ROUTES.about,
     breadcrumb: 'Team',
-    title: 'Leadership Team — Vedanjay Power',
-    description: `The people leading Vedanjay Power's forecasting, open-access and `
-      + `electrical infrastructure work — `
+    title: brand('Leadership Team'),
+    description: `The people leading Vedanjay Power's QCA, open-access and electrical `
+      + `infrastructure work — `
       + `${leadership.map((l) => `${l.name}, ${l.role}`).join('; ')}.`,
+    keywords: ['Vedanjay Power leadership', ...leadership.map((l) => l.name)],
     og: `${OG_DIR}/team.jpg`,
   },
   {
     path: ROUTES.awards,
     parent: ROUTES.about,
     breadcrumb: 'Awards',
-    title: 'Awards & Recognition — Vedanjay Power',
-    description: `${awards.length} industry recognitions between ${awardYears.at(-1)} and `
-      + `${awardYears[0]} for solar and renewable-energy consulting, each published with `
-      + `its certificate.`,
+    title: brand('Solar Industry Awards'),
+    description: `${awards.length} solar and renewable-energy industry awards won by Vedanjay Power between `
+      + `${awardYears.at(-1)} and ${awardYears[0]}, including SolarQuarter and RE Assets, each with its certificate.`,
+    keywords: ['solar industry awards', 'SolarQuarter awards', 'RE Assets Excellence Awards',
+      'solar consulting company of the year'],
     og: `${OG_DIR}/awards.jpg`,
   },
   {
     path: ROUTES.downloads,
     parent: ROUTES.about,
     breadcrumb: 'Downloads',
-    title: 'Regulatory Downloads — Forecasting, Scheduling & Open Access',
-    description: `${allResources.length} regulatory documents covering forecasting and `
-      + `scheduling, open access, and rooftop solar net metering — readable in the browser `
-      + `without downloading.`,
+    title: brand('MERC F&S and DSM Regulations'),
+    description: `MERC forecasting, scheduling and deviation settlement regulations, open access rules and `
+      + `rooftop net-metering orders: ${allResources.length} documents to read online.`,
+    keywords: ['MERC forecasting and scheduling regulations', 'DSM regulations',
+      'deviation settlement mechanism', 'MERC open access regulations', 'net metering regulations Maharashtra'],
     og: `${OG_DIR}/downloads.jpg`,
   },
   {
     path: ROUTES.partners,
     parent: ROUTES.about,
     breadcrumb: 'Partners',
-    title: 'Partners — Vedanjay Power',
-    description: `${partners.length} organisations named on Vedanjay Power's partner `
-      + `listing, including a technology partnership with ENERCAST GmbH, Germany for `
-      + `AI/ML-enabled forecasting.`,
+    title: brand('Partners & ENERCAST AI Forecasting'),
+    description: `Vedanjay Power's partner listing: ${partners.length} organisations, including ENERCAST GmbH, `
+      + `Germany for AI/ML-enabled solar and wind power forecasting.`,
+    keywords: ['ENERCAST forecasting partner', 'AI/ML energy forecasting', 'renewable energy partners'],
     og: `${OG_DIR}/partners.jpg`,
   },
   {
     path: ROUTES.services,
     breadcrumb: 'Services',
-    title: 'Services — QCA, Open Access, ABT Metering & Grid Studies',
-    description: `${capabilities.length} service lines: forecasting and scheduling (QCA), `
-      + `open-access power sale and purchase, ABT metering and telemetry, electrical `
-      + `infrastructure and grid studies.`,
+    title: brand('QCA, Open Access & ABT Metering'),
+    description: `QCA forecasting and scheduling, open-access power sale and purchase, ABT metering and `
+      + `telemetry, EHV infrastructure and transmission, and grid connectivity studies.`,
+    keywords: ['QCA, open access and ABT metering', 'forecasting and scheduling services',
+      'open access power sale and purchase', 'ABT metering and telemetry', 'EHV feeder bay and substation works',
+      'transmission line stringing', 'grid connectivity studies'],
     og: `${OG_DIR}/services.jpg`,
   },
   {
     path: ROUTES.industries,
     breadcrumb: 'Industries',
-    title: 'Industries Served — Vedanjay Power',
-    description: `We work with ${industries.length} kinds of organisation across India's `
-      + `power sector — ${industries.slice(0, 3).map((i) => i.name.toLowerCase()).join(', ')} `
-      + `and more.`,
+    title: brand('Solar & Wind Developers, DISCOMs'),
+    description: `Forecasting, QCA and electrical services for solar EPCs, wind OEMs and developers, DISCOMs `
+      + `and transmission utilities, independent power producers and industry.`,
+    keywords: ['solar and wind developers, DISCOMs and utilities', 'QCA for wind OEMs',
+      'QCA for solar EPCs', 'independent power producers'],
     og: `${OG_DIR}/industries.jpg`,
   },
   {
     path: ROUTES.projects,
     breadcrumb: 'Projects',
-    title: 'Our Projects — Renewable-Energy Portfolio',
-    description: `Vedanjay Power's renewable-energy project portfolio — ${mw(PORTFOLIO_TOTAL_MW)} MW `
-      + `across ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} Indian states, `
-      + 'forecast and scheduled under QCA.',
+    title: brand(`${mw(PORTFOLIO_TOTAL_MW)} MW Renewable QCA Portfolio`),
+    description: `A ${mw(PORTFOLIO_TOTAL_MW)} MW renewable-energy portfolio under QCA forecasting and `
+      + `scheduling: ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} states, including `
+      + `${joinList(portfolioByState.slice(0, 3).map((s) => s.state))}.`,
+    keywords: ['renewable energy QCA portfolio', '5,000+ MW forecasting and scheduling',
+      'solar and wind projects India'],
     og: `${OG_DIR}/projects.jpg`,
   },
   {
     path: ROUTES.gallery,
     parent: ROUTES.projects,
     breadcrumb: 'Gallery',
-    title: 'Site Photography — Vedanjay Power Projects',
-    description: `${shots.length} photographs from Vedanjay Power's own sites — switchyard `
-      + `structures, work at height, foundations, module mounting, metering and earthing.`,
+    title: brand('Substation & Solar Site Photos'),
+    description: `${shots.length} photos from Vedanjay Power substation and solar sites: switchyard structures, `
+      + `work at height, foundations, module mounting, metering and earthing.`,
+    keywords: ['substation and solar site photos', 'switchyard works', 'solar module mounting structure'],
     og: `${OG_DIR}/gallery.jpg`,
   },
   {
     path: ROUTES.careers,
     breadcrumb: 'Careers',
-    title: 'Careers — Vedanjay Power',
-    description: `Work in renewable-energy forecasting and scheduling, open access, metering `
-      + `and telemetry, or electrical infrastructure. Applications are read as they arrive.`,
+    title: brand('Careers in Forecasting & QCA'),
+    description: `Careers in renewable-energy forecasting and scheduling, QCA operations, open access, metering `
+      + `and electrical infrastructure, with offices in ${joinList(company.offices.map((o) => o.city))}.`,
+    keywords: ['forecasting and QCA careers', 'renewable energy jobs', 'power sector jobs Pune and Indore'],
     og: `${OG_DIR}/careers.jpg`,
   },
   {
     path: ROUTES.contact,
     breadcrumb: 'Contact',
-    title: 'Contact Vedanjay Power — Indore, Pune & Karad',
-    description: `Corporate office in ${company.offices[0].city}, branch offices in `
-      + `${joinList(company.offices.slice(1).map((o) => o.city))}. Call ${company.phone.display} `
-      + `or email ${company.emails.general} for forecasting, QCA and open-access enquiries.`,
+    title: brand(`${joinList(company.offices.map((o) => o.city)).replace(' and ', ' & ')} Offices`),
+    description: `QCA, forecasting and scheduling or open-access enquiries: offices in `
+      + `${joinList(company.offices.map((o) => o.city))}. Call ${company.phone.display} or email `
+      + `${company.emails.general}.`,
+    keywords: [`${joinList(company.offices.map((o) => o.city))} offices`, 'QCA service provider Maharashtra',
+      'forecasting and scheduling enquiry', 'Vedanjay Power contact'],
     og: `${OG_DIR}/contact.jpg`,
   },
 ];
