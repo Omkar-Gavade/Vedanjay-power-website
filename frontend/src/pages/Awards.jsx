@@ -1,4 +1,5 @@
 import { Button } from '../components/ui/Button.jsx';
+import { Picture } from '../components/ui/Picture.jsx';
 import { useCallback, useRef, useState } from 'react';
 import { awards } from '../data/awards.js';
 import { getMedia, smallSrc } from '../data/media.js';
@@ -43,7 +44,7 @@ export default function Awards() {
             the hero is now the asset class they were won on. */}
         <div className="vp-phero__media" aria-hidden="true">
           {hero && (
-            <img src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
+            <Picture src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
                  sizes="100vw" alt="" fetchPriority="high" decoding="async"
                  style={{ objectPosition: hero.focal }} />
           )}
@@ -76,7 +77,7 @@ export default function Awards() {
                     onClick={(e) => { openerRef.current = e.currentTarget; setOpen(a); }}
                     aria-label={`View the ${a.title} certificate at full size`}
                   >
-                    <img src={a.image} alt={a.alt} loading="lazy" decoding="async" />
+                    <Picture src={a.image} alt={a.alt} loading="lazy" decoding="async" />
                     {/* Always in the DOM, so the year reaches assistive tech and
                         touch users whatever the pointer can do; the stylesheet
                         is what holds it back until hover on a mouse. */}

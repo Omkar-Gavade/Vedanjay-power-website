@@ -33,8 +33,12 @@ body{
 .vp-theme-booting *::before,
 .vp-theme-booting *::after{transition:none !important;}
 
-img,picture,svg,video{display:block;max-width:100%;}
+img,svg,video{display:block;max-width:100%;}
 img{height:auto;}
+/* <picture> is a transparent wrapper (see components/ui/Picture.jsx) — it must
+   not form a box, so the inner <img> lays out and styles exactly as a bare
+   <img> did. */
+picture{display:contents;}
 input,button,textarea,select{font:inherit;color:inherit;}
 button{background:none;border:none;padding:0;cursor:pointer;}
 a{color:inherit;text-decoration:none;}

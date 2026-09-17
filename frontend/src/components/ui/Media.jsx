@@ -1,5 +1,6 @@
 import { getMedia, smallSrc } from '../../data/media.js';
 import { cn } from '../../utils/cn.js';
+import { Picture } from './Picture.jsx';
 
 /** Intrinsic dimensions per ratio, so the browser reserves space before CSS. */
 const DIMS = {
@@ -33,7 +34,7 @@ export function Media({
   return (
     <div className={cn('vp-media', RATIOS[ratio], scrimClass, className)} {...rest}>
       {item ? (
-        <img
+        <Picture
           src={item.src}
           srcSet={`${smallSrc(item.src)} 1000w, ${item.src} 1800w`}
           sizes={sizes}

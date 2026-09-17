@@ -6,6 +6,7 @@ import {
 import { getMedia, smallSrc } from '../data/media.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
+import { Picture } from '../components/ui/Picture.jsx';
 import { useCountUp } from '../hooks/useCountUp.js';
 import { ROUTES } from '../constants/routes.js';
 /* about.css carries the shared page-hero shell (.vp-phero), the filter/search
@@ -157,7 +158,7 @@ export default function Projects() {
               straight at a 600x400 thumbnail, which a 1440px header stretched
               to nearly three times its size. */}
           {projectsHero && (
-            <img
+            <Picture
               className="vp-pfhero__photo"
               src={projectsHero.src}
               srcSet={`${smallSrc(projectsHero.src)} 1000w, ${projectsHero.src} 1800w`}
@@ -464,7 +465,7 @@ export default function Projects() {
         <div className="vp-container">
           <Reveal>
             <div className="vp-pfcap">
-              <img
+              <Picture
                 className="vp-pfcap__photo" aria-hidden="true"
                 src="/images/proj-solar-field.jpg"
                 srcSet="/images/sm/proj-solar-field.jpg 1000w, /images/proj-solar-field.jpg 1800w"

@@ -20,6 +20,7 @@ import { ClosingCTA } from '../components/home/ClosingCTA.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
 import { Seo } from '../components/seo/Seo.jsx';
+import { Picture } from '../components/ui/Picture.jsx';
 
 /**
  * Company Overview — rebuilt 10 Sep 2026.
@@ -97,7 +98,7 @@ function IntroArt() {
       <Reveal className="vp-ov-intro__main vp-img-reveal">
         <div className="vp-ov-parallax" ref={drift}>
           {intro && (
-            <img src={intro.src} srcSet={`${smallSrc(intro.src)} 1000w, ${intro.src} 1800w`}
+            <Picture src={intro.src} srcSet={`${smallSrc(intro.src)} 1000w, ${intro.src} 1800w`}
                  sizes="(max-width: 992px) 100vw, 52vw" alt={intro.alt}
                  width="1800" height="1200" loading="lazy" decoding="async"
                  style={{ objectPosition: intro.focal }} />
@@ -106,7 +107,7 @@ function IntroArt() {
       </Reveal>
       {crewBay && (
         <Reveal as="figure" delay={260} className="vp-ov-intro__inset">
-          <img src={crewBay.src} alt={crewBay.alt} width="800" height="600"
+          <Picture src={crewBay.src} alt={crewBay.alt} width="800" height="600"
                loading="lazy" decoding="async" />
           <figcaption>{crewBay.caption}</figcaption>
         </Reveal>
@@ -154,7 +155,7 @@ function CardMedia({ kind }) {
   return (
     <div className="vp-ov-card__media" aria-hidden="true">
       {crewAtHeight && (
-        <img src={crewAtHeight.src} alt="" width="800" height="600" loading="lazy" decoding="async" />
+        <Picture src={crewAtHeight.src} alt="" width="800" height="600" loading="lazy" decoding="async" />
       )}
     </div>
   );
@@ -171,7 +172,7 @@ export default function About() {
       <section className="vp-phero vp-phero--photo vp-ov-hero" aria-labelledby="ab-h">
         <div className="vp-phero__media" aria-hidden="true">
           {hero && (
-            <img src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
+            <Picture src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
                  sizes="100vw" alt="" fetchPriority="high" decoding="async"
                  style={{ objectPosition: hero.focal }} />
           )}

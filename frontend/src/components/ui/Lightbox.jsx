@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useFocusTrap } from '../../hooks/useFocusTrap.js';
+import { Picture } from './Picture.jsx';
 
 /**
  * Full-size image viewer, shared by the Awards archive and the project gallery.
@@ -80,7 +81,7 @@ export function Lightbox({ src, alt, caption, label, onClose, onPrev, onNext, in
         {/* Keyed on src so a step swaps the element rather than mutating it —
             otherwise the browser holds the previous frame until the next
             image decodes, and the caption changes before the picture does. */}
-        <img key={src} src={src} alt={alt} />
+        <Picture key={src} src={src} alt={alt} />
         {(caption || total) && (
           <figcaption className="vp-lightbox__cap">
             {caption}

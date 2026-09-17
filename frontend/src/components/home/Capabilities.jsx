@@ -5,6 +5,7 @@ import { ROUTES } from '../../constants/routes.js';
 import { Reveal } from '../ui/Reveal.jsx';
 import { SectionHead } from '../ui/SectionHead.jsx';
 import { Button } from '../ui/Button.jsx';
+import { Picture } from '../ui/Picture.jsx';
 
 /**
  * Core capabilities as a numbered engineering index driving one large image,
@@ -75,7 +76,7 @@ export function Capabilities() {
                   return (
                     <div key={c.id} className="vp-index__frame" data-active={i === active ? 'true' : 'false'} aria-hidden="true">
                       {m && (
-                        <img src={m.src} srcSet={`${smallSrc(m.src)} 1000w, ${m.src} 1800w`}
+                        <Picture src={m.src} srcSet={`${smallSrc(m.src)} 1000w, ${m.src} 1800w`}
                              sizes="(max-width: 992px) 100vw, 40vw" alt=""
                              style={{ objectPosition: m.focal }}
                              loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />

@@ -3,6 +3,7 @@ import { company } from '../../data/company.js';
 import { ROUTES } from '../../constants/routes.js';
 import { Button } from '../ui/Button.jsx';
 import { Reveal } from '../ui/Reveal.jsx';
+import { Picture } from '../ui/Picture.jsx';
 
 /** Closing call to action — enquiry route plus the published direct contacts. */
 export function ClosingCTA() {
@@ -11,7 +12,7 @@ export function ClosingCTA() {
   return (
     <section className="vp-cta vp-on-dark" aria-labelledby="cta-h">
       <div className="vp-cta__bg" aria-hidden="true">
-        {bg && <img src={bg.src} srcSet={`${smallSrc(bg.src)} 1000w, ${bg.src} 1800w`}
+        {bg && <Picture src={bg.src} srcSet={`${smallSrc(bg.src)} 1000w, ${bg.src} 1800w`}
                     sizes="100vw" alt="" loading="lazy" decoding="async"
                     style={{ objectPosition: bg.focal }} />}
       </div>

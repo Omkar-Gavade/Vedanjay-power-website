@@ -5,6 +5,7 @@ import { getMedia, smallSrc, heroSlides } from '../../data/media.js';
 import { ROUTES } from '../../constants/routes.js';
 import { useHeroSlideshow } from '../../hooks/useHeroSlideshow.js';
 import { Button } from '../ui/Button.jsx';
+import { Picture } from '../ui/Picture.jsx';
 
 /** How long a departing headline stays mounted — its exit, plus a little. */
 const EXIT = 700;
@@ -104,7 +105,7 @@ export function Hero() {
               data-pan={slide.pan}
               aria-hidden="true"
             >
-              <img
+              <Picture
                 src={img.src}
                 srcSet={`${smallSrc(img.src)} 1000w, ${img.src} 1800w`}
                 sizes="100vw"

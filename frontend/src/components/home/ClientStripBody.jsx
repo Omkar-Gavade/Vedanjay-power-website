@@ -2,6 +2,7 @@ import { partners } from '../../data/partners.js';
 import { ROUTES } from '../../constants/routes.js';
 import { SectionHead } from '../ui/SectionHead.jsx';
 import { Button } from '../ui/Button.jsx';
+import { Picture } from '../ui/Picture.jsx';
 import '../../styles/clients.css';
 
 /**
@@ -51,7 +52,7 @@ export default function ClientStripBody() {
                   <li className="vp-cmark__item" key={`${p.name}-${i}`} aria-hidden={copy || undefined}>
                     {/* The mark carries the name, so the caption under it is
                         decorative — and the second copy is announced to nobody. */}
-                    <img className="vp-cmark__logo" src={p.logo} alt={copy ? '' : p.name}
+                    <Picture className="vp-cmark__logo" src={p.logo} alt={copy ? '' : p.name}
                          loading="lazy" decoding="async" />
                     <span className="vp-cmark__name" aria-hidden="true">{p.name}</span>
                   </li>

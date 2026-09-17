@@ -4,6 +4,7 @@ import { getMedia, smallSrc } from '../data/media.js';
 import { shots } from '../data/gallery.js';
 import { voltageClasses } from '../data/projects.js';
 import { Lightbox } from '../components/ui/Lightbox.jsx';
+import { Picture } from '../components/ui/Picture.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
@@ -60,7 +61,7 @@ export default function Gallery() {
       <section className="vp-phero vp-phero--photo" aria-labelledby="gl-h">
         <div className="vp-phero__media" aria-hidden="true">
           {hero && (
-            <img src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
+            <Picture src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
                  sizes="100vw" alt="" fetchPriority="high" decoding="async"
                  style={{ objectPosition: hero.focal }} />
           )}
@@ -98,7 +99,7 @@ export default function Gallery() {
                   aria-label={`View: ${f.caption}`}
                 >
                   <span className="vp-gal__frame">
-                    <img
+                    <Picture
                       src={f.src}
                       srcSet={`${f.small} 480w, ${f.src} 800w`}
                       /* A big or wide cell is about half the container, a unit

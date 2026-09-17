@@ -4,6 +4,7 @@ import { company } from '../data/company.js';
 import { leadership, leadershipRoles } from '../data/team.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
+import { Picture } from '../components/ui/Picture.jsx';
 import '../styles/about.css';
 import { Seo } from '../components/seo/Seo.jsx';
 import { ROUTES } from '../constants/routes.js';
@@ -58,7 +59,7 @@ export default function Team() {
       <section className="vp-phero vp-phero--photo" aria-labelledby="tm-h">
         <div className="vp-phero__media" aria-hidden="true">
           {hero && (
-            <img
+            <Picture
               src={hero.src}
               srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
               sizes="100vw" alt="" fetchPriority="high" decoding="async"
@@ -92,7 +93,7 @@ export default function Team() {
                   {/* `sizes` is the card's real width, so the browser stops
                       guessing 100vw and reserves the right box. The intrinsic
                       attributes stay 540x540 — the size the file actually is. */}
-                  <img
+                  <Picture
                     src={p.photo}
                     alt={`${p.name}, ${p.role} of Vedanjay Power`}
                     sizes="(min-width: 1000px) 250px, (min-width: 640px) 42vw, 88vw"

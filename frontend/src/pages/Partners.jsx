@@ -5,6 +5,7 @@ import { achievements } from '../data/about.js';
 import { capabilities } from '../data/capabilities.js';
 import { getMedia, smallSrc } from '../data/media.js';
 import { Button } from '../components/ui/Button.jsx';
+import { Picture } from '../components/ui/Picture.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
 import { ROUTES } from '../constants/routes.js';
 import '../styles/about.css';
@@ -57,7 +58,7 @@ export default function Partners() {
       <section className="vp-phero vp-phero--photo" aria-labelledby="pt-h">
         <div className="vp-phero__media" aria-hidden="true">
           {hero && (
-            <img src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
+            <Picture src={hero.src} srcSet={`${smallSrc(hero.src)} 1000w, ${hero.src} 1800w`}
                  sizes="100vw" alt="" fetchPriority="high" decoding="async"
                  style={{ objectPosition: hero.focal }} />
           )}
@@ -114,7 +115,7 @@ export default function Partners() {
                       {/* The mark carries the name for anyone who cannot see it,
                           so the caption beneath is decorative and hidden from
                           assistive tech rather than read out twice. */}
-                      <img
+                      <Picture
                         className="vp-pwall__mark"
                         src={p.logo}
                         alt={p.name}

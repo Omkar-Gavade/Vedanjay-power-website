@@ -2,6 +2,7 @@ import { getMedia, smallSrc } from '../../data/media.js';
 import { company } from '../../data/company.js';
 import { Button } from '../ui/Button.jsx';
 import { Reveal, RevealLines } from '../ui/Reveal.jsx';
+import { Picture } from '../ui/Picture.jsx';
 
 /**
  * Contact hero.
@@ -21,7 +22,7 @@ export function ContactHero() {
     <section className="vp-chero" aria-labelledby="ch-h">
       <div className="vp-chero__media" aria-hidden="true">
         {img && (
-          <img
+          <Picture
             src={img.src}
             srcSet={`${smallSrc(img.src)} 1000w, ${img.src} 1800w`}
             sizes="100vw"
