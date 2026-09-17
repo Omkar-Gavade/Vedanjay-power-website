@@ -27,7 +27,9 @@ export function ClientStrip() {
   }, []);
 
   return (
-    <section className="vp-section vp-section--tight-top" aria-labelledby="cl-h" ref={ref}>
+    <section className="vp-section vp-section--tight-top"
+             aria-label="Clients and partners"
+             aria-labelledby={near ? 'cl-h' : undefined} ref={ref}>
       {near && (
         <Suspense fallback={null}>
           <ClientStripBody />

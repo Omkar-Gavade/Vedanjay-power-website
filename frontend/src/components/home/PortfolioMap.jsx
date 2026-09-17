@@ -31,7 +31,9 @@ export function PortfolioMap() {
      padding, and a second one under it left ~200px of dead space between the
      chips and this map. */
   return (
-    <section className="vp-section vp-section--tight-top" aria-labelledby="map-h" ref={ref}>
+    <section className="vp-section vp-section--tight-top"
+             aria-label="Project portfolio map"
+             aria-labelledby={near ? 'map-h' : undefined} ref={ref}>
       {near && (
         <Suspense fallback={null}>
           <PortfolioBody />
