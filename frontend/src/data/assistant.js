@@ -303,14 +303,14 @@ export const topics = [
   },
   {
     id: 'qca',
-    label: 'QCA (Forecasting and Scheduling)',
+    label: 'QCA services (forecasting and scheduling)',
     match: ['qca', 'forecasting', 'forecast', 'scheduling', 'schedule', 'f&s', 'fs',
       'qualified coordinating agency', 'dsm', 'deviation', 'deviation settlement',
       'sldc', 'rldc', 'wrldc', 'day ahead', 'intraday', 'penalties', 'penalty'],
     answer: () => capAnswer('qca'),
     more: () => cap('qca').services.map((s) => `• ${s.name} — ${s.body}`).join('\n')
       + `\n\nRegistered SLDC operations: ${list(sldc)}, plus WRLDC for the Western Region.`,
-    link: { to: ROUTES.services, label: 'QCA Services (Forecasting and Scheduling)' },
+    link: { to: ROUTES.services, label: 'QCA services (forecasting and scheduling)' },
     next: ['portfolio', 'technologies', 'contact'],
   },
   {
