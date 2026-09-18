@@ -28,7 +28,7 @@ export default function PortfolioBody() {
       <SectionHead
         id="map-h"
         eyebrow="Interactive portfolio map"
-        title="Portfolio under QCA / Forecasting & Scheduling."
+        title="Portfolio under QCA services (forecasting & scheduling)."
         titleClass="vp-atlas__title"
       />
 

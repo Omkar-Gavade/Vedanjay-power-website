@@ -147,7 +147,7 @@ export const heroSlides = [
   },
   {
     slug: 'cap-projects', pan: 'in-right',
-    lines: ['Forecasting and', 'scheduling, 24×7'],
+    lines: ['QCA services', '(forecasting & scheduling)'],
   },
   {
     slug: 'grid-transmission', pan: 'in-up',
@@ -155,7 +155,7 @@ export const heroSlides = [
   },
   {
     slug: 'tech-wind', pan: 'in-down',
-    lines: ['5,000+ MW under', 'QCA and forecasting'],
+    lines: ['5,000+ MW under', 'QCA (forecasting & scheduling)'],
   },
 ];
 

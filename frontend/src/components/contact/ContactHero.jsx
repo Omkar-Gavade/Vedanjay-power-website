@@ -48,7 +48,7 @@ export function ContactHero() {
 
           <Reveal delay={140}>
             <p className="vp-lead vp-chero__lead mb-0">
-              Forecasting and scheduling, open access, metering, electrical
+              QCA services (forecasting and scheduling), open access, metering, electrical
               infrastructure or grid studies — tell us what you are working on and
               the right team will respond.
             </p>

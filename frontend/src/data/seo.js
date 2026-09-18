@@ -93,11 +93,11 @@ export const routeSeo = [
   {
     path: ROUTES.home,
     breadcrumb: 'Home',
-    title: brand('Forecasting & Scheduling / QCA'),
-    description: `Forecasting & Scheduling / QCA services for solar, wind and hybrid plants in `
+    title: brand('QCA (Forecasting & Scheduling)'),
+    description: `QCA services (forecasting and scheduling) for solar, wind and hybrid plants in `
       + `Maharashtra, Madhya Pradesh and Telangana, plus open access, ABT metering and grid studies.`,
-    keywords: ['Forecasting & Scheduling / QCA', 'QCA services', 'Qualified Coordinating Agency',
-      'renewable energy forecasting and scheduling', 'solar and wind forecasting', 'DSM management',
+    keywords: ['QCA services (forecasting and scheduling)', 'QCA services', 'Qualified Coordinating Agency',
+      'renewable energy QCA services (forecasting and scheduling)', 'solar and wind forecasting', 'DSM management',
       'open access power'],
     og: `${OG_DIR}/home.jpg`,
   },
@@ -158,9 +158,9 @@ export const routeSeo = [
     path: ROUTES.services,
     breadcrumb: 'Services',
     title: brand('QCA, Open Access & ABT Metering'),
-    description: `QCA forecasting and scheduling, open-access power sale and purchase, ABT metering and `
-      + `telemetry, EHV infrastructure and transmission, and grid connectivity studies.`,
-    keywords: ['QCA, open access and ABT metering', 'forecasting and scheduling services',
+    description: `QCA services (forecasting and scheduling), open-access power sale and purchase, ABT metering and `
+      + `telemetry, EHV infrastructure and grid connectivity studies.`,
+    keywords: ['QCA, open access and ABT metering', 'QCA services (forecasting and scheduling)',
       'open access power sale and purchase', 'ABT metering and telemetry', 'EHV feeder bay and substation works',
       'transmission line stringing', 'grid connectivity studies'],
     og: `${OG_DIR}/services.jpg`,
@@ -179,10 +179,10 @@ export const routeSeo = [
     path: ROUTES.projects,
     breadcrumb: 'Projects',
     title: brand(`${mw(PORTFOLIO_TOTAL_MW)} MW Renewable QCA Portfolio`),
-    description: `A ${mw(PORTFOLIO_TOTAL_MW)} MW renewable-energy portfolio under QCA forecasting and `
-      + `scheduling: ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} states, including `
-      + `${joinList(portfolioByState.slice(0, 3).map((s) => s.state))}.`,
-    keywords: ['renewable energy QCA portfolio', '5,000+ MW forecasting and scheduling',
+    description: `A ${mw(PORTFOLIO_TOTAL_MW)} MW renewable-energy portfolio under QCA services `
+      + `(forecasting and scheduling): ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} states, including `
+      + `${joinList(portfolioByState.slice(0, 2).map((s) => s.state))}.`,
+    keywords: ['renewable energy QCA portfolio', '5,000+ MW QCA services (forecasting and scheduling)',
       'solar and wind projects India'],
     og: `${OG_DIR}/projects.jpg`,
   },
@@ -199,8 +199,8 @@ export const routeSeo = [
   {
     path: ROUTES.careers,
     breadcrumb: 'Careers',
-    title: brand('Careers in Forecasting & QCA'),
-    description: `Careers in renewable-energy forecasting and scheduling, QCA operations, open access, metering `
+    title: brand('QCA Forecasting & Scheduling Jobs'),
+    description: `Careers in renewable-energy QCA services (forecasting and scheduling), open access, metering `
       + `and electrical infrastructure, with offices in ${joinList(company.offices.map((o) => o.city))}.`,
     keywords: ['forecasting and QCA careers', 'renewable energy jobs', 'power sector jobs Pune and Indore'],
     og: `${OG_DIR}/careers.jpg`,
@@ -209,11 +209,11 @@ export const routeSeo = [
     path: ROUTES.contact,
     breadcrumb: 'Contact',
     title: brand(`${joinList(company.offices.map((o) => o.city)).replace(' and ', ' & ')} Offices`),
-    description: `QCA, forecasting and scheduling or open-access enquiries: offices in `
+    description: `QCA services (forecasting and scheduling) or open-access enquiries: offices in `
       + `${joinList(company.offices.map((o) => o.city))}. Call ${company.phone.display} or email `
       + `${company.emails.general}.`,
     keywords: [`${joinList(company.offices.map((o) => o.city))} offices`, 'QCA service provider Maharashtra',
-      'forecasting and scheduling enquiry', 'Vedanjay Power contact'],
+      'QCA services (forecasting and scheduling) enquiry', 'Vedanjay Power contact'],
     og: `${OG_DIR}/contact.jpg`,
   },
 ];

@@ -120,7 +120,7 @@ export default function Careers() {
                 <h3 className="vp-apply__t">What to send</h3>
                 <p className="vp-apply__b">
                   A CV and a short note saying which side of the work interests you —
-                  forecasting and scheduling, open access, metering and telemetry, or
+                  QCA services (forecasting and scheduling), open access, metering and telemetry, or
                   electrical infrastructure. If a specific project or voltage class in our{' '}
                   <a href={ROUTES.projects}>register</a> is the reason you are writing, say
                   so; it tells us more than a covering letter.

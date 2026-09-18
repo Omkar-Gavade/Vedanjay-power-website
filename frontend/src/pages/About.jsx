@@ -306,7 +306,7 @@ export default function About() {
                   ))}
                 </ul>
                 <p className="vp-ov-reach__foot">
-                  Forecasting and scheduling for solar, wind and hybrid generation.
+                  QCA services (forecasting and scheduling) for solar, wind and hybrid generation.
                 </p>
               </div>
             </Reveal>

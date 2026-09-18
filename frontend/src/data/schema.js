@@ -33,8 +33,8 @@ const id = (fragment) => `${ORIGIN}/#${fragment}`;
  * information document (IRD §10), worded the way people type it.
  */
 const SERVICE_SEARCH_TERMS = {
-  qca: ['QCA services', 'Qualified Coordinating Agency services', 'Forecasting and scheduling services',
-    'Renewable energy forecasting and scheduling', 'DSM management'],
+  qca: ['QCA services (forecasting and scheduling)', 'Qualified Coordinating Agency services',
+    'Renewable energy QCA services (forecasting and scheduling)', 'DSM management'],
   'open-access': ['Open access power', 'Renewable power sale and purchase', 'Open access power purchase'],
   metering: ['ABT metering', 'ABT meter supply and installation', 'Telemetry systems for renewable energy'],
   infrastructure: ['EHV feeder bay works', 'Substation works', 'Transmission line installation and stringing',
@@ -95,7 +95,7 @@ export const organizationSchema = {
      the core-expertise list and service descriptions in the company's own
      information document — no discipline it does not practise. */
   knowsAbout: [
-    'Forecasting and scheduling',
+    'QCA services (forecasting and scheduling)',
     'Qualified Coordinating Agency (QCA)',
     'Deviation Settlement Mechanism (DSM)',
     'SLDC and RLDC coordination',
