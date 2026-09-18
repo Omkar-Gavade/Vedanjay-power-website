@@ -93,7 +93,7 @@ export const routeSeo = [
   {
     path: ROUTES.home,
     breadcrumb: 'Home',
-    title: brand('QCA (Forecasting & Scheduling)'),
+    title: brand('QCA (Forecasting and Scheduling)'),
     description: `QCA services (forecasting and scheduling) for solar, wind and hybrid plants in `
       + `Maharashtra, Madhya Pradesh and Telangana, plus open access, ABT metering and grid studies.`,
     keywords: ['QCA services (forecasting and scheduling)', 'QCA services', 'Qualified Coordinating Agency',
@@ -199,7 +199,7 @@ export const routeSeo = [
   {
     path: ROUTES.careers,
     breadcrumb: 'Careers',
-    title: brand('QCA Forecasting & Scheduling Jobs'),
+    title: brand('QCA Forecasting and Scheduling Jobs'),
     description: `Careers in renewable-energy QCA services (forecasting and scheduling), open access, metering `
       + `and electrical infrastructure, with offices in ${joinList(company.offices.map((o) => o.city))}.`,
     keywords: ['forecasting and QCA careers', 'renewable energy jobs', 'power sector jobs Pune and Indore'],

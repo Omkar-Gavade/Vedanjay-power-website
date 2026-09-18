@@ -12,7 +12,7 @@ export const capabilities = [
   {
     id: 'qca',
     index: '01',
-    name: 'QCA Services (Forecasting & Scheduling)',
+    name: 'QCA Services (Forecasting and Scheduling)',
     summary:
       'Qualified Coordinating Agency services for solar, wind and hybrid projects — generation forecasting, day-ahead and intraday scheduling, schedule revisions, SLDC/RLDC coordination, generation monitoring, deviation analysis and DSM optimisation.',
     points: [
@@ -24,7 +24,7 @@ export const capabilities = [
     /* Verbatim from the deck's "Our Services" slide. */
     services: [
       {
-        name: 'Precise QCA Services (Forecasting & Scheduling)',
+        name: 'Precise QCA Services (Forecasting and Scheduling)',
         body: 'AI-driven forecasting for solar, wind and hybrid energy to minimise deviation penalties.',
       },
       {
@@ -112,7 +112,7 @@ export const capabilities = [
 
 /** IRD §9 — Core Expertise. Used as a compact technical index, not as cards. */
 export const coreExpertise = [
-  'QCA Services (Forecasting & Scheduling)',
+  'QCA Services (Forecasting and Scheduling)',
   'DSM Optimization',
   'SLDC/RLDC Coordination',
   'Renewable-Energy Forecasting',

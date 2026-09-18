@@ -52,7 +52,7 @@ export const values = [
 export const milestones = [
   { year: '2011', name: 'Company established', body: 'Vedanjay Power Pvt. Ltd. established to support India’s growing renewable-energy and power sector.' },
   { year: null, name: 'Renewable-energy services', body: 'Developed expertise in supporting solar and wind power projects.' },
-  { year: null, name: 'QCA Services (Forecasting & Scheduling)', body: 'Expanded into renewable-energy QCA services (forecasting and scheduling) and DSM management.' },
+  { year: null, name: 'QCA Services (Forecasting and Scheduling)', body: 'Expanded into renewable-energy QCA services (forecasting and scheduling) and DSM management.' },
   { year: null, name: 'Multi-state operations', body: 'Established QCA/SLDC operations across Maharashtra, Madhya Pradesh and Telangana.' },
   { year: null, name: 'WRLDC registration', body: 'Expanded regional grid coordination capabilities through WRLDC registration.' },
   { year: null, name: 'Open-access services', body: 'Expanded into renewable power sale, purchase, open-access coordination and related consultancy.' },

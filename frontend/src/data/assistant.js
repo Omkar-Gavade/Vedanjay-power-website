@@ -292,7 +292,7 @@ export const topics = [
       'what work do you do', 'provide'],
     answer: () => `We work across ${capabilities.length} service lines:\n\n`
       + capabilities.map((c) => `• ${c.name}`).join('\n')
-      + `\n\nQCA services (forecasting & scheduling) is the core — registered with the state load `
+      + `\n\nQCA services (forecasting and scheduling) is the core — registered with the state load `
       + `despatch centres of ${list(sldc)}, and with WRLDC for the Western Region.`,
     /* The full summaries run to 1,400 characters — a wall of text in a chat
        bubble. One defining line each says as much at a third of the length,
@@ -303,14 +303,14 @@ export const topics = [
   },
   {
     id: 'qca',
-    label: 'QCA (Forecasting & Scheduling)',
+    label: 'QCA (Forecasting and Scheduling)',
     match: ['qca', 'forecasting', 'forecast', 'scheduling', 'schedule', 'f&s', 'fs',
       'qualified coordinating agency', 'dsm', 'deviation', 'deviation settlement',
       'sldc', 'rldc', 'wrldc', 'day ahead', 'intraday', 'penalties', 'penalty'],
     answer: () => capAnswer('qca'),
     more: () => cap('qca').services.map((s) => `• ${s.name} — ${s.body}`).join('\n')
       + `\n\nRegistered SLDC operations: ${list(sldc)}, plus WRLDC for the Western Region.`,
-    link: { to: ROUTES.services, label: 'QCA Services (Forecasting & Scheduling)' },
+    link: { to: ROUTES.services, label: 'QCA Services (Forecasting and Scheduling)' },
     next: ['portfolio', 'technologies', 'contact'],
   },
   {

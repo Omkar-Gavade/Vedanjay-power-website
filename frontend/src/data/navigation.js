@@ -34,7 +34,7 @@ export const primaryNav = [
 
 /** Footer capability links point at the Services route until service pages exist. */
 export const footerCapabilities = [
-  'QCA Services (Forecasting & Scheduling)',
+  'QCA Services (Forecasting and Scheduling)',
   'Open Access',
   'ABT Metering & Telemetry',
   'Electrical Infrastructure',
