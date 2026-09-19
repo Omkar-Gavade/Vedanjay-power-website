@@ -25,6 +25,33 @@ placeholder and are next.
 npm install --prefix frontend && npm run dev --prefix frontend
 ```
 
+### Deploy
+
+The public site (`https://vedanjay.omkargavade.xyz/`) is hosted on **Vercel** and
+serves the pre-rendered `frontend/dist`. **Deploys are manual** — pushing to
+`staging` (or any branch) does **not** publish. GitHub Actions (`.github/workflows/ci.yml`)
+runs build/test **only on `main`** and has no deploy step, and `vercel.json` only
+sets cache headers.
+
+Build command:
+
+```bash
+npm run build   # = npm --prefix frontend run build && node scripts/prerender.mjs
+```
+
+To publish the current branch, pick one:
+
+1. **Vercel dashboard** → the Vedanjay project → **Deployments** → the latest commit → **⋯ → Redeploy**.
+2. **CLI**, from a machine linked to the Vercel project (has a `.vercel/` folder):
+
+   ```bash
+   vercel --prod
+   ```
+
+Then hard-refresh the site (Ctrl/Cmd+Shift+R). To make pushes auto-publish, enable
+auto-deploy for the branch in the Vercel project's Git settings (dashboard change,
+not code).
+
 ---
 
 ## Structure
