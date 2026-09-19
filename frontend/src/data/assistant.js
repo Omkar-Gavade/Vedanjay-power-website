@@ -158,7 +158,7 @@ export const topics = [
       'topics', 'menu', 'what do you know', 'how does this work'],
     answer: () => `I can answer on:\n\n`
       + `• The company — overview, story, vision, mission and values\n`
-      + `• Services — all ${capabilities.length} lines, including QCA services (forecasting and scheduling)\n`
+      + `• Services — all ${capabilities.length} lines, including QCA Services (Forecasting and Scheduling)\n`
       + `• Projects — the ${mw(PORTFOLIO_TOTAL_MW)} MW QCA portfolio and the ${PROJECT_TOTAL}-work register\n`
       + `• Where we operate, our offices, team, awards and partners\n`
       + `• Careers, downloads and how to reach us\n\n`
@@ -275,7 +275,7 @@ export const topics = [
       'operational support'],
     answer: () => {
       const s = strengths.find((x) => x.name.includes('24'));
-      return `${s.body}\n\nQCA services (forecasting and scheduling) is a live obligation — schedules, `
+      return `${s.body}\n\nQCA Services (Forecasting and Scheduling) is a live obligation — schedules, `
         + `revisions and deviation monitoring run against the load despatch centres' clock, `
         + `not office hours.`;
     },
@@ -292,7 +292,7 @@ export const topics = [
       'what work do you do', 'provide'],
     answer: () => `We work across ${capabilities.length} service lines:\n\n`
       + capabilities.map((c) => `• ${c.name}`).join('\n')
-      + `\n\nQCA services (forecasting and scheduling) is the core — registered with the state load `
+      + `\n\nQCA Services (Forecasting and Scheduling) is the core — registered with the state load `
       + `despatch centres of ${list(sldc)}, and with WRLDC for the Western Region.`,
     /* The full summaries run to 1,400 characters — a wall of text in a chat
        bubble. One defining line each says as much at a third of the length,
@@ -303,14 +303,14 @@ export const topics = [
   },
   {
     id: 'qca',
-    label: 'QCA services (forecasting and scheduling)',
+    label: 'QCA Services (Forecasting and Scheduling)',
     match: ['qca', 'forecasting', 'forecast', 'scheduling', 'schedule', 'f&s', 'fs',
       'qualified coordinating agency', 'dsm', 'deviation', 'deviation settlement',
       'sldc', 'rldc', 'wrldc', 'day ahead', 'intraday', 'penalties', 'penalty'],
     answer: () => capAnswer('qca'),
     more: () => cap('qca').services.map((s) => `• ${s.name} — ${s.body}`).join('\n')
       + `\n\nRegistered SLDC operations: ${list(sldc)}, plus WRLDC for the Western Region.`,
-    link: { to: ROUTES.services, label: 'QCA services (forecasting and scheduling)' },
+    link: { to: ROUTES.services, label: 'QCA Services (Forecasting and Scheduling)' },
     next: ['portfolio', 'technologies', 'contact'],
   },
   {
@@ -392,7 +392,7 @@ export const topics = [
       'case studies', 'past work', 'executed', 'delivered', 'references',
       'tell me about your projects'],
     answer: () => `Two records, both published in full.\n\n`
-      + `• A QCA services (forecasting and scheduling) portfolio of ${mw(PORTFOLIO_TOTAL_MW)} MW `
+      + `• A QCA Services (Forecasting and Scheduling) portfolio of ${mw(PORTFOLIO_TOTAL_MW)} MW `
       + `across ${PORTFOLIO_COUNT} renewable projects in ${portfolioByState.length} states.\n`
       + `• An execution register of ${PROJECT_TOTAL} works — EHV feeder bays, substation `
       + `works, metering and telemetry, O&M and civil, up to ${voltageClasses[0]}.`,
@@ -405,7 +405,7 @@ export const topics = [
     match: ['portfolio', 'qca portfolio', 'mw', 'megawatt', 'megawatts', 'capacity under management',
       'how much capacity', 'how many mw', 'total capacity', 'gw', '5000',
       'under management', 'managed capacity'],
-    answer: () => `${mw2(PORTFOLIO_TOTAL_MW)} MW under QCA services (forecasting and scheduling), `
+    answer: () => `${mw2(PORTFOLIO_TOTAL_MW)} MW under QCA Services (Forecasting and Scheduling), `
       + `across ${PORTFOLIO_COUNT} renewable projects in ${portfolioByState.length} states.\n\n`
       + portfolioByState.slice(0, 4)
         .map((s) => `• ${s.state} — ${mw2(s.mw)} MW (${plural(s.count, 'project')})`).join('\n')
@@ -585,7 +585,7 @@ export const topics = [
     answer: () => `There's no fixed vacancy list — applications are read as they arrive `
       + `and kept on file against the work that comes in.\n\n`
       + `Send a CV and a short note saying which side of the work interests you: `
-      + `QCA services (forecasting and scheduling), open access, metering and telemetry, or electrical `
+      + `QCA Services (Forecasting and Scheduling), open access, metering and telemetry, or electrical `
       + `infrastructure.\n\n${company.emails.general}`,
     link: { to: ROUTES.careers, label: 'Careers' },
     next: ['services', 'about', 'contact'],

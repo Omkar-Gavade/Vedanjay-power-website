@@ -48,7 +48,7 @@ const rows = [
     action: 'Email operations',
     /* The one verified availability claim. General office hours are marked
        "to be confirmed" in the source document, so they are absent. */
-    note: '24×7 support for QCA services (forecasting and scheduling).',
+    note: '24×7 support for QCA Services (Forecasting and Scheduling).',
     flag: '24×7',
   },
 ];

@@ -198,7 +198,7 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
              when the map has somewhere to pan to. */
           style={{ touchAction: view.k > 1 ? 'none' : 'pan-y' }}
           preserveAspectRatio="xMidYMid slice"
-          aria-label={`Map of Asia centred on India. Capacity under QCA services (forecasting and scheduling) in ${byState.map((s) => `${s.state}, ${s.mw} megawatts`).join('; ')}.`}
+          aria-label={`Map of Asia centred on India. Capacity under QCA Services (Forecasting and Scheduling) in ${byState.map((s) => `${s.state}, ${s.mw} megawatts`).join('; ')}.`}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}

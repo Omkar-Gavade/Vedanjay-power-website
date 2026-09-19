@@ -57,7 +57,7 @@
 export const resourceGroups = [
   {
     id: 'fs-maharashtra',
-    title: 'QCA services (forecasting and scheduling) — Maharashtra',
+    title: 'QCA Services (Forecasting and Scheduling) — Maharashtra',
     blurb: 'The framework our QCA work in the state is performed under: the regulations, the amendment in force, the MSLDC procedure and the notification that started commercial settlement.',
     items: [
       {
@@ -100,7 +100,7 @@ export const resourceGroups = [
   },
   {
     id: 'fs-other',
-    title: 'QCA services (forecasting and scheduling) — central and other states',
+    title: 'QCA Services (Forecasting and Scheduling) — central and other states',
     blurb: 'The central framework and the state regulations that shape forecasting, scheduling and deviation settlement elsewhere in our operating area.',
     items: [
       {
@@ -114,7 +114,7 @@ export const resourceGroups = [
       },
       {
         id: 'rerc-fs',
-        title: 'RERC QCA services (forecasting and scheduling) Regulations — Rajasthan',
+        title: 'RERC QCA Services (Forecasting and Scheduling) Regulations — Rajasthan',
         description: 'Rajasthan Electricity Regulatory Commission regulations for forecasting and scheduling of renewable generation.',
         href: '/downloads/rerc-forecasting-scheduling-regulations.pdf',
         bytes: 531288,
@@ -132,7 +132,7 @@ export const resourceGroups = [
       },
       {
         id: 'kerc-fs-2015',
-        title: 'KERC QCA services (forecasting and scheduling) Regulations — Karnataka',
+        title: 'KERC QCA Services (Forecasting and Scheduling) Regulations — Karnataka',
         description: 'Karnataka Electricity Regulatory Commission forecasting and scheduling regulations.',
         href: '/downloads/kerc-forecasting-scheduling-regulations-2015.pdf',
         bytes: 3978402,

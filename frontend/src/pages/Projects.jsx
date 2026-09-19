@@ -202,7 +202,7 @@ export default function Projects() {
             <p className="vp-lead vp-phero__lead mb-0">
               Vedanjay Power supports and manages renewable-energy projects across
               multiple Indian regions. This portfolio reflects our work in renewable
-              energy, QCA services (forecasting and scheduling) and related
+              energy, QCA Services (Forecasting and Scheduling) and related
               power-sector services.
             </p>
           </Reveal>
@@ -495,7 +495,7 @@ export default function Projects() {
                   Planning your next renewable-energy project?
                 </h2>
                 <p className="vp-band__body">
-                  Talk to us about renewable energy, QCA services (forecasting and scheduling), open access,
+                  Talk to us about renewable energy, QCA Services (Forecasting and Scheduling), open access,
                   grid and power-sector requirements.
                 </p>
               </div>

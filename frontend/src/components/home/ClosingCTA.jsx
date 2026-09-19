@@ -26,7 +26,7 @@ export function ClosingCTA() {
                 Discuss your project with our team.
               </h2>
               <p className="vp-lead vp-measure-lead mb-0">
-                QCA services (forecasting and scheduling), open access, metering, electrical infrastructure
+                QCA Services (Forecasting and Scheduling), open access, metering, electrical infrastructure
                 or grid studies — tell us what you need and we will respond.
               </p>
             </Reveal>

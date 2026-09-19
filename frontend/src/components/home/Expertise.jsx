@@ -14,7 +14,7 @@ export function Expertise() {
         <SectionHead
           id="exp-h"
           eyebrow="Renewable-energy expertise"
-          title="QCA services (forecasting and scheduling) across solar, wind and hybrid generation."
+          title="QCA Services (Forecasting and Scheduling) across solar, wind and hybrid generation."
           lead="Registered QCA operations with state load despatch centres in Maharashtra, Madhya Pradesh and Telangana, and with WRLDC for the Western Region."
         />
 

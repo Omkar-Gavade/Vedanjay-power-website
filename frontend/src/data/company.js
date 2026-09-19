@@ -13,7 +13,7 @@ export const company = {
   /** IRD §1 — Company Overview (short). Used verbatim in substance. */
   overview:
     'Vedanjay Power Pvt. Ltd. is a power-sector solutions company providing end-to-end services ' +
-    'across renewable energy, open-access power, QCA services (forecasting and scheduling), electrical ' +
+    'across renewable energy, open-access power, QCA Services (Forecasting and Scheduling), electrical ' +
     'infrastructure, metering, telemetry, transmission and grid consultancy.',
 
   offices: [

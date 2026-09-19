@@ -75,7 +75,7 @@ export default function Team() {
           <Reveal delay={140}>
             <p className="vp-lead vp-phero__lead mb-0">
               Vedanjay Power is led by its {leadershipRoles}, working across
-              QCA services (forecasting and scheduling), open access, electrical infrastructure and
+              QCA Services (Forecasting and Scheduling), open access, electrical infrastructure and
               grid consultancy.
             </p>
           </Reveal>

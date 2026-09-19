@@ -73,7 +73,7 @@ export default function Downloads() {
           </h1>
           <Reveal delay={140}>
             <p className="vp-lead vp-phero__lead mb-0">
-              {allResources.length} documents — forecasting and scheduling, open access,
+              {allResources.length} documents — QCA Services (Forecasting and Scheduling), open access,
               and rooftop solar and net metering. Read any of them here, or take a copy.
             </p>
           </Reveal>

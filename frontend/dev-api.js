@@ -23,7 +23,7 @@ const CANNED = [
   [/how many project|project record|works executed/i,
     'The register records 52 works executed — 17 electrical infrastructure, 15 liaisoning and regulatory, 8 operation and maintenance, 7 combined electrical and liaisoning, and 5 civil. You can filter them all on /projects/.'],
   [/capabilit|service|what do you do/i,
-    'Vedanjay Power works across six areas:\n- Forecasting & Scheduling / QCA\n- Open-Access Power Sale & Purchase\n- ABT Metering & Telemetry\n- Electrical Infrastructure & Transmission\n- Grid Studies & Electrical Consultancy\n- Renewable Energy Project Support\n\nWhich of these is closest to what you need?'],
+    'Vedanjay Power works across six areas:\n- QCA Services (Forecasting and Scheduling)\n- Open-Access Power Sale & Purchase\n- ABT Metering & Telemetry\n- Electrical Infrastructure & Transmission\n- Grid Studies & Electrical Consultancy\n- Renewable Energy Project Support\n\nWhich of these is closest to what you need?'],
 ];
 
 const reply = (text) => {
