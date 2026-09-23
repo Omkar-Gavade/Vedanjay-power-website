@@ -32,7 +32,7 @@ export function WhoWeAre() {
                 </div>
                 <div>
                   <dt>Operations</dt>
-                  <dd>Maharashtra · Madhya Pradesh · Telangana · WRLDC</dd>
+                  <dd>Maharashtra · Madhya Pradesh · Telangana · Andhra Pradesh · WRLDC</dd>
                 </div>
                 <div>
                   <dt>Technologies</dt>

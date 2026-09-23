@@ -232,8 +232,8 @@
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
 .vp-proof__list{display:grid;grid-template-columns:repeat(2,1fr);}
-@media (min-width:768px){.vp-proof__list{grid-template-columns:repeat(4,1fr);}}
-@media (min-width:1200px){.vp-proof__list{grid-template-columns:repeat(7,1fr);}}
+@media (min-width:768px){.vp-proof__list{grid-template-columns:repeat(3,1fr);}}
+@media (min-width:1200px){.vp-proof__list{grid-template-columns:repeat(6,1fr);}}
 .vp-proof__item{
   display:flex;flex-direction:column;gap:.25rem;
   padding:1.1rem 1rem 1.1rem 0;

@@ -15,7 +15,7 @@ export function Expertise() {
           id="exp-h"
           eyebrow="Renewable-energy expertise"
           title="QCA Services (Forecasting and Scheduling) across solar, wind and hybrid generation."
-          lead="Registered QCA operations with state load despatch centres in Maharashtra, Madhya Pradesh and Telangana, and with WRLDC for the Western Region."
+          lead="Registered QCA operations with state load despatch centres in Maharashtra, Madhya Pradesh, Telangana and Andhra Pradesh, and with WRLDC for the Western Region."
         />
 
         {/* Three cards, all visible at once. This was a rotating coverflow;
