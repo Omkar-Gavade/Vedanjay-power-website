@@ -316,6 +316,13 @@
 @keyframes vp-geo-sheen{from{transform:translateX(-120%);}to{transform:translateX(120%);}}
 .vp-geo__item--multi{border-style:dashed;}
 .vp-geo__item--multi .vp-geo__rank{color:var(--vp-brand-green);opacity:.6;}
+/* SLDC registration card — dashed + a faint green wash to read as a separate
+   registration, not one of the ranked portfolio-capacity states. */
+.vp-geo__item--reg{
+  border-style:dashed;
+  background:color-mix(in srgb,var(--vp-brand-green) 5%,var(--vp-surface));
+}
+.vp-geo__item--reg .vp-geo__rank{color:var(--vp-brand-green);opacity:.7;font-weight:600;}
 .vp-geo__note{font-size:var(--vp-fs-sm);color:var(--vp-text-soft);margin:0;}
 
 /* ============================================= PORTFOLIO INSIGHT ========== */

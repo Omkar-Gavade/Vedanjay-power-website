@@ -294,7 +294,7 @@ export default function About() {
               <div className="vp-ov-reach vp-on-dark-ground">
                 <span className="vp-eyebrow vp-label mb-3">Where we operate</span>
                 <h3 className="vp-ov-reach__title">
-                  Registered with three state load despatch centres, and with WRLDC.
+                  Registered with four state load despatch centres, and with WRLDC.
                 </h3>
                 <ul className="vp-ov-reach__list">
                   {company.operatingAreas.map((a, i) => (

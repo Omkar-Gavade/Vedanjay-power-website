@@ -192,6 +192,12 @@
 .vp-atlas__legendCount{
   margin-left:auto;font-size:.75rem;color:#8FB0AE;
 }
+/* Registration caption — its own full-width line under the legend row, marked
+   with a green + so it reads as an addition, not part of the MW total. */
+.vp-atlas__legendReg{
+  flex-basis:100%;font-size:.75rem;color:#8FB0AE;
+}
+.vp-atlas__legendReg::before{content:"+ ";color:var(--vp-green-400);font-weight:600;}
 
 @media (max-width:575.98px){
   .vp-atlas__hint{display:none;}

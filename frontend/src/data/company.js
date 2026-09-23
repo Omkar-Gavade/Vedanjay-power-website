@@ -146,6 +146,7 @@ export const company = {
     { name: 'Maharashtra', basis: 'Registered SLDC operations' },
     { name: 'Madhya Pradesh', basis: 'Registered SLDC operations' },
     { name: 'Telangana', basis: 'Registered SLDC operations' },
+    { name: 'Andhra Pradesh', basis: 'Registered with SLDC for 50 MW' },
     { name: 'Western Region', basis: 'Registered WRLDC operations' },
   ],
 };

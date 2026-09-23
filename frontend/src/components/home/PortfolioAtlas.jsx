@@ -114,6 +114,12 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
     return d ? Math.min(4, Math.floor((d.mw / maxMw) * 5)) : null;
   };
 
+  /* Andhra Pradesh — an SLDC registration, not portfolio capacity. It carries a
+     turbine like the states, but sits outside byState/the colour ramp and its
+     card states the registration rather than an MW figure in the book. */
+  const AP_NAME = 'Andhra Pradesh';
+  const regScale = 1.5 / view.k ** 0.55;
+
   const half = grid.cell / 2;
   const groups = new Map();
   for (let i = 0; i < grid.dots.length; i += 3) {
@@ -122,6 +128,14 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push([cx * grid.cell + half, cy * grid.cell + half]);
   }
+
+  /* Andhra Pradesh is not a named region in the map geometry — its land sits in
+     the generic 'india' dots. To let selecting AP light its area gold like a
+     state, the india dots inside AP's coastal box are pulled out and re-drawn
+     highlighted only while it is selected. */
+  const apDots = (groups.get('india') || []).filter(
+    ([x, y]) => x >= 720 && x <= 795 && y >= 612 && y <= 730,
+  );
 
   const unitFor = () => {
     const box = svgRef.current?.getBoundingClientRect();
@@ -217,6 +231,13 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
               </g>
             ))}
 
+            {/* AP's own area, lit gold over the india dots while it is selected. */}
+            {sel === AP_NAME && (
+              <g className="vp-atlas__dots" data-kind="state" data-on="true">
+                {apDots.map(([cx, cy]) => <circle key={`ap-${cx}-${cy}`} cx={cx} cy={cy} r="3.5" />)}
+              </g>
+            )}
+
             {grid.states.map((name, i) => {
               const d = data.get(name);
               if (!d) return null;
@@ -243,6 +264,24 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
                 </g>
               );
             })}
+
+            {/* Andhra Pradesh — SLDC registration. A turbine like the states,
+                clickable, but its card states the registration, not book MW. */}
+            <g
+              className="vp-atlas__pin"
+              data-on={sel === AP_NAME ? 'true' : undefined}
+              transform="translate(742 650)"
+              onClick={() => setSel(sel === AP_NAME ? null : AP_NAME)}
+              role="button"
+              tabIndex={0}
+              aria-label="Andhra Pradesh: registered with SLDC for 50 MW"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSel(sel === AP_NAME ? null : AP_NAME); }
+              }}
+            >
+              <circle className="vp-atlas__hit" cx="0" cy="0" r={30 / view.k} />
+              <g transform={`translate(0 ${-26 * regScale})`}><Turbine scale={regScale} i={7} /></g>
+            </g>
           </g>
         </svg>
 
@@ -258,25 +297,41 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
           ⌘/Ctrl + scroll or pinch to zoom · drag to pan · tap a turbine
         </p>
 
-        {selected && (
+        {(selected || sel === AP_NAME) && (
           <div className="vp-atlas__card" role="status">
             <button type="button" className="vp-atlas__close" onClick={() => setSel(null)}
                     aria-label="Close">×</button>
-            <p className="vp-atlas__cardEyebrow">Portfolio</p>
-            <p className="vp-atlas__cardState">{sel}</p>
-            <p className="vp-atlas__cardMw">
-              {selected.mw.toLocaleString('en-IN', { maximumFractionDigits: 0 })}<span>MW</span>
-            </p>
-            <dl className="vp-atlas__cardMeta">
-              <div>
-                <dt>Projects</dt>
-                <dd>{selected.count}</dd>
-              </div>
-              <div>
-                <dt>Share of book</dt>
-                <dd>{((selected.mw / total) * 100).toFixed(1)}%</dd>
-              </div>
-            </dl>
+            {sel === AP_NAME ? (
+              <>
+                <p className="vp-atlas__cardEyebrow">Registration</p>
+                <p className="vp-atlas__cardState">Andhra Pradesh</p>
+                <p className="vp-atlas__cardMw">50<span>MW</span></p>
+                <dl className="vp-atlas__cardMeta">
+                  <div>
+                    <dt>Basis</dt>
+                    <dd>Registered with SLDC</dd>
+                  </div>
+                </dl>
+              </>
+            ) : (
+              <>
+                <p className="vp-atlas__cardEyebrow">Portfolio</p>
+                <p className="vp-atlas__cardState">{sel}</p>
+                <p className="vp-atlas__cardMw">
+                  {selected.mw.toLocaleString('en-IN', { maximumFractionDigits: 0 })}<span>MW</span>
+                </p>
+                <dl className="vp-atlas__cardMeta">
+                  <div>
+                    <dt>Projects</dt>
+                    <dd>{selected.count}</dd>
+                  </div>
+                  <div>
+                    <dt>Share of book</dt>
+                    <dd>{((selected.mw / total) * 100).toFixed(1)}%</dd>
+                  </div>
+                </dl>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -293,6 +348,9 @@ export default function PortfolioAtlas({ byState, maxMw, total, count }) {
         <span className="vp-atlas__legendCount">
           {count} projects · {total.toLocaleString('en-IN', { maximumFractionDigits: 0 })} MW total
         </span>
+        {/* A registration, not portfolio capacity — held separate from the map's
+            coloured states and the MW total above. */}
+        <span className="vp-atlas__legendReg">Registered with SLDC Andhra Pradesh for 50 MW</span>
       </div>
     </div>
   );

@@ -407,6 +407,21 @@ export default function Projects() {
                   <p className="vp-geo__note mb-0">{unallocated.note}</p>
                 </li>
               )}
+              {/* SLDC registration — shown alongside the portfolio, but NOT part
+                  of the 5,509.18 MW portfolio total (it is a registration, not a
+                  project), so it stays out of portfolio.js and its own card. */}
+              <li className="vp-geo__item vp-geo__item--reg" style={{ '--i': portfolioByState.length + 1 }}>
+                <span className="vp-geo__rank" aria-hidden="true">+</span>
+                <div className="vp-geo__top">
+                  <span className="vp-geo__state">Andhra Pradesh</span>
+                  <span className="vp-geo__count">Registered SLDC</span>
+                </div>
+                <p className="vp-geo__mw">
+                  <span className="vp-geo__mw-num">50</span>
+                  <span className="vp-geo__mw-unit">MW</span>
+                </p>
+                <p className="vp-geo__note mb-0">Registered with SLDC for 50 MW.</p>
+              </li>
             </ul>
           </Reveal>
         </div>

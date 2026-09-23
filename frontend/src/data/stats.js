@@ -10,6 +10,7 @@ export const proofPoints = [
   { id: 'experience', value: '15+', unit: 'years', label: 'In the power sector' },
   { id: 'portfolio', value: '5,000+', unit: 'MW', label: 'QCA portfolio' },
   { id: 'sldc', value: '3', unit: 'states', label: 'Registered SLDC operations' },
+  { id: 'sldc-ap', value: '50', unit: 'MW', label: 'SLDC Andhra Pradesh' },
   { id: 'wrldc', value: 'WRLDC', label: 'Western Region registered' },
   { id: 'tech', value: 'Solar · Wind · Hybrid', label: 'Renewable technologies' },
 ];
