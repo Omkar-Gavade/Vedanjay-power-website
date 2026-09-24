@@ -61,7 +61,14 @@ export function ConnectPanel() {
   const [copied, setCopied] = useState(null);
   const copyMail = (r) => {
     if (!r.href?.startsWith('mailto:')) return;
-    try { navigator.clipboard?.writeText?.(r.value); } catch { /* no clipboard */ }
+    /* writeText rejects if the document is not focused; only call it when it can
+       succeed, and swallow any residual rejection. The mailto href fires
+       regardless for anyone with a mail client. */
+    try {
+      if (navigator.clipboard && document.hasFocus()) {
+        navigator.clipboard.writeText(r.value).catch(() => {});
+      }
+    } catch { /* no clipboard */ }
     setCopied(r.id);
     setTimeout(() => setCopied((c) => (c === r.id ? null : c)), 1600);
   };

@@ -330,7 +330,6 @@ export default function Projects() {
                 <thead>
                   <tr>
                     <th scope="col" className="vp-ptable__hname">Project</th>
-                    <th scope="col">Technology</th>
                     <th scope="col" className="vp-ptable__hcap">Capacity</th>
                     <th scope="col">Location</th>
                   </tr>
@@ -344,15 +343,6 @@ export default function Projects() {
                       style={{ '--i': Math.min(i, STAGGER_CAP), '--stagger': `${STAGGER_MS}ms` }}
                     >
                       <th scope="row" className="vp-ptd-name">{p.name}</th>
-                      <td>
-                        {p.tech ? (
-                          <span className="vp-pcard__badge" data-tech={p.tech}>
-                            {p.tech === 'solar' ? 'Solar' : 'Wind'}
-                          </span>
-                        ) : (
-                          <span className="vp-pcard__badge vp-pcard__badge--muted">Renewable</span>
-                        )}
-                      </td>
                       <td className="vp-ptd-cap">
                         <span className="vp-ptd-cap__num">{fmtMw(p.mw)}</span>
                         <span className="vp-ptd-cap__unit">MW</span>
