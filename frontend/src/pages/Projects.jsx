@@ -1,6 +1,6 @@
 import { useDeferredValue, useId, useMemo, useRef, useState } from 'react';
 import {
-  portfolio, PORTFOLIO_TOTAL_MW, PORTFOLIO_COUNT,
+  portfolio, PORTFOLIO_COUNT,
   portfolioByState, unallocated, maxStateMw,
 } from '../data/portfolio.js';
 import { getMedia, smallSrc } from '../data/media.js';
@@ -91,16 +91,12 @@ function ClearIcon() {
     </svg>
   );
 }
-/** The headline capacity figure, counted up in hundredths so the decimals are
- *  exact and it lands on 5,509.18 rather than a rounded integer. */
+/** The headline capacity figure — the rounded '5,000+ MW' used across the site;
+ *  the exact portfolio total lives in the per-state map and its breakdown. */
 function TotalCapacity() {
-  const [v, ref] = useCountUp(Math.round(PORTFOLIO_TOTAL_MW * 100), { duration: 1400 });
-  const shown = (v / 100).toLocaleString('en-IN', {
-    minimumFractionDigits: 2, maximumFractionDigits: 2,
-  });
   return (
-    <p className="vp-pfcap__num" ref={ref}>
-      {shown}<span className="vp-pfcap__unit">MW</span>
+    <p className="vp-pfcap__num">
+      5,000+<span className="vp-pfcap__unit">MW</span>
     </p>
   );
 }

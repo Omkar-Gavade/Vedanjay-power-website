@@ -1,7 +1,7 @@
 import { company } from './company.js';
 import { capabilities } from './capabilities.js';
 import { industries } from './industries.js';
-import { PORTFOLIO_TOTAL_MW, PORTFOLIO_COUNT, portfolioByState } from './portfolio.js';
+import { PORTFOLIO_COUNT, portfolioByState } from './portfolio.js';
 import { awards, awardYears } from './awards.js';
 import { leadership } from './team.js';
 import { allResources } from './downloads.js';
@@ -52,8 +52,6 @@ export const ORIGIN = company.website.replace(/\/+$/, '');
 
 /** Absolute URL for a route path. Routes already carry their trailing slash. */
 export const absolute = (path) => `${ORIGIN}${path === '/' ? '/' : path}`;
-
-const mw = (n) => n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 
 /**
  * Social preview images, 1200×630, generated from the photography already on
@@ -178,8 +176,8 @@ export const routeSeo = [
   {
     path: ROUTES.projects,
     breadcrumb: 'Projects',
-    title: brand(`${mw(PORTFOLIO_TOTAL_MW)} MW Renewable QCA Portfolio`),
-    description: `A ${mw(PORTFOLIO_TOTAL_MW)} MW renewable-energy portfolio under QCA Services `
+    title: brand('5,000+ MW Renewable QCA Portfolio'),
+    description: `A 5,000+ MW renewable-energy portfolio under QCA Services `
       + `(Forecasting and Scheduling): ${PORTFOLIO_COUNT} solar and wind projects in ${portfolioByState.length} states, including `
       + `${joinList(portfolioByState.slice(0, 2).map((s) => s.state))}.`,
     keywords: ['renewable energy QCA portfolio', '5,000+ MW QCA Services (Forecasting and Scheduling)',
