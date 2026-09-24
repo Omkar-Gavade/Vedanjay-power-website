@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { company } from '../../data/company.js';
 import { Reveal } from '../ui/Reveal.jsx';
 import { PhoneIcon, WhatsAppIcon, MailIcon, ClockIcon } from './icons.jsx';
@@ -54,6 +55,17 @@ const rows = [
 ];
 
 export function ConnectPanel() {
+  /* mailto opens the visitor's mail app — but on a device with none registered
+     it silently does nothing. So an email row also copies the address on click
+     (the mailto href stays, for those who do have a client). */
+  const [copied, setCopied] = useState(null);
+  const copyMail = (r) => {
+    if (!r.href?.startsWith('mailto:')) return;
+    try { navigator.clipboard?.writeText?.(r.value); } catch { /* no clipboard */ }
+    setCopied(r.id);
+    setTimeout(() => setCopied((c) => (c === r.id ? null : c)), 1600);
+  };
+
   return (
     <div className="vp-connect">
       <Reveal>
@@ -82,6 +94,7 @@ export function ConnectPanel() {
                   <a
                     className="vp-connect__value"
                     href={r.href}
+                    onClick={() => copyMail(r)}
                     {...(r.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   >
                     {r.value}
@@ -92,9 +105,10 @@ export function ConnectPanel() {
                   <a
                     className="vp-connect__action"
                     href={r.href}
+                    onClick={() => copyMail(r)}
                     {...(r.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   >
-                    {r.action}
+                    {copied === r.id ? 'Address copied' : r.action}
                     <span className="vp-arrow" aria-hidden="true">&rarr;</span>
                     <span className="visually-hidden">
                       {' '}— {r.label}{r.external ? ' (opens in a new tab)' : ''}

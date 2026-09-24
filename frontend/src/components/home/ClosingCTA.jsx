@@ -1,5 +1,4 @@
 import { getMedia, smallSrc } from '../../data/media.js';
-import { company } from '../../data/company.js';
 import { ROUTES } from '../../constants/routes.js';
 import { Button } from '../ui/Button.jsx';
 import { Reveal } from '../ui/Reveal.jsx';
@@ -18,7 +17,7 @@ export function ClosingCTA() {
       </div>
 
       <div className="vp-cta__inner vp-container">
-        <div className="row g-4 g-lg-5 align-items-end">
+        <div className="row g-4 g-lg-5 align-items-center">
           <div className="col-12 col-lg-7">
             <Reveal>
               <span className="vp-eyebrow vp-label mb-3">Get in touch</span>
@@ -36,13 +35,7 @@ export function ClosingCTA() {
             <Reveal delay={90}>
               <div className="d-flex flex-column flex-sm-row flex-lg-column gap-3">
                 <Button to={ROUTES.contact} variant="primary" size="lg">Contact Us</Button>
-                <Button href={company.phone.href} variant="ghostLight" size="lg">
-                  Call {company.phone.display}
-                </Button>
               </div>
-              <p className="vp-sm mt-4 mb-0 vp-cta__mail">
-                <a href={`mailto:${company.emails.general}`}>{company.emails.general}</a>
-              </p>
             </Reveal>
           </div>
         </div>
