@@ -1,4 +1,4 @@
-import { company } from '../data/company.js';
+import { company, gmailCompose } from '../data/company.js';
 import { leadershipNames, leadershipRoles } from '../data/team.js';
 import { PROJECT_TOTAL, voltageClasses } from '../data/projects.js';
 import { getMedia, smallSrc } from '../data/media.js';
@@ -69,7 +69,7 @@ export default function Careers() {
     against that image's 2.9%, with a much lower peak.
   */
   const hero = getMedia('cap-infrastructure');
-  const mailto = `mailto:${company.emails.general}?subject=${encodeURIComponent('Application — Vedanjay Power')}`;
+  const mailto = gmailCompose(company.emails.general, { subject: 'Application — Vedanjay Power' });
 
   return (
     <>
@@ -129,7 +129,7 @@ export default function Careers() {
               <div className="vp-apply__ways">
                 {/* The general address — there is no separate recruitment mailbox, so
                     the subject line is prefilled to route it. */}
-                <a className="vp-apply__way" href={mailto}>
+                <a className="vp-apply__way" href={mailto} target="_blank" rel="noopener noreferrer">
                   <MailIcon />
                   <span>
                     <span className="vp-apply__wayLabel">Email</span>

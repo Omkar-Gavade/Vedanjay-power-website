@@ -152,3 +152,22 @@ export const company = {
 };
 
 export const currentYear = () => new Date().getFullYear();
+
+/**
+ * Gmail web-compose URL for an email address.
+ *
+ * A plain `mailto:` hands the click to the OS default mail handler — and on a
+ * Windows machine with no desktop client registered that surfaces the "Select
+ * an app to open this 'mailto' link" dialog instead of composing anything.
+ * This opens Gmail's compose window in the browser with the address already in
+ * the To field, and behaves the same on desktop and mobile web.
+ *
+ * Optional subject/body are URL-encoded and only added when present, so a bare
+ * call just opens a new compose window addressed to `email`.
+ */
+export function gmailCompose(email, { subject, body } = {}) {
+  const params = new URLSearchParams({ view: 'cm', fs: '1', to: email });
+  if (subject) params.set('su', subject);
+  if (body) params.set('body', body);
+  return `https://mail.google.com/mail/?${params.toString()}`;
+}

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { primaryNav, footerCapabilities } from '../../data/navigation.js';
-import { company, currentYear } from '../../data/company.js';
+import { company, currentYear, gmailCompose } from '../../data/company.js';
 import { ROUTES } from '../../constants/routes.js';
 import { SocialIcon } from '../ui/SocialIcon.jsx';
 
@@ -59,9 +59,9 @@ export function Footer() {
             ))}
             <ul className="vp-footer__contacts">
               <li><a className="vp-footer__link" href={company.phone.href}>{company.phone.display}</a></li>
-              <li><a className="vp-footer__link text-break" href={`mailto:${company.emails.general}`}>{company.emails.general}</a></li>
+              <li><a className="vp-footer__link text-break" href={gmailCompose(company.emails.general)} target="_blank" rel="noopener noreferrer">{company.emails.general}</a></li>
               <li>
-                <a className="vp-footer__link text-break" href={`mailto:${company.emails.operations}`}>
+                <a className="vp-footer__link text-break" href={gmailCompose(company.emails.operations)} target="_blank" rel="noopener noreferrer">
                   {company.emails.operations}
                 </a>
                 <span className="vp-footer__hint d-block">Operations &amp; support</span>

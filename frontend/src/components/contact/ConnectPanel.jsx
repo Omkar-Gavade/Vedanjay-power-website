@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { company } from '../../data/company.js';
+import { company, gmailCompose } from '../../data/company.js';
 import { Reveal } from '../ui/Reveal.jsx';
 import { PhoneIcon, WhatsAppIcon, MailIcon, ClockIcon } from './icons.jsx';
 
@@ -37,16 +37,20 @@ const rows = [
     icon: <MailIcon />,
     label: 'Business enquiries',
     value: company.emails.general,
-    href: `mailto:${company.emails.general}`,
+    href: gmailCompose(company.emails.general),
     action: 'Email us',
+    external: true,
+    mail: true,
   },
   {
     id: 'operations',
     icon: <ClockIcon />,
     label: 'Operations & support',
     value: company.emails.operations,
-    href: `mailto:${company.emails.operations}`,
+    href: gmailCompose(company.emails.operations),
     action: 'Email operations',
+    external: true,
+    mail: true,
     /* The one verified availability claim. General office hours are marked
        "to be confirmed" in the source document, so they are absent. */
     note: '24×7 support for QCA Services (Forecasting and Scheduling).',
@@ -55,15 +59,15 @@ const rows = [
 ];
 
 export function ConnectPanel() {
-  /* mailto opens the visitor's mail app — but on a device with none registered
-     it silently does nothing. So an email row also copies the address on click
-     (the mailto href stays, for those who do have a client). */
+  /* The email rows open Gmail web-compose in a new tab (see gmailCompose) — but
+     also copy the address on click, so a visitor who composes elsewhere still
+     has it to hand. The Gmail tab opens regardless. */
   const [copied, setCopied] = useState(null);
   const copyMail = (r) => {
-    if (!r.href?.startsWith('mailto:')) return;
+    if (!r.mail) return;
     /* writeText rejects if the document is not focused; only call it when it can
-       succeed, and swallow any residual rejection. The mailto href fires
-       regardless for anyone with a mail client. */
+       succeed, and swallow any residual rejection. The Gmail tab opens
+       regardless via the href. */
     try {
       if (navigator.clipboard && document.hasFocus()) {
         navigator.clipboard.writeText(r.value).catch(() => {});

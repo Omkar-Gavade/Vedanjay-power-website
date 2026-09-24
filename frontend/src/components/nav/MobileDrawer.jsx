@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { primaryNav } from '../../data/navigation.js';
-import { company } from '../../data/company.js';
+import { company, gmailCompose } from '../../data/company.js';
 import { ROUTES } from '../../constants/routes.js';
 import { useFocusTrap } from '../../hooks/useFocusTrap.js';
 import { Logo } from './Logo.jsx';
@@ -89,7 +89,7 @@ export function MobileDrawer({ open, onClose, isActive }) {
             <div className="d-flex flex-column mt-3">
               <a href={company.phone.href} className="d-flex align-items-center vp-sm vp-text-soft"
                  style={{ minHeight: 44 }}>{company.phone.display}</a>
-              <a href={`mailto:${company.emails.general}`}
+              <a href={gmailCompose(company.emails.general)} target="_blank" rel="noopener noreferrer"
                  className="d-flex align-items-center vp-sm vp-text-soft text-break"
                  style={{ minHeight: 44 }}>{company.emails.general}</a>
             </div>

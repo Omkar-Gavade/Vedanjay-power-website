@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { getMedia, smallSrc } from '../data/media.js';
-import { company } from '../data/company.js';
+import { company, gmailCompose } from '../data/company.js';
 import { leadership, leadershipRoles } from '../data/team.js';
 import { Button } from '../components/ui/Button.jsx';
 import { Reveal, RevealLines } from '../components/ui/Reveal.jsx';
@@ -126,7 +126,7 @@ export default function Team() {
                         </a>
                       )}
                       {p.email && (
-                        <a className="vp-tcard__link" href={`mailto:${p.email}`}>
+                        <a className="vp-tcard__link" href={gmailCompose(p.email)} target="_blank" rel="noopener noreferrer">
                           <MailIcon />
                           <span>Email</span>
                           <span className="visually-hidden">{' '}{p.name} at {p.email}</span>
