@@ -70,11 +70,6 @@ const MIN_MW = Math.min(...MW_VALUES);
 const MAX_MW = Math.max(...MW_VALUES);
 const TOP_STATE = portfolioByState[0];
 
-const TECH_FILTERS = [
-  { id: 'all', label: 'All' },
-  { id: 'solar', label: 'Solar' },
-  { id: 'wind', label: 'Wind' },
-];
 
 function SearchIcon() {
   return (
@@ -223,8 +218,6 @@ export default function Projects() {
               </div>
               <StatCard target={PORTFOLIO_COUNT} label="Projects" note="In the portfolio" />
               <StatCard target={LOCATIONS.length} label="States" note="Single-state projects" />
-              <StatCard target={SOLAR_COUNT} label="Solar projects" note="Named in the record" />
-              <StatCard target={WIND_COUNT} label="Wind projects" note="Named in the record" />
             </div>
           </Reveal>
         </div>
@@ -242,25 +235,6 @@ export default function Projects() {
 
           <Reveal delay={40}>
             <div className="vp-pfbar">
-              <div className="vp-filters" role="group" aria-label="Filter projects by technology">
-                {TECH_FILTERS.map((f) => (
-                  <button
-                    key={f.id}
-                    type="button"
-                    className="vp-filter"
-                    aria-pressed={tech === f.id}
-                    onClick={() => setTech(f.id)}
-                  >
-                    {f.label}
-                    {f.id !== 'all' && (
-                      <span className="vp-filter__n">
-                        {f.id === 'solar' ? SOLAR_COUNT : WIND_COUNT}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-
               <div className="vp-pfselect">
                 <label htmlFor={locId} className="visually-hidden">Filter by location</label>
                 <select
@@ -315,7 +289,7 @@ export default function Projects() {
           {rows.length === 0 ? (
             <div className="vp-reg__empty">
               <p className="mb-2"><strong>No project matches your filters.</strong></p>
-              <p className="mb-0">Try a different technology, location or search term.</p>
+              <p className="mb-0">Try a different location or search term.</p>
             </div>
           ) : (
             <div className="vp-ptable-wrap">
