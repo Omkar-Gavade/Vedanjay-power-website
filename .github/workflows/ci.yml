@@ -17,11 +17,15 @@ jobs:
           npm ci
           npm --prefix frontend ci
 
-      # The pack is a build artefact. If it differs from what is committed, a
-      # fact changed without the generated file being regenerated — which would
-      # ship stale content to visitors.
-      - name: Knowledge pack is current
-        run: npm run pack:check
+      # These files are build artefacts. If one differs from what is committed,
+      # a fact changed without the generated file being regenerated — which
+      # would ship stale content to visitors. (This step used to check the
+      # assistant's knowledge pack, which went away with the server-side chat.)
+      - name: Generated files are current
+        run: |
+          npm run projects:check
+          npm run seo:check
+          npm run atlas:check
 
       - name: Tests
         run: npm test
